@@ -1,0 +1,51 @@
+#!/bin/sh
+#export DEBUG=-rdebug
+
+
+#export RUBYLEXERVSRUBY=test/code/rubylexervsruby.sh
+export RUBYLEXERVSRUBY=test/code/rubylexervsruby.rb
+export ARGS=$*
+  #something broken here
+   #test -n "$ARGS" && (
+
+
+   echo 'looking for ruby files in debian packages...'
+   find test/data/ -name '_*' -print|xargs -l200 rm
+   for i in `feta find '\.rb'|cut -d: -f2-99`; do
+      ln -s "$i" test/data/`echo $i|tr '/ ' '_'` 2>&1 |grep -v ': File exists$';
+   done
+   #)
+
+   for i in test/data/*.rb; do
+      $RUBYLEXERVSRUBY $i;
+   done
+
+
+   for i in *.rb; do
+      $RUBYLEXERVSRUBY $i;
+   done
+
+
+
+#$RUBYLEXERVSRUBY assert.rb
+#$RUBYLEXERVSRUBY charhandler.rb
+#$RUBYLEXERVSRUBY term.rb
+#$RUBYLEXERVSRUBY token.rb
+#$RUBYLEXERVSRUBY rubycode.rb
+#$RUBYLEXERVSRUBY rumalexer.rb
+#$RUBYLEXERVSRUBY rubylexer.rb
+#$RUBYLEXERVSRUBY rulexer.rb
+#$RUBYLEXERVSRUBY matcher.rb
+####$RUBYLEXERVSRUBY pattern.rb
+#$RUBYLEXERVSRUBY rumaparser.rb
+
+
+#also look in bin and lib directories
+file -L `echo $PATH":/sbin:/usr/sbin"|tr : "\n"|sort -u|xargs -i echo "{}/*"`| \
+ grep "ruby[^:]*script"|cut -d: -f1 > test/results/rubyexelibs
+
+ruby -e 'print ($:.sort.uniq+[""]).join"\n"'|xargs -i ls "{}/*.rb" >> test/results/rubyexelibs
+
+   for i in `cat test/results/rubyexelibs`; do
+      $RUBYLEXERVSRUBY $i;
+   done

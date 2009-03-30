@@ -1,0 +1,121 @@
+Running the tests:
+The simplest thing to do is run "ruby -Ilib test/code/regression.rb". This 
+tests against a list of known ruby expressions. It will take several minutes 
+to run. Currently, there are 5 failures.
+
+If you're ambitious, try this command: "ruby -Ilib test/code/locatetest.rb". 
+This will use locate to find as much ruby code on your system and test 
+each specimen to see if it can be tokenized correctly (by feeding it to 
+testcode/rubylexervsruby.rb, the operation of which is outlined below 
+under 'testing strategy').
+
+Interpreting the output of rubylexervsruby.rb (and locatetest):
+In rubylexervsruby, I've tried to follow the philosophy that the test program
+doesn't print anything unless there's an error. Perhaps I haven't followed
+this far enough; every run of rubylexervsruby produces a little output, and 
+sometimes a run will produce output that doesn't actually indicate a problem, 
+or only a low-priority problem. (Since locatetest runs rubylexervsruby over 
+and over, it produces lots of (mostly harmless) output. Sorry.)
+
+The following types of output should be ignored:
+
+diff file or chunk headers
+
+lines that look like this:
+  executing: ruby testcode/tokentest.rb ...     #normal, 1 for every file
+or this:
+  Created warning(s) in new file, line 85: useless use of <=> in void context
+or this:
+  Removed warning(s) from old file (?!), line 85: useless use of <=> in void context
+indicate that a warning was added or deleted. Ultimately, these should
+go away, but right now it's a low-priority issue.
+
+If you ever see ruby stack dump in rubylexervsruby output, that's certainly
+an error. 
+
+Something that looks like a unidiff chunk body (not header) may indicate 
+an error as well. To understand more about how the unidiff output is 
+created, see the section on testing strategy below.
+
+htree/template.rb should be ok now.
+
+currently, lots of warnings are printed about token offsets being off by 1,
+particularly the AssignmentRhsListToken. This is a problem, but for now I'm
+ignoring it. 
+
+Diff chunks like this indicate a minor problem with the placement of (empty)
+string fragments. Ignore it for now:
+
+@@ -13,2 +13,3 @@
+ Shifting token tSTRING_BEG ()
++Shifting token tSTRING_CONTENT ()
+ Shifting token tSTRING_DBEG ()
+@@ -19,2 +20,2 @@
+ Shifting token '\n' ()
+@@ -13,2 +13,3 @@
+ Shifting token tSTRING_BEG ()
++Shifting token tSTRING_CONTENT ()
+ Shifting token tSTRING_DBEG ()
+
+
+
+if you find any output that doesn't look like one of the above exceptions, 
+and the input file was valid ruby, please send it to me so that i can add it
+to my arsenal of tests.
+
+there are a number of 'ruby' files that i know of out there that actually 
+contain syntax errors:
+rpcd.rb from freeride -- missing an end
+sample1.rb from 1.6 version of tcltk -- not legal in ruby 1.8
+bdb.rb from libdb2, 3, and 4 -- not how you declare [] method in ruby
+
+only the 10 first lines of each failing file are printed. the rest, as well
+as other intermediate files are kept in the testresults directory. the test
+output files are named *.prs.diff. beware: this directory is never cleaned,
+and can get quite large. after a large test run, you'll want to empty this 
+directory to recover some disk space.
+
+about the directories: tbd
+
+about testcode/dumptokens.rb: tbd
+
+about testcode/tokentest.rb:
+a fairly simple-minded test utility; given an input file, it uses RubyLexer
+to tokenize it, then prints out each token as it is found. certain small
+changes will be made; numeric constants (including char constants) are 
+converted to decimal and strings are converted to double-quoted form, where
+possible. optional flags can cause other changes: --maxws inserts whitespace
+everywhere that it's possible, --implicit inserts parentheses where they 
+were left out at call sites. --implicit-all adds parentheses around the lists
+following when, for, and rescue keywords. --keepws is the usual mode; 
+otherwise a 'symbolic mode' is used wherein newline is represented by '#;',
+for instance. note: currently the output will not be valid ruby unless
+only the --maxws or --keepws is used. in a future release --implicit will
+also be valid ruby, but currently it also puts '*[' and ']' around assignment
+right hand sides, which only works most of the time.
+
+about testcode/torment:
+finds ruby files by other heuristics (not using locate) and runs each
+through rubylexervsruby. this is roughly comparable to locatetest, but
+more complicated and (probably) less comprehensive.
+
+about ./test:
+this contains a number of ruby files which have failed on my Debian system 
+in the past. as the paths are hard-coded, it's unlikely to be very portable.
+
+testing strategy:
+this command:
+ruby -w -y < $1 2>&1 | grep ^Shift|cut -d" " -f3
+gives a list of the types of token, as known to ruby, in a source file $1. the
+utility program tokentest.rb runs the lexer against a source file and then simply
+prints the tokens out again (perhaps with whitespace inserted between tokens). if
+the list of token types in this derived source file, as determined by the above command,
+is the same as in the original, we can be pretty confident that ruby and rubylexer are
+tokenizing in the same way. since whitespaces are optionally inserted between tokens, it
+is unlikely that rubylexer is ever finding two tokens where ruby thinks there's only one.
+it is possible, however, that rubylexer is emitting as a single token things that ruby
+thinks should be 2 tokens. and in fact, this is the case with strings: ruby divides a
+string into string open, string body, and string close tokens with option interpolations,
+whereas rubylexer has just a single string token (with subtokens, if interpolations are
+present.) this difference in handling accounts in part for rubylexer's inability
+to correctly lex certain very complicated strings.

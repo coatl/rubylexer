@@ -1,0 +1,14 @@
+ruby -Ilib test/code/tokentest.rb --loop --maxws \
+  /home/caleb/sandbox/rubyparser/babyparser.rb \
+  /home/caleb/sandbox/rubyparser/hd2.rb \
+  /home/caleb/sandbox/rubyparser/test_rubyparser.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/rulexer.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/tokenprinter.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/0.6.2.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/0.7.1.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/charset.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/symboltable.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/charhandler.rb \
+  /home/caleb/sandbox/rubylexer/lib/rubylexer/0.7.0.rb \
+  /home/caleb/sandbox/rubylexer/lib/assert.rb \
+  >/dev/null 2>&1

@@ -1,0 +1,30 @@
+test $RUBY || export RUBY=ruby
+export PWD=`pwd`
+export RUBYLEXERVSRUBY="$RUBY -Ilib test/code/rubylexervsruby.rb"
+
+if $RUBY --version|grep '^ruby 1\.6'; then
+  echo 'error: need ruby 1.8'; exit
+fi
+
+mkdir test/results
+
+ruby <<END > test/results/rubyscripts.txt
+require 'open3'
+binfiles=ENV['PATH'].split(':').map{|dir| Dir[dir+'/*']}.compact
+rubyscripts=[]
+Open3.popen3('file -f -'){|cin,cout,cerr|
+  cin.puts *binfiles
+  cin.flush
+  cin.close
+  cout.each{|line|
+    name=line[/\A([^:]+):.*ruby.*text/i,1] and rubyscripts<<name and p name
+  }
+}
+puts rubyscripts
+END
+
+#cd `dirname -- $0`
+
+for i in test/data/p.rb `(locate tk.rb;locate examples/examples_test.rb ron.rb /generator.rb ipaddr.rb date/format.rb /optparse.rb ferret/browser.rb;locate .rb; locate rakefile; locate Rakefile; locate RAKEFILE)|egrep -v '/test/results/'; cat test/results/rubyscripts.txt; find test/data/gems -name "*.rb"`; do
+  $RUBYLEXERVSRUBY $i
+done

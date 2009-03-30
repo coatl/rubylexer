@@ -1,0 +1,2 @@
+#!/bin/sh
+egrep -B1 -v '^(\(expected\) |executing)' locatetest.out

@@ -1,0 +1,139 @@
+
+Using rubylexer:
+require "rubylexer.rb"
+  #then later
+lexer=RubyLexer.new(a_file_name, opened_File_or_String)
+until EoiToken===(token=lexer.get1token)
+  #...do stuff w/ token...
+end
+
+For a slightly expanded version of this example, see test/code/dumptokens.rb.
+
+tok will be a subclass of Token. there are many token classes (see token.rb)
+however, all tokens have some common methods:
+to_s   #return a string containing ruby code representing that token
+ident  #return internal form of token; use with caution
+offset #offset in file of start of token
+error  #returns a string if there was a lex error at this position, else nil
+
+here's a list of token subclasses and their meaning:
+(note: indentation indicates inheiritance)
+
+WToken       #(mostly useless?) abstract superclass for KeywordToken, 
+             #OperatorToken, VarNameToken, and HerePlaceholderToken
+             #but not (confusingly) MethNameToken (perhaps that'll change)
+ KeywordToken #a ruby keyword or non-overridable punctuation char(s)
+ OperatorToken #overrideable operators. 
+               #use #unary? and #binary? to find out how many arguments it takes.
+ VarNameToken #a name that represents a variable
+ HerePlaceholderToken #represents the header of a here string. subclass of WToken
+MethNameToken  #the name of a method: the uncoloned
+                 #symbols allowed in 'alias' and 'undef' statements and all names
+                 #which follow a 'def',
+                 #'::', or '.', as well as other call sites. operators used as
+                 #method names will appear as methnametokens.
+                 #confusingly, this is not a WToken.
+NumberToken  #a literal number, including character constants
+SymbolToken  #a symbol
+NewlineToken #represents an (unescaped) newline.
+StringToken  #represents a string. unlike all other tokens, strings might contain
+             #other tokens. if the string used interpolation, tokens inside #{ }
+             #are considered subtokens of the string. StringToken#elems returns
+             #an array whose elements are sections of uninterpolated string (in
+             #the even indeces) and arrays of subtokens (in the odd indeces).
+             #this notion of subtokens is an unfortunate one and will go away in
+             #a future release.
+ RenderExactlyStringToken  #a subclass of StringToken; used to represent regexes and other string-like thingys
+
+ErrorToken   #actually a module that may be mixed in to any token. indicates an error in the input at (or
+             #near) that position. You may continue getting tokens after an error token is encountered, 
+             #and I try to make this work as well as possible, but I can not guarantee correctness after
+             #an error.
+             #note: any token may be an ErrorToken, including IgnoreToken, EoiToken, a subtoken of a 
+             #StringToken, etc. Please take this into account in your error processing.
+
+IgnoreToken  #superclass for tokens without semantic meaning to a parser
+ WsToken      #whitespace
+ EscNlToken   #implicitly or explicitly escaped newline
+ EoiToken     #end of source file. always the last token
+ HereBodyToken        #the actual body of the here string. subclass of IgnoreToken
+  OutlinedHereBodyToken #hacky subclass of HereBodyToken... will disappear once strings are done right.
+
+ ZwToken      #informational IgnoreTokens. (parsers might need to look at some of these, actually.)
+  NoWsToken    #no whitespace was on either side of this token. kind of a hack
+               #to help TokenPrinter work correctly in certain cases.
+
+  ImplicitParamListStartToken #if you leave the parentheses out in a function
+  ImplicitParamListEndToken   #call, a pair of these will be generated instead
+
+  KwParamListStartToken       #the when,for,and rescue keywords take a comma-
+  KwParamListEndToken         #delimited list. these tokens enclose those lists.
+
+  AssignmentRhsListStartToken #encloses the right hand side of an assignment,
+  AssignmentRhsListEndToken   #including both single and multiple assignment.
+
+  FileAndLineToken   #generated at every newline, escaped or unescaped. the file
+                     #and line methods of this class return the file and line at
+                     #that point in the token stream. (not always working right now.)
+
+
+Subclasses of WToken provide an === method for comparing the token to a String or Regexp.
+
+The different types of string and how to distinguish: 
+For the most part you can tell what was what by looking at StringToken#char. 
+Single and double quotes can't be distinguished this way, and neither can you tell a fancy 
+string (starting with %) from the regular kind. If you want to have more... one option 
+with the current code is to just go and look in your input what was at StringToken#offset. 
+
+Eventually, (in version 0.8) string boundaries, bodies, and inclusions will all be separate 
+tokens laid out linearly in the token stream. This is the way matz handles things, and it's 
+much cleaner.  I'll make sure that the string start token at that time contains all the 
+info you could want. If you really can't wait for 0.8 and can't stand #offset, I can hack 
+in a method to StringToken that tell you exactly what char(s) opened the string.
+
+Certain keywords (if, unless, while, until, do) may or may not have an associated end keyword.
+For instance, these have ends associated:
+
+if somthing then
+  do_somthing
+end
+
+a.each do|x| 
+  x.something_about_it 
+end
+
+And these do not:
+
+do_something if something
+
+for x in a do 
+  x.something_about_it 
+end #paired to the for, not the do!
+
+A KeywordToken is generated by rubylexer in either case, but you can now use the has_end?
+method of KeywordToken to determine whether an end should be expected for a particular if or not. 
+
+api stability:
+Future changes to the user-visible api will happen in a backwards-compatible way, so that
+if the interface changes, there will be a (probably quite long) transition period during 
+which both the old and new interfaces are supported. The idea is to give users plenty of 
+time to adapt to changes. That promise goes for all the changes described below.
+
+In cases where the 2 are incompatible, (inspired by rubygems) I've come up with this:
+
+  require 'rubylexer/0.6'
+  rl=RubyLexer.new(...args...)  #request the 0.6 api
+  
+This actually works currently; it enables the old api where errors cause an exception instead
+of generating ErrorTokens. The default will always be to use the new api.
+
+StringToken will go away; replaced by multiple token types, like in ruby.  StringToken
+subclasses will need reorganization at this point too... tokens in an interpolation
+will no longer be 'subtokens' but full-fledged tokens in their own right.
+i intend to make a namespace for all rubylexer classes at some point... shouldn't
+be a big deal; old clients can just include the namespace module.
+Token#ident may be taken away or change without notice.
+MethNameToken may become a WToken
+HereBodyToken should really be a string subclass...
+Newline,EscNl,BareSymbolToken may get renamed
+

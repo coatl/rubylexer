@@ -1,0 +1,160 @@
+=== 0.7.2/10-12-2008
+* 12 Minor Enhancements:
+  * a new context for then kw expected
+  * disable all backtracking when scanning string interiors
+  * ternary flag distinguishes ternary : from other uses
+  * EndDefHeaderToken renamed to EndHeaderToken
+  * ^ now gets its own scanning method
+  * correct # of parens emitted after of kw used as (or like) method
+  * more special casing for break return and next
+  * abort_noparens! now better if When context on the stack
+  * semicolon may now be omitted after module header
+  * { and } in BEGIN/END expr masquerade as do and end
+  * trying to make 'rake test' work right
+  * certain other changes of no importance whatsoever
+
+=== 0.7.1/8-29-2008
+* 6 Major Enhancements:
+  * handling of empty string fragments now more closely mirrors ruby; this resolves many warnings
+  * yet more hacks in aid of string inclusions
+  * backslashes in strings are no longer interpreted automatically when lexed
+  * here documents are completely rewritten in a tricky way that more closely mimics what MRI does
+  * many more flags for tokens to tell apart the various cases:
+    * the various different local variable types have to be detected.
+    * colons which operate like semicolons or thens are marked as such
+    * { } used in block now flagged as parsing like do and end
+    * commas now are marked with different types depending on how they're used
+    * @variables in methods need to be marked as such, so their parsetree can come out different.
+    * clearly mark backquoted strings
+  * further refinements of local variable detection and implicit paren placement near these cases:
+    * when ws between method name and parenthesis
+    * break/return/next
+    * ? : << / rescue do
+
+* 5 Minor Enhancements
+  * colon or star in assignment make it a multi assignment
+  * presence of unary * or & in param list forces it to be a multi-param list
+  * errors in string inclusions should now be handled better
+  * string and stringlike tokens now can tell you the exact sequence of chars used to open and close the string.
+  * correctly handling more cases where return/break/next parses different than a method (yuck!)
+
+* 26 Bugfixes
+  * ~ operator can be followed with an @, like + and -
+  * ~ is overridable, however :: is not
+  * raise is not a keyword
+  * in addition to 0x00, 0x04 and 0x1a should be considered eof in ruby. why? idunno.
+  * setting PROGRESS env var will cause input file position to be printed to stderr periodically.
+  * defined? is not a funclike keyword... really more of a unary operator
+  * $- is a legitimate global variable.
+  * better parsing of lvalue list following for keyword.
+  * rescue is a variable define context only when right after => and before then (or disguises).
+  * better placement of implicit parens around def param list
+  * (global) variable aliasing now supported
+  * local vars in END block are NOT scoped to the block! 
+  * local vars in def param lists aren't considered variables til after the initializer for that var
+  * end of def header is treated like ; even if none is present
+  * never put here document right after class keyword
+  * look for start of line directives at end of here document
+  * oops, mac newlines don't have to be supported
+  * dos newlines better tolerated around here documents
+  * less line number/offset confusion around here documents
+  * newline after (non-operator) rescue is hard (but not after INNERBOUNDINGWORDS)
+  * handling eof in more strange places
+  * always expect unary op after for
+  * unary ops should know about the before-but-not-after rule!
+  * newlines after = should be escaped
+  * \c? and \C-? are not interpreted the same as other ctrl chars
+  * \n\r  and \r are not recognized as nl sequences
+
+* 18 Internal Changes (not user visible)
+  * commas cause a :comma event on the parsestack
+  * some of the lists of types of operators are available now as arrays of strings instead of regexps
+  * single and double quote now have separate implementations again
+  * keep track of whether an implicit open or close paren has just been emitted
+  * put ws around << to keep slickedit happy
+  * the eof characters are also considered whitespace.
+  * identifier lexer now uses regexps more heavily
+  * method formal parameter list is not considered an lvalue context for commas.
+  * class and def now have their own parse contexts
+  * unary star causes a :splat event on the parsestack
+  * is_var_name now detects var tokens just from the token type, not looking at local vars table.
+  * a faster regexp-based implementation of string scanning
+  * moved yucky side effect out of quote_expected?
+  * these keywords: class module def for defined?  no longer automatically create operator context
+  * a new context for BEGIN/END keywords
+  * a new context for param list of return/next/break
+  * new escape sequence processors for regexp and %W list
+  * numbers now scanned with a regexp
+
+* 15 Enhancements and bug fixes to tests:
+  * just print a notice on errors which are also syntax errors for ruby
+  * a little cleanup of temp files
+  * rubylexervsruby and tokentest can take input from stdin
+  * unlexer improvements
+  * dumptokens now has a --silent cmdline option
+  * locatetest.rb is significantly enhanced
+  * --unified option to diff seems to work better than -u
+  * tokentest better verifies exact token contents... 
+  * tokentest now uses open and close fields of strings to verify string bounds exactly
+  * CRLF in a string is always treated like just a LF. (CR is elided.)
+  * allow_ooo hacky flag marks tokens whose offset errors are to be ignored.
+  * all other offset errors have been downgraded to warnings. 
+  * most of the offset problem I had been seeing have been fixed, tho
+  * offset problems in here head and body, symbol and fal tokens are always ignored (a hack)
+  * tokentest has a --loop option, for load testing
+
+=== 0.7.0/2-15-2008
+* implicit tokens are now emitted at the right times (need more test code)
+* local variables are now temporarily hidden by class, module, and def
+* line numbers should always be correct now (=begin...=end caused this) (??)
+* fixed meth/var-name confusion in idents after 'def' but before params
+* FileAndLineToken now emitted on all new lines (0.8)
+* offset of __END__ now works(??) 
+* put files into lib/
+* improvements in parsing unary * and &  (??)
+* input can now come from a string
+* local vars (defs and uses) are recognized in string inclusions
+* explicitly decimal numbers, eg: 0d123456789
+* eof in unusual cases is better handled
+* __END__ is not treated as a keyword
+* '|' as goalpost is now better handled
+* a number of things have been renamed internally
+* no more implicit parens for setter method calls
+* '{' after return, break, and next is now the start of a hash.
+* ambiguous cases of '::','(',':',and '?' are now better handled.
+* more start/end hint tokens (for 'when', 'rescue', and 'for')
+* bugfixes in rhs hint tokens
+* parsing of def headers for singleton methods is improved
+* rescue as operator is now handled
+* block param list lookahead is simplified
+* unary ops (including * and &) can be easily distinguished in output
+* here document bodies better handled, esp after escaped newline
+* symbols like %s{symbol} now actually work
+* implicit parens around => better handled...
+* different cases of '{' can now be easily distinguished
+* ImplicitParamList Start and End are now Keyword, not Ignore tokens.
+
+=== 0.6.2
+* testcode/dumptokens.rb charhandler.rb doesn't work... but does after unix2dos (not reproducible)
+* files are opened in binmode to avoid all possible eol translation
+* (x.+?x) now works
+* methname/varname mixups fixed in some cases
+* performance improvements, in most important cases
+* error handling tokens should be emitted on error input... ErrorToken mixin module
+* but old error handling interface should be preserved and made available
+* moved readahead and friends into IOext
+* made optimized readahead et al for fakefile
+* dos newlines (and newlines generally) can be fancy string delimiters
+* do,if,until, etc, have a way to tell if an end is associated
+* broke readme into pieces
+
+=== 0.6.0
+* partly fixed the implicit tokens at the wrong times. (or not at the 
+* right times) (partly fixed) 
+* : operator might be a synonym for 'then' 
+* variables other than the last are now recognized in multiple assignment
+* variables created by for and rescue are now recognized
+* token following :: should not be BareSymbolToken if begins with A-Z (unless obviously a func)
+* read code to be lexed from a string. (irb wants this)
+* fancy symbols weren't supported at all. (like this:  %s{abcdefg})
+
