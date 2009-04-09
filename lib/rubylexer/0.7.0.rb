@@ -1,0 +1,11 @@
+require 'rubylexer/0.7.1'
+
+class RubyLexer
+  IMPLICIT_PARENS_BEFORE_ACCESSOR_ASSIGNMENT=0
+  DECIMAL_INT_INTERP=:to_i
+  ARBITRARY_INT_INTERP=:oct
+  AUTO_UNESCAPE_STRINGS=true
+end
+
+
+
