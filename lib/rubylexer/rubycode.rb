@@ -31,6 +31,8 @@ class RubyCode < Token
       @linenum=linenum
    end
 
+   attr :linenum
+
    def [](*args)
       exec? ident.huh
    end
