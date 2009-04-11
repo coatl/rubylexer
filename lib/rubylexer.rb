@@ -159,6 +159,7 @@ class RubyLexer
      @localvars_stack.last
    end
 
+   attr_accessor :in_def
    attr :localvars_stack	
    attr :offset_adjust
    attr_writer :pending_here_bodies
@@ -262,6 +263,7 @@ class RubyLexer
 private
    #-----------------------------------
    def inside_method_def?
+     return true if (defined? @in_def) and @in_def
      @parsestack.reverse_each{|ctx|
        ctx.starter=='def' and ctx.state!=:saw_def and return true
      }

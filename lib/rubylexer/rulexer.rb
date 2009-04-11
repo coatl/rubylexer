@@ -654,6 +654,7 @@ end
       rl=klass.new(@filename,@file,@linenum,offset_adjust())
       rl.extend RecursiveRubyLexer
       rl.enable_macros! if @enable_macro
+      rl.in_def=true if inside_method_def?
 #      rl.offset_adjust_set! offset_adjust()
       assert offset_adjust()==rl.offset_adjust()
 
