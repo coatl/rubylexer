@@ -930,6 +930,7 @@ private
    alias keyword_unless keyword_if
 
    def keyword_elsif(str,offset,result) 
+         result.unshift(*abort_noparens!(str))
          @parsestack.push ExpectThenOrNlContext.new(str,@linenum)
          return result
    end
@@ -1202,7 +1203,7 @@ private
          result.unshift(*abort_noparens!(str))
          return result
    end
-   for kw in BINOPWORDLIST+INNERBOUNDINGWORDLIST-["in","then","rescue","when"] do
+   for kw in BINOPWORDLIST+INNERBOUNDINGWORDLIST-["in","then","rescue","when","elsif"]
      alias_method "keyword_#{kw}".to_sym, :_keyword_innerbounding
    end
 
