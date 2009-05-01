@@ -1,5 +1,6 @@
 require 'open3'
 
+require 'rubygems'
 require 'rubylexer/test/testcases'
 require 'test/code/rubylexervsruby'
   SEP='';
