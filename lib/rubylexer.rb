@@ -2576,9 +2576,9 @@ end
     end
     token.comma_type=
     case @parsestack[-1]
-    when AssignmentRhsContext: :rhs
-    when ParamListContext,ParamListContextNoParen: :call
-    when ListImmedContext: :array
+    when AssignmentRhsContext; :rhs
+    when ParamListContext,ParamListContextNoParen; :call
+    when ListImmedContext; :array
     else
       :lhs if comma_in_lvalue_list? 
     end
