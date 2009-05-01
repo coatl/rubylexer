@@ -1,3 +1,28 @@
+=== 0.7.3/4-19-2009
+* 9 Bugfixes:
+  * remember whether comma was seen in paren context
+  * reducing the warning load
+  * remember whether we're in a method def when starting a recursive lexer
+  * (so that class vars can be marked as being in a method if in #{})
+  * make sure Token#to_s always outputs _something_ halfway sensible
+  * make sure funclike keywords come out as a keyword
+  * break/next/return method after . was not detected properly
+  * need a NoWsToken before :: in names of compound modules
+  * abort implicit paren contexts when elsif seen
+  * all files should be world-readable now
+
+* 9 Minor Enhancements:
+  * move test data into lib/ dir so I can get to it better from redparse
+  * split parse_keywords into separate methods for each keyword
+  * (I had hoped to speed up keywords, but keyword_def is still slow)
+  * more of the lists of keywords are now available as arrays as well
+  * (parenthesis) KeywordToken needs to know if it's for grouping or call
+  * minor speedups in newline and ident
+  * don't panic if rubygems not available
+  * make linenum publicly available in RubyCode
+  * various other little helper methods needed by redparse in Tokens
+  * hack Rakefile so 'rake test' will stay in 1 process (keeps netbeans happy)
+
 === 0.7.2/10-12-2008
 * 12 Minor Enhancements:
   * a new context for then kw expected
