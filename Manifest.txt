@@ -43,7 +43,6 @@ test/data/23.rb
 test/data/lbrack.rb
 test/data/untitled1.rb
 test/data/rescue.rb
-test/data/tokentest.assert.rb.can
 test/data/pleac.rb.broken
 test/data/heart.rb
 test/data/s.rb
@@ -63,7 +62,6 @@ test/code/torment
 test/code/locatetest
 test/code/deletewarns.rb
 lib/rubylexer/0.7.1.rb
-rubylexer.vpj
 test/code/all_the_gems.rb
 test/code/all_the_raas.rb
 test/code/all_the_rubies.rb
@@ -73,7 +71,7 @@ test/code/lexloop
 test/code/regression.rb
 test/code/strgen.rb
 test/code/tarball.rb
-test/code/testcases.rb
+lib/rubylexer/test/testcases.rb
 test/data/chunky.plain.rb
 test/data/cvtesc.rb
 test/data/__eof2.rb
@@ -91,10 +89,9 @@ test/data/heremonsters_dos.rb
 test/data/heremonsters_dos.rb.broken
 test/data/heremonsters.rb
 test/data/heremonsters.rb.broken
-test/data/heremonsters.rb.broken.save
 test/data/here_squote.rb
-test/data/illegal_oneliners.rb
-test/data/illegal_stanzas.rb
+lib/rubylexer/test/illegal_oneliners.rb
+lib/rubylexer/test/illegal_stanzas.rb
 test/data/make_ws_strdelim.rb
 test/data/maven2_builer_test.rb
 test/data/migration.rb
@@ -102,10 +99,10 @@ test/data/modl_dos.rb
 test/data/modl_fails.rb
 test/data/modl.rb
 test/data/multilinestring.rb
-test/data/oneliners.rb
+lib/rubylexer/test/oneliners.rb
 test/data/simple_dos.rb
 test/data/simple.rb
-test/data/stanzas.rb
+lib/rubylexer/test/stanzas.rb
 test/data/strdelim_crlf.rb
 test/data/stuff2.rb
 test/data/stuff3.rb
