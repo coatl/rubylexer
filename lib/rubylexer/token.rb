@@ -93,6 +93,9 @@ class KeywordToken < WToken   #also some operators
      @has_no_block if defined? @has_no_block
   end
 
+  def infix
+    @infix if defined? @infix
+  end
 end
 
 #-------------------------
@@ -100,6 +103,7 @@ class OperatorToken < WToken
   attr_accessor :unary
   alias prefix? unary
   def infix?; !prefix? end
+
 end
 
 
@@ -130,6 +134,7 @@ end
 #-------------------------
 class NumberToken < Token
   def to_s; @ident.to_s end
+  def negative; /\A-/ === ident end
 end
 
 #-------------------------
@@ -180,6 +185,8 @@ class MethNameToken  < Token # < SymbolToken
    def has_no_block?
      @has_no_block
    end
+
+   def has_equals; /[a-z_0-9]=$/i===ident end
 end
 
 #-------------------------
