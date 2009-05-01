@@ -2,12 +2,11 @@
 # Distributed under the terms of Ruby's license.
 require 'rubygems'
 require 'hoe'
-require 'lib/rubylexer/version.rb'
 
 if $*==["test"]
   #hack to get 'rake test' to stay in one process
   #which keeps netbeans happy
-  Object.send :remove_const, :RubyLexer
+#  Object.send :remove_const, :RubyLexer
   $:<<"lib"
   require 'rubylexer.rb'
   require "test/unit"
@@ -15,6 +14,8 @@ if $*==["test"]
   Test::Unit::AutoRunner.run
   exit
 end
+
+require 'lib/rubylexer/version.rb'
  
    readme=open("README.txt")
    readme.readline("\n=== DESCRIPTION:")
