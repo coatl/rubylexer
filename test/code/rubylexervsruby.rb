@@ -73,6 +73,7 @@ end
 def rubylexervsruby(input,stringdata=nil,difflines=nil,bulk=nil,&ignore_it)
 #cmdpath= `which #$0`
 cmddir=Dir.getwd+"/test/code/"
+Dir.mkdir 'test/results' unless File.directory? 'test/results'
 base='test/results/'+File.basename(input)
 _ttfile=base+'.tt'
 mttfile=base+'.mtt'
