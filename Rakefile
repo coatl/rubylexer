@@ -30,8 +30,8 @@ require 'lib/rubylexer/version.rb'
      _.test_globs=["test/code/regression.rb"]
      _.description=desc
      _.summary=desc[/\A[^.]+\./]
-     _.spec_extras={:bindir=>''}
-     _.rdoc_pattern=/\A(howtouse\.txt|testing\.txt|README\.txt|lib\/.*\.rb)\Z/
+     _.spec_extras={:bindir=>'',:rdoc_options=>'-x lib/rubylexer/test'}
+     #_.rdoc_pattern=/\A(howtouse\.txt|testing\.txt|README\.txt|lib\/[^\/]*\.rb|lib\/rubylexer\/[^\d][^\/]*\.rb)\Z/
    end
 
 
