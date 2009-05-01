@@ -2556,6 +2556,14 @@ end
   #-----------------------------------
   def comma(ch)
     @moretokens.push token=single_char_token(ch)
+
+    #if assignment rhs seen inside method param list, when param list, array or hash literal,
+    #       rescue where comma is expected, or method def param list
+    #          then end the assignment rhs now
+       #+[OBS,ParamListContext|ParamListContextNoParen|WhenParamListContext|ListImmedContext|
+       #      (RescueSMContext&-{:state=>:rescue})|(DefContext&-{:in_body=>FalseClass|nil}),
+       #  AssignmentRhsContext
+       #]===@parsestack
     if AssignmentRhsContext===@parsestack[-1] and
        ParamListContext===@parsestack[-2] || 
        ParamListContextNoParen===@parsestack[-2] ||
