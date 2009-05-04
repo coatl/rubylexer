@@ -1,4 +1,4 @@
-=begin legal crap
+=begin
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
@@ -120,6 +120,15 @@ class RubyLexer
 
    attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
 
+   UCLETTER="[A-Z]"
+
+   LCLETTER_A="[a-z_]"
+   LETTER_A="[A-Za-z_]"
+   IDENTCHAR_A="[A-Za-z_0-9]"
+
+   LCLETTER_U="(?>#{LCLETTER_A}|#{String::PATTERN_UTF8})"
+   LETTER_U="(?>#{LETTER_A}|#{String::PATTERN_UTF8})"
+   IDENTCHAR_U="(?>#{IDENTCHAR_A}|#{String::PATTERN_UTF8})"
 
    #-----------------------------------
    def initialize(filename,file,linenum=1,offset_adjust=0)
