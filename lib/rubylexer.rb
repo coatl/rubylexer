@@ -131,7 +131,7 @@ class RubyLexer
    IDENTCHAR_U="(?>#{IDENTCHAR_A}|#{String::PATTERN_UTF8})"
 
    #-----------------------------------
-   def initialize(filename,file,linenum=1,offset_adjust=0)
+   def initialize(filename,file,linenum=1,offset_adjust=0,input_charset="a")
       @offset_adjust=0 #set again in next line
       super(filename,file, linenum,offset_adjust)
       @start_linenum=linenum
@@ -146,6 +146,18 @@ class RubyLexer
       @enable_macro=nil
       @base_file=nil
       @progress_thread=nil
+
+      case input_charset
+      when "a"
+        @letter=/#{LETTER_A}/o
+        @lcletter=/#{LCLETTER_A}/o
+        @identchar=/#{IDENTCHAR_A}/o
+      when "u"
+        @letter=/#{LETTER_U}/o
+        @lcletter=/#{LCLETTER_U}/o
+        @identchar=/#{IDENTCHAR_U}/o
+      else raise ArgumentError
+      end
 
       @toptable=CharHandler.new(self, :illegal_char, CHARMAPPINGS)
 
