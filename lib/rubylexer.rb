@@ -1643,21 +1643,25 @@ end
         @moretokens.push tok=KeywordToken.new(':',startpos)
         
         case @parsestack.last
-        when TernaryContext: 
+        when TernaryContext 
           tok.ternary=true
           @parsestack.pop #should be in the context's see handler
-        when ExpectDoOrNlContext: #should be in the context's see handler
-          @parsestack.pop
-          assert @parsestack.last.starter[/^(while|until|for)$/]
+        when ExpectDoOrNlContext #should be in the context's see handler
+          if @rubyversion<1.9
+            @parsestack.pop
+            assert @parsestack.last.starter[/^(while|until|for)$/]
+            tok.as=";"
+          end
+        when ExpectThenOrNlContext,WhenParamListContext
+          if @rubyversion<1.9
+            #should be in the context's see handler
+            @parsestack.pop
+            tok.as="then"
+          end
+        when RescueSMContext
           tok.as=";"
-        when ExpectThenOrNlContext,WhenParamListContext: 
-          #should be in the context's see handler
-          @parsestack.pop
-          tok.as="then"
-        when RescueSMContext:
-          tok.as=";"
-        else fail ": not expected in #{@parsestack.last.class}->#{@parsestack.last.starter}"
-        end
+        end or 
+          fail ": not expected in #{@parsestack.last.class}->#{@parsestack.last.starter}"
         
         #end ternary context, if any
         @parsestack.last.see self,:colon
