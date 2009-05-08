@@ -142,9 +142,13 @@ class RubyLexer
    NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
    NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
 
-   LCLETTER_U="(?>#{LCLETTER_A}|#{String::PATTERN_UTF8})"
-   LETTER_U="(?>#{LETTER_A}|#{String::PATTERN_UTF8})"
-   IDENTCHAR_U="(?>#{IDENTCHAR_A}|#{String::PATTERN_UTF8})"
+=begin
+   require 'jcode'
+   utf8=String::PATTERN_UTF8 #or euc, or sjis...
+   LCLETTER_U="(?>[a-z_]|#{utf8})"
+   LETTER_U="(?>[A-Za-z_]|#{utf8})"
+   IDENTCHAR_U="(?>[A-Za-z_0-9]|#{utf8})"
+=end
 
    #-----------------------------------
    def initialize(filename,file,linenum=1,offset_adjust=0,options={:rubyversion=>1.8})
