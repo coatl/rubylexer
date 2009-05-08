@@ -651,7 +651,7 @@ end
    def ruby_code(ch='{')
       assert ch[/^[{(@$]$/]
       klass= RubyLexer===self ? self.class : RubyLexer
-      rl=klass.new(@filename,@file,@linenum,offset_adjust())
+      rl=klass.new(@filename,@file,@linenum,offset_adjust(),:rubyversion=>@rubyversion)
       rl.extend RecursiveRubyLexer
       rl.enable_macros! if @enable_macro
       rl.in_def=true if inside_method_def?
