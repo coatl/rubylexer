@@ -236,7 +236,7 @@ end
       ($|[^\\])(c|[CM]-)|
       ($|[^CM])-
      )
-     (\\(?:c|[CM]-)?\\)*
+     (\\(?:c|[CM]-)?){2}*
    /x
    ILLEGAL_ESCAPED=/#{EVEN_BS_S}(\\([CM][^-]|x[^a-fA-F0-9]))/o #whaddaya do with this?
    ILLEGAL_CRUNCH=/#{EVEN_BS_S}(\#@[^a-zA-Z_]|\#$[^a-zA-Z_0-9\-!@&+`'=~\/\\,.;<>*"$?:;])/o #and this?
