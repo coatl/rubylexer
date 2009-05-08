@@ -38,6 +38,8 @@ class Token
    def error; end
 
    def has_no_block?; false end
+
+   attr_accessor :tag
 end
 
 #-------------------------
