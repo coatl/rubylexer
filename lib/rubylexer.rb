@@ -60,9 +60,6 @@ class RubyLexer
    INNERBOUNDINGWORDS="(#{INNERBOUNDINGWORDLIST.join '|'})"
    BINOPWORDLIST=%w"and or"
    BINOPWORDS="(#{BINOPWORDLIST.join '|'})"
-   NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)([^a-zA-Z0-9_!?=]|\Z)/o
-   NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
-   NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
    
    RUBYKEYWORDS=%r{
      ^(alias|#{BINOPWORDS}|defined\?|not|undef|end|
@@ -125,11 +122,25 @@ class RubyLexer
 
    attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
 
-   UCLETTER="[A-Z]"
+   UCLETTER=@@UCLETTER="[A-Z]"
 
-   LCLETTER_A="[a-z_]"
-   LETTER_A="[A-Za-z_]"
-   IDENTCHAR_A="[A-Za-z_0-9]"
+   #cheaters way, treats utf chars as always 1 byte wide
+   #all high-bit chars are lowercase letters
+   #works, but strings compare with strict binary identity, not unicode collation
+   #works for euc too, I think
+   #(the ruby spec for utf8 support permits this interpretation)
+   LCLETTER=@@LCLETTER="[a-z_\x80-\xFF]"
+   LETTER=@@LETTER="[A-Za-z_\x80-\xFF]"
+   LETTER_DIGIT=@@LETTER_DIGIT="[A-Za-z_0-9\x80-\xFF]"
+   eval %w[UCLETTER LCLETTER LETTER LETTER_DIGIT].map{|n| "
+     def #{n}; #{n}; end
+     def self.#{n}; @@#{n}; end
+     " 
+   }.to_s
+
+   NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)((?:(?!#@@LETTER_DIGIT).|[^!?])|\Z)/om
+   NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
+   NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
 
    LCLETTER_U="(?>#{LCLETTER_A}|#{String::PATTERN_UTF8})"
    LETTER_U="(?>#{LETTER_A}|#{String::PATTERN_UTF8})"
