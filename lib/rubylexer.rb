@@ -155,8 +155,13 @@ class RubyLexer
 
       @toptable=CharHandler.new(self, :illegal_char, CHARMAPPINGS)
 
+      ignore_utf8_bom
       start_of_line_directives
       progress_printer
+   end
+
+   def ignore_utf8_bom
+     @file.skip /\xEF\xBB\xBF/
    end
 
    def progress_printer
