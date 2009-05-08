@@ -72,6 +72,11 @@ class RubyLexer
    }xo
       #__END__ should not be in this set... its handled in start_of_line_directives
 
+   HIGHASCII=?\x80..?\xFF
+   NONASCII=HIGHASCII
+   #NONASCII=?\x80..?xFFFFFFFF  #or is it 10FFFF, whatever the highest conceivable code point
+
+
    CHARMAPPINGS = {
          ?$ => :dollar_identifier,
          ?@ => :at_identifier,
