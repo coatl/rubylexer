@@ -36,6 +36,7 @@ module NestedContexts
     
     def see lxr,msg; end
     def lhs=*x; end #do nothing
+    def wantarrow; false end
   end
 
   #contexts which expect to see commas,
@@ -48,6 +49,7 @@ module NestedContexts
       assert '{['[starter]
       super(starter, starter.tr('{[','}]') ,linenum)
     end
+    def wantarrow; true end
   end
 
   class ParenContext < NestedContext
@@ -83,6 +85,7 @@ module NestedContexts
       super('(', ')',linenum)
     end
     def lhs; false end
+    def wantarrow; true end
   end
   
   class ImplicitLhsContext < NestedContext
@@ -107,6 +110,7 @@ module NestedContexts
       super(nil,nil,linenum)
     end
     def lhs; false end
+    def wantarrow; true end
   end
 
   class KWParamListContextNoParen < ParamListContextNoParen
