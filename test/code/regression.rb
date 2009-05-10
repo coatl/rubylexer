@@ -73,7 +73,7 @@ end
              res or raise LexerTestFailure, ''
            rescue Interrupt: exit
            rescue Exception=>e: 
-             e.message<<"\n"+'while lexing: #{esctc}'
+             e.message<<"\n"+'while lexing: #{esctc[0...1000]}'
              raise e
            end
          end  
