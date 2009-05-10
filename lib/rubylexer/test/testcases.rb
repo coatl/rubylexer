@@ -6,6 +6,11 @@ module TestCases
   STANZAS.each{|stanza| stanza<<"\n" }
   ILLEGAL_ONELINERS=IO.readlines(rldir+'/rubylexer/test/illegal_oneliners.rb').map{|x| x.chomp}.grep(/\A\s*[^#\s\n]/).reverse
   ILLEGAL_STANZAS=IO.read(rldir+'/rubylexer/test/illegal_stanzas.rb').split("\n\n").grep(/./).reverse
-  TESTCASES=ONELINERS+STANZAS
+
+  datadir=$:.find{|dir| File.exist? dir+'/../test/data/p.rb' }
+  FILENAMES=Dir[datadir+'/../test/data/*'].reject{|fn| File.directory? fn}
+  FILES=FILENAMES.map{|fn| File.read fn }
+
+  TESTCASES=ONELINERS+STANZAS+FILES
   ILLEGAL_TESTCASES=ILLEGAL_ONELINERS+ILLEGAL_STANZAS
 end
