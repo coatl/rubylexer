@@ -117,7 +117,9 @@ class RubyLexer
          "])}" => :close_brace,
 
 
-         ?# => :comment
+         ?# => :comment,
+
+         NONASCII => :identifier,
    }
 
    attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
@@ -397,7 +399,7 @@ private
       result = ((
       #order matters here, but it shouldn't
       #(but til_charset must be last)
-         eat_if(/-[a-z0-9_]/i,2) or
+         eat_if(/-#@@LETTER_DIGIT/o,2) or
          eat_next_if(/[!@&+`'=~\-\/\\,.;<>*"$?:]/) or
          (?0..?9)===nextchar ? til_charset(/[^\d]/) : nil
       ))
@@ -412,7 +414,7 @@ private
       #or if in a non-bare context
       #just asserts because those contexts are never encountered.
       #control goes through symbol(<...>,nil) 
-      assert( /^[a-z_]$/i===context)
+      assert( /^#@@LETTER$/o===context)
       assert MethNameToken===@last_operative_token || !(@last_operative_token===/^(\.|::|(un)?def|alias)$/)
 
       if @parsestack.last.wantarrow and @rubyversion>=1.9 and @file.skip ":"
@@ -439,7 +441,7 @@ private
    def identifier_as_string(context)
       #must begin w/ letter or underscore
       #char class needs changing here for utf8 support
-      /[_a-z]/i===nextchar.chr or return
+      /#@@LETTER/o===nextchar.chr or return
 
       #equals, question mark, and exclamation mark
       #might be allowed at the end in some contexts.
@@ -458,7 +460,7 @@ private
         end      
       @in_def_name||context==?: and trailers<<"|=(?![=~>])"
 
-      @file.scan(IDENTREX[trailers]||=/^(?>[_a-z][a-z0-9_]*(?:#{trailers})?)/i)
+      @file.scan(IDENTREX[trailers]||=/^(?>#@@LETTER#@@LETTER_DIGIT*(?:#{trailers})?)/)
    end
 
   #-----------------------------------
@@ -499,7 +501,7 @@ private
      @defining_lvar or case ctx=@parsestack.last
        #when ForSMContext; ctx.state==:for
        when RescueSMContext
-         lasttok.ident=="=>" and @file.match?( /\A[\s\v]*([:;#\n]|then[^a-zA-Z0-9_])/m )
+         lasttok.ident=="=>" and @file.match?( /\A[\s\v]*([:;#\n]|then(?!#@@LETTER_DIGIT))/om )
        #when BlockParamListLhsContext; true
      end 
    end
@@ -527,13 +529,13 @@ private
      was_in_lvar_define_state=in_lvar_define_state(lasttok)
      #maybe_local really means 'maybe local or constant'
      maybe_local=case name
-       when /[^a-z_0-9]$/i #do nothing
-       when /^[a-z_]/  
+       when /(?!#@@LETTER_DIGIT).$/o #do nothing
+       when /^#@@LCLETTER/o  
          (localvars===name or 
           VARLIKE_KEYWORDS===name or 
           was_in_lvar_define_state
          ) and not lasttok===/^(\.|::)$/
-       when /^[A-Z]/
+       when /^#@@UCLETTER/o
          is_const=true
          not lasttok==='.'  #this is the right algorithm for constants... 
      end 
@@ -549,7 +551,7 @@ private
      result=ws_toks=ignored_tokens(true) {|nl| sawnl=true }
      if sawnl || eof? 
          if was_in_lvar_define_state
-           if /^[a-z_][a-zA-Z_0-9]*$/===name 
+           if /^#@@LCLETTER#@@LETTER_DIGIT*$/o===name 
              assert !(lasttok===/^(\.|::)$/)
              localvars[name]=true
            end
@@ -571,7 +573,7 @@ private
        when ?=;  not /^=[>=~]$/===readahead(2)
        when ?,; comma_in_lvalue_list? 
        when ?); last_context_not_implicit.lhs
-       when ?i; /^in[^a-zA-Z_0-9]/===readahead(3) and 
+       when ?i; /^in(?!#@@LETTER_DIGIT)/o===readahead(3) and 
                   ForSMContext===last_context_not_implicit
        when ?>,?<; /^(.)\1=$/===readahead(3)
        when ?*,?&; /^(.)\1?=/===readahead(3)
@@ -583,8 +585,8 @@ private
      end 
      if (assignment_coming && !(lasttok===/^(\.|::)$/) or was_in_lvar_define_state)
         tok=assign_lvar_type! VarNameToken.new(name,pos)
-        if /[^a-z_0-9]$/i===name 
-        elsif /^[a-z_]/===name and !(lasttok===/^(\.|::)$/)
+        if /(?!#@@LETTER_DIGIT).$/o===name 
+        elsif /^#@@LCLETTER/o===name and !(lasttok===/^(\.|::)$/)
           localvars[name]=true
         end
         return result.unshift(tok)
@@ -599,7 +601,7 @@ private
        when nil: 2
        when ?!; /^![=~]$/===readahead(2) ? 2 : 1
        when ?d; 
-         if /^do([^a-zA-Z0-9_]|$)/===readahead(3)
+         if /^do((?!#@@LETTER_DIGIT)|$)/o===readahead(3)
            if maybe_local and expecting_do?
              ty=VarNameToken 
              0
@@ -612,7 +614,7 @@ private
          end
        when NEVERSTARTPARAMLISTFIRST
          (NEVERSTARTPARAMLISTWORDS===readahead(NEVERSTARTPARAMLISTMAXLEN)) ? 2 : 1
-       when ?",?',?`,?a..?z,?A..?Z,?0..?9,?_,?@,?$,?~; 1 #"
+       when ?",?',?`,?a..?z,?A..?Z,?0..?9,?_,?@,?$,?~,NONASCII; 1 #"
        when ?{
          maybe_local=false
          1
@@ -673,10 +675,12 @@ private
          else 
            3 
          end
-       when ??; next3=readahead(3);
-                   /^\?([#{WHSPLF}]|[a-z_][a-z_0-9])/io===next3 ? 2 : 3
+       when ??; next3=readahead(3)
+                #? never begins a char constant if immediately followed 
+                #by 2 or more letters or digits
+                   /^\?([#{WHSPLF}]|#@@LETTER_DIGIT{2})/o===next3 ? 2 : 3
 #       when ?:,??; (readahead(2)[/^.[#{WHSPLF}]/o]) ? 2 : 3
-       when ?<; (!ws_toks.empty? && readahead(4)[/^<<-?["'`a-zA-Z_0-9]/]) ? 3 : 2 
+       when ?<; (!ws_toks.empty? && readahead(4)[/^<<-?(?:["'`]|#@@LETTER_DIGIT)/o]) ? 3 : 2 
        when ?[; 
            if ws_toks.empty? 
              (KeywordToken===oldlast and /^(return|break|next)$/===oldlast.ident) ? 3 : 2
@@ -930,7 +934,7 @@ private
          @moretokens.push KeywordToken.new('::',offset+md.end(0)-2) if dc
          loop do
            offset=input_position
-           @file.scan(/\A(#@@WSTOKS)?([A-Z][a-zA-Z_0-9]*)(::)?/o)
+           @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)(::)?/o)
            #this regexp---^ will need to change in order to support utf8 properly.
            md=@file.last_match
            all,ws,name,dc=*md
@@ -1053,11 +1057,11 @@ private
      
               #maybe_local really means 'maybe local or constant'
               maybe_local=case name
-                when /[^a-z_0-9]$/i; #do nothing
+                when /(?!#@@LETTER_DIGIT).$/o; #do nothing
                 when /^[@$]/; true
                 when VARLIKE_KEYWORDS,FUNCLIKE_KEYWORDS; ty=KeywordToken
-                when /^[a-z_]/;  localvars===name 
-                when /^[A-Z]/; is_const=true  #this is the right algorithm for constants... 
+                when /^#@@LCLETTER/o;  localvars===name 
+                when /^#@@UCLETTER/o; is_const=true  #this is the right algorithm for constants... 
               end
               result.push(  *ignored_tokens(false,false)  )
               nc=nextchar
@@ -1099,7 +1103,7 @@ private
 
                #look for start of parameter list
                nc=(@moretokens.empty? ? nextchar.chr : @moretokens.first.to_s[0,1])
-               if state==:expect_op and /^[a-z_(&*]/i===nc
+               if state==:expect_op and /^(?:#@@LETTER|[(&*])/o===nc
                   ctx.state=:def_param_list
                   list,listend=def_param_list
                   result.concat list
@@ -1120,7 +1124,7 @@ private
                when EoiToken
                   lexerror tok,'unexpected eof in def header'
                when StillIgnoreToken
-               when MethNameToken ,VarNameToken # /^[a-z_]/i.token_pat
+               when MethNameToken ,VarNameToken # /^#@@LETTER/o.token_pat
                   lexerror tok,'expected . or ::' unless state==:expect_name
                   state=:expect_op
                when /^(\.|::)$/.token_pat
@@ -1456,7 +1460,7 @@ end
             #result.concat ignored_tokens
             if expect_name 
               case tok
-                when IgnoreToken #, /^[A-Z]/ #do nothing
+                when IgnoreToken #, /^#@@UCLETTER/o #do nothing
                 when /^,$/.token_pat #hack
                               
                 when VarNameToken
@@ -1601,9 +1605,9 @@ end
 
      s=tok.to_s
      case s
-     when /[^a-z_0-9]$/i; false
-#     when /^[a-z_]/; localvars===s or VARLIKE_KEYWORDS===s
-     when /^[A-Z_]/i; VarNameToken===tok
+     when /(?!#@@LETTER_DIGIT).$/o; false
+#     when /^#@@LCLETTER/o; localvars===s or VARLIKE_KEYWORDS===s
+     when /^#@@LETTER/o; VarNameToken===tok
      when /^[@$<]/; true
      else raise "not var or method name: #{s}"
      end   
@@ -1621,7 +1625,7 @@ end
          if ch==':'
            not TernaryContext===@parsestack.last
          else
-           !readahead(3)[/^\?[a-z0-9_]{2}/i]
+           !readahead(3)[/^\?#@@LETTER_DIGIT{2}/o]
          end
      }
    end
@@ -1683,7 +1687,7 @@ end
       lasttok=@last_operative_token
       assert !(String===lasttok)
       if (VarNameToken===lasttok or MethNameToken===lasttok) and
-          lasttok===/^[$@a-zA-Z_]/ and !WHSPCHARS[lastchar]
+          lasttok===/^(?:[$@]|#@@LETTER)/o and !WHSPCHARS[lastchar]
       then
          @moretokens << colon2
          result= NoWsToken.new(startpos)
@@ -1716,12 +1720,12 @@ end
          when ?` then read(1) #`
          when ?@ then at_identifier.to_s
          when ?$ then dollar_identifier.to_s
-         when ?_,?a..?z then identifier_as_string(?:)
+         when ?_,?a..?z,NONASCII then identifier_as_string(?:)
          when ?A..?Z then 
            result=identifier_as_string(?:)
            if @last_operative_token==='::' 
              assert klass==MethNameToken
-             /[A-Z_0-9]$/i===result and klass=VarNameToken
+             /#@@LETTER_DIGIT$/o===result and klass=VarNameToken
            end
            result
          else 
@@ -1748,7 +1752,7 @@ end
      return [opmatches ? read(opmatches.size) :
        case nc=nextchar
          when ?` then read(1) #`
-         when ?_,?a..?z,?A..?Z then 
+         when ?_,?a..?z,?A..?Z,NONASCII then 
            context=merge_assignment_op_in_setter_callsites? ? ?: : nc
            identifier_as_string(context)
          else 
@@ -1772,7 +1776,7 @@ end
         quote_real=true
       else
         quote='"'
-        ender=til_charset(/[^a-zA-Z0-9_]/)
+        ender=@file.scan(/#@@LETTER_DIGIT+/o)
         ender.length >= 1  or 
           return lexerror(HerePlaceholderToken.new( dash, quote, ender, nil ), "invalid here header")
       end
@@ -1866,7 +1870,7 @@ end
    #-----------------------------------
    def lessthan(ch) #match quadriop('<') or here doc or spaceship op
       case readahead(3)
-        when /^<<['"`\-a-z0-9_]$/i #'
+        when /^<<(?:['"`\-]|#@@LETTER_DIGIT)$/o #'
            if quote_expected?(ch) and not @last_operative_token==='class'
               here_header
            else
@@ -2170,7 +2174,7 @@ end
   #used to resolve the ambiguity of
   # unary ops (+, -, *, &, ~ !) in ruby
   #returns whether current token is to be the start of a literal
-  IDBEGINCHAR=/^[a-zA-Z_$@]/
+  IDBEGINCHAR=/^(?:#@@LETTER|[$@])/o
   def unary_op_expected?(ch) #yukko hack
     '*&='[readahead(2)[1..1]] and return false
 
@@ -2191,8 +2195,8 @@ end
    def quote_expected?(ch) #yukko hack
      case ch[0]
           when ?? then readahead(2)[/^\?[#{WHSPLF}]$/o] #not needed?
-          when ?% then readahead(3)[/^%([a-pt-vyzA-PR-VX-Z]|[QqrswWx][a-zA-Z0-9])/]
-          when ?< then !readahead(4)[/^<<-?['"`a-z0-9_]/i]
+          when ?% then readahead(3)[/^%([a-pt-vyzA-PR-VX-Z]|[QqrswWx]#{@@LETTER_DIGIT.gsub('_','')})/o]
+          when ?< then !readahead(4)[/^<<-?(?:['"`]|#@@LETTER_DIGIT)/o]
           else raise 'unexpected ch (#{ch}) in quote_expected?'
      #     when ?+,?-,?&,?*,?~,?! then '*&='[readahead(2)[1..1]]
      end and return false
@@ -2509,7 +2513,7 @@ end
         end
       when '('
         lasttok=last_token_maybe_implicit #last_operative_token
-        #could be: lasttok===/^[a-z_]/i
+        #could be: lasttok===/^#@@LETTER/o
         if (VarNameToken===lasttok or MethNameToken===lasttok or
             lasttok===FUNCLIKE_KEYWORDS)
           unless WHSPCHARS[lastchar]

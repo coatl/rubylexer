@@ -1,4 +1,4 @@
-=begin legal crap
+=begin
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
@@ -53,7 +53,7 @@ class RubyLexer
    WHSPLF=WHSP+"\n"
    #maybe \r should be in WHSPLF instead
 
-   LEGALCHARS=/[ -~#{WHSPLF}]/
+   LEGALCHARS=/[ -~#{WHSPLF}\x80-\xFF]/
 
    PAIRS={ '{'=>'}', '['=>']', '('=>')', '<'=>'>'}
 
@@ -175,7 +175,7 @@ private
          when 'x' then '`' #exec it
          when 's' then strlex=:single_quote; "'" #symbol
          #other letters, nums are illegal here
-         when /^[a-z0-9]$/oi
+         when /^#{LCLETTER().gsub('_','')}$/o
             error= "unrecognized %string type: "+ch; '"'
          when ''
             result= lexerror( StringToken.new('', oldpos), "unexpected eof in %string")
