@@ -1795,6 +1795,7 @@ if true
       
       nl=readnl or return lexerror(res, "here header without body (at eof)")
 
+      res.string.startline=linenum
       @moretokens<< res
       bodystart=input_position
       @offset_adjust = @min_offset_adjust+procrastinated.size
@@ -1804,6 +1805,7 @@ if true
       @offset_adjust = @min_offset_adjust
       #was: @offset_adjust -= procrastinated.size
       bodysize=input_position-bodystart
+      res.string.line=linenum-1
 
       #one or two already read characters are overwritten here,
       #in order to keep offsets correct in the long term
@@ -2506,8 +2508,9 @@ end
         tokch.set_infix! unless after_nonid_op?{WHSPLF[lastchar]}
         @parsestack.push ListImmedContext.new(ch,@linenum)
         lasttok=last_operative_token
-        #could be: lasttok===/^[a-z_]/i
-        if (VarNameToken===lasttok or ImplicitParamListEndToken===lasttok or MethNameToken===lasttok) and !WHSPCHARS[lastchar]
+        #could be: lasttok===/^#@@LETTER/o
+        if (VarNameToken===lasttok or ImplicitParamListEndToken===lasttok or 
+            MethNameToken===lasttok or lasttok===FUNCLIKE_KEYWORDS) and !WHSPCHARS[lastchar]
                @moretokens << (tokch)
                tokch= NoWsToken.new(input_position-1)
         end
