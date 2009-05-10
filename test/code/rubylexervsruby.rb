@@ -99,12 +99,29 @@ nop_ruby "#{input[/\.gz$/]&&'z'}cat", input, nopfile, stringdata
 #end
 
 progress ruby, input
-tokentest nopfile, RubyLexer, RubyLexer::KeepWsTokenPrinter.new, nil, _ttfile
-tokentest nopfile, RubyLexer, RubyLexer::KeepWsTokenPrinter.new(' '), nil, mttfile
+begin
+  tokentest nopfile, RubyLexer, RubyLexer::KeepWsTokenPrinter.new, nil, _ttfile
+  tokentest nopfile, RubyLexer, RubyLexer::KeepWsTokenPrinter.new(' '), nil, mttfile
+rescue Exception=>rl_oops
+end
 
+begin
+  raise unless 0==ruby_parsedump( _ttfile, p_ttfile, ruby )
+  raise unless 0==ruby_parsedump( mttfile, pmttfile, ruby )
+rescue Exception=>ru_oops
+end
 
-ruby_parsedump _ttfile, p_ttfile, ruby
-ruby_parsedump mttfile, pmttfile, ruby
+if rl_oops
+  if ru_oops
+    #good, ignore it
+    return true
+  else
+    raise rl_oops
+  end
+elsif ru_oops
+  warn "syntax error expected, was not seen in #{input}"
+  return true
+end
 
 if File.exists?(p_ttfile)
   IO.popen("diff --unified=1 -b #{origfile} #{p_ttfile}"){ |pipe|
