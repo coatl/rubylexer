@@ -1538,12 +1538,20 @@ end
      if want_unary
        #readahead(2)[1..1][/[\s\v#\\]/] or #not needed?
        assert OperatorToken===result
-       result.unary=true         #result should distinguish unary+binary *&
+       result.tag=:unary         #result should distinguish unary+binary *&
        WHSPLF[nextchar.chr] or
          @moretokens << NoWsToken.new(input_position)
-       comma_in_lvalue_list?
+       cill=comma_in_lvalue_list?
        if ch=='*'
          @parsestack.last.see self, :splat
+         case @parsestack[-1]
+         when AssignmentRhsContext; result.tag= :rhs
+         when ParamListContext,ParamListContextNoParen; #:call
+         when ListImmedContext; #:array
+         when BlockParamListLhsContext; #:block
+         when ParenContext; #:nested
+         else          result.tag=     :lhs if cill
+         end
        end
      end
      result
@@ -2384,7 +2392,7 @@ end
         @parsestack.push AssignmentRhsContext.new(@linenum)
         if eat_next_if ?* 
           tok=OperatorToken.new('*', input_position-1)
-          tok.unary=true
+          tok.tag=:unary
           @moretokens.push tok
           WHSPLF[nextchar.chr] or
             @moretokens << NoWsToken.new(input_position)
@@ -2618,13 +2626,14 @@ end
          @parsestack.pop
          @moretokens.unshift AssignmentRhsListEndToken.new(input_position)
     end
-    token.comma_type=
     case @parsestack[-1]
-    when AssignmentRhsContext; :rhs
-    when ParamListContext,ParamListContextNoParen; :call
-    when ListImmedContext; :array
+    when AssignmentRhsContext; token.tag=:rhs
+    when ParamListContext,ParamListContextNoParen; #:call
+    when ListImmedContext; #:array
+    when BlockParamListLhsContext; #:block
+    when ParenContext; #:nested
     else
-      :lhs if comma_in_lvalue_list? 
+      token.tag=:lhs if comma_in_lvalue_list? 
     end
     @parsestack.last.see self,:comma
     return @moretokens.shift
