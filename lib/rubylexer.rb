@@ -487,8 +487,8 @@ private
    def comma_in_lvalue_list?
      @parsestack.last.lhs=
        case l=@parsestack.last
-       when ListContext:
-       when DefContext: l.in_body
+       when ListContext;
+       when DefContext; l.in_body
        else true
        end
    end
