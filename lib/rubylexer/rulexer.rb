@@ -239,7 +239,6 @@ end
      (\\(?:c|[CM]-)?){2}*
    /x
    ILLEGAL_ESCAPED=/#{EVEN_BS_S}(\\([CM][^-]|x[^a-fA-F0-9]))/o #whaddaya do with this?
-   ILLEGAL_CRUNCH=/#{EVEN_BS_S}(\#@[^a-zA-Z_]|\#$[^a-zA-Z_0-9\-!@&+`'=~\/\\,.;<>*"$?:;])/o #and this?
    def all_quote(nester, type, delimiter, bs_handler=nil)
 if FASTER_STRING_ESCAPES
       #string must start with nester
@@ -354,8 +353,18 @@ if FASTER_STRING_ESCAPES
                break               
          end
 
-         #shouldn't tolerate ILLEGAL_ESCAPED in str (unless single quotish)....
-         lexerror str, "illegal escape sequence" if !("['"[type]) and ILLEGAL_ESCAPED===b 
+
+         unless ("['"[type])
+           @@ILLEGAL_CRUNCH||=/
+             #{EVEN_BS_S}(?:
+               \#@(?:(?!#{LETTER()})|[^@]) |
+               \#$(?:(?!#{LETTER_DIGIT()})|[^\-!@&+`'=~\/\\,.;<>*"$?:;])
+             )
+           /ox #and this?
+
+           #shouldn't tolerate ILLEGAL_ESCAPED in str (unless single quotish)....
+           lexerror str, "illegal escape sequence" if /#{@@ILLEGAL_CRUNCH}|#{ILLEGAL_ESCAPED}/===b 
+         end
 
          str.append b
       }
