@@ -85,7 +85,7 @@ class KeywordToken < WToken   #also some operators
     self===RubyLexer::BEGINWORDS and @has_end||=nil
   end
 
-  attr_accessor :comma_type, :ternary, :grouping
+  attr_accessor :ternary, :grouping
 
   def has_no_block!
      @has_no_block=true
@@ -206,6 +206,7 @@ class StringToken < Token
 
    attr_accessor :modifiers    #for regex only
    attr_accessor :elems
+   attr_accessor :startline
    attr_accessor :line  #line on which the string ENDS
    attr_accessor :bs_handler
 
