@@ -651,6 +651,8 @@ x{
   a ?b:c
   p(a ? b:c)
   p(a ?b:c)
+  p(a ?:r:c)
+  p(a ? :r:c)
 }
 
 x{
