@@ -751,7 +751,7 @@ private
            break false
          elsif ','==tok.to_s and @parsestack.size==basesize+1
            break true 
-         elsif OperatorToken===tok and /^[&*]$/===tok.ident and tok.unary and @parsestack.size==basesize+1
+         elsif OperatorToken===tok and /^[&*]$/===tok.ident and tok.tag and @parsestack.size==basesize+1
            break true 
          elsif EoiToken===tok
            lexerror tok, "unexpected eof in parameter list"
