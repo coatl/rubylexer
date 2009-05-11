@@ -1553,7 +1553,7 @@ end
          when ParamListContext,ParamListContextNoParen; #:call
          when ListImmedContext; #:array
          when BlockParamListLhsContext; #:block
-         when ParenContext; #:nested
+         when KnownNestedLhsParenContext; #:nested
          else          result.tag=     :lhs if cill
          end
        end
@@ -2638,7 +2638,7 @@ end
     when ParamListContext,ParamListContextNoParen; #:call
     when ListImmedContext; #:array
     when BlockParamListLhsContext; #:block
-    when ParenContext; #:nested
+    when KnownNestedLhsParenContext; #:nested
     else
       token.tag=:lhs if comma_in_lvalue_list? 
     end
