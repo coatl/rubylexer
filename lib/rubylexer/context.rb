@@ -56,10 +56,17 @@ module NestedContexts
     def initialize(linenum)
       super('(', ')' ,linenum)
     end
+   
     attr_accessor :lhs
     def see(lxr,msg)
       @lhs=true if msg==:comma || msg==:splat
     end
+  end
+
+  class KnownNestedLhsParenContext < ParenContext
+    def lhs; true end
+    def lhs=x; end
+    def see(lxr,msg) end
   end
 
   class BlockContext  < NestedContext
