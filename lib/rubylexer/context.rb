@@ -56,9 +56,9 @@ module NestedContexts
     def initialize(linenum)
       super('(', ')' ,linenum)
     end
-    attr_accessor :lhs,:saw_comma
+    attr_accessor :lhs
     def see(lxr,msg)
-      @saw_comma=true if msg==:comma
+      @lhs=true if msg==:comma || msg==:splat
     end
   end
 
