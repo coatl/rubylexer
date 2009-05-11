@@ -2525,7 +2525,17 @@ end
           end
           @parsestack.push ParamListContext.new(@linenum)
         else
-          @parsestack.push ParenContext.new(@linenum)
+          ctx=@parsestack.last
+          lasttok=last_operative_token
+          maybe_def=DefContext===ctx && !ctx.in_body &&
+            !(KeywordToken===lasttok && lasttok.ident=="def")
+          if maybe_def or 
+             BlockParamListLhsContext===ctx or 
+             ParenContext===ctx && ctx.lhs
+            @parsestack.push KnownNestedLhsParenContext.new(@linenum)
+          else
+            @parsestack.push ParenContext.new(@linenum)
+          end
         end
 
       when '{'
