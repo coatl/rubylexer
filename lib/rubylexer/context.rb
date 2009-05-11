@@ -64,9 +64,9 @@ module NestedContexts
   end
 
   class KnownNestedLhsParenContext < ParenContext
-    def lhs; true end
-    def lhs=x; end
-    def see(lxr,msg) end
+#    def lhs; true end
+#    def lhs=x; end
+#    def see(lxr,msg) end
   end
 
   class BlockContext  < NestedContext
