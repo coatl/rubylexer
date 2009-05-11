@@ -139,7 +139,50 @@ private
 
    #-----------------------------------
    def regex(ch=nil)
-      result=RenderExactlyStringToken.new('/').append_token str=double_quote("/")
+      result=RenderExactlyStringToken.new('/').append_token double_quote("/")
+      if @rubyversion>=1.9
+        named_brs=[]
+        if result.elems.size==1 and String===result.elems.first
+            index=0
+            
+            while index=elem.index(huh /#{huh EVEN_BS_S}( \(\?[<'] | \(\?\# | \[ )/xo,index)
+              huh
+              case alt
+              when "(?<"; huh
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_IDENT}+)>/o,index)
+                index or huh
+                index+=$1.size+4
+                named_brs<<$1
+              when "(?'"; huh
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_IDENT}+)'/o,index)
+                index or huh
+                index+=$1.size+4
+                named_brs<<$1
+              when "(?#"; huh
+                index+=3
+                index=elem.index(/#{EVEN_BS_S}\)/,index)
+                index or huh
+                index+=1
+              when "["; huh
+                index+=1
+                paren_ctr=1
+                loop do
+                  index=elem.index(/#{EVEN_BS_S}(&&\[\^|\])/o,index)
+                  index or huh
+                  index+=$&.size
+                  unless $1[-1]==?]
+                    paren_ctr+=1
+                  else 
+                    paren_ctr-=1
+                    break if paren_ctr==0 
+                  end
+                end
+                
+              end
+            end
+        end
+        result.lvars= named_brs unless named_brs.empty?
+      end
       result.open=result.close="/"
       result.line=@linenum
       return result
