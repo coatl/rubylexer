@@ -235,17 +235,17 @@ module NestedContexts
     def see(lxr,msg)
       stack=lxr.parsestack
       case msg
-      when :rescue: 
+      when :rescue;
         WantsEndContext===stack.last or 
           BlockContext===stack.last or 
           ParenContext===stack.last or 
           raise 'syntax error: rescue not expected at this time'
-      when :arrow: #local var defined in this state
-      when :then,:semi,:colon:
+      when :arrow; #local var defined in this state
+      when :then,:semi,:colon;
         msg=:then
         self.equal? stack.pop or raise 'syntax error: then not expected at this time'
                   #pop self off owning context stack
-      when :comma, :splat: return
+      when :comma, :splat; return
       else super
       end
       LEGAL_SUCCESSORS[@state].include? msg or raise "rescue syntax error: #{msg} unexpected in #@state"
