@@ -1605,10 +1605,10 @@ end
 
      s=tok.to_s
      case s
+     when /^[@$<]/; true
      when /(?!#@@LETTER_DIGIT).$/o; false
 #     when /^#@@LCLETTER/o; localvars===s or VARLIKE_KEYWORDS===s
      when /^#@@LETTER/o; VarNameToken===tok
-     when /^[@$<]/; true
      else raise "not var or method name: #{s}"
      end   
    end
