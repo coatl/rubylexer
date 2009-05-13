@@ -144,8 +144,8 @@ private
         named_brs=[]
         if result.elems.size==1 and String===result.elems.first
             index=0
-            
-            while index=elem.index(huh /#{huh EVEN_BS_S}( \(\?[<'] | \(\?\# | \[ )/xo,index)
+            huh
+            while index=elem.index(/#{EVEN_BS_S}( \(\?[<'] | \(\?\# | \[ )/xo,index)
               huh
               case alt
               when "(?<"; huh
