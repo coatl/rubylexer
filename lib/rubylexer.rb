@@ -169,16 +169,56 @@ class RubyLexer
       @base_file=nil
       @progress_thread=nil
       @rubyversion=options[:rubyversion]
+      @encoding=options[:encoding]||:detect
 
       @toptable=CharHandler.new(self, :illegal_char, CHARMAPPINGS)
 
-      ignore_utf8_bom
+      read_leading_encoding
       start_of_line_directives
       progress_printer
    end
 
-   def ignore_utf8_bom
-     @file.skip /\xEF\xBB\xBF/
+   ENCODING_ALIASES={
+    'utf-8'=>'utf8',
+
+    'ascii-8bit'=>'binary',
+    'ascii-7bit'=>'ascii',
+    'euc-jp'=>'euc',
+
+    'ascii8bit'=>'binary',
+    'ascii7bit'=>'ascii',
+    'eucjp'=>'euc',
+
+    'us-ascii'=>'ascii',
+    'shift-jis'=>'sjis',
+
+    'autodetect'=>'detect',
+   }
+   ENCODINGS=%w[ascii binary utf8 euc sjis]
+   def read_leading_encoding
+     return unless @encoding==:detect
+     @encoding=:ascii
+     @encoding=:utf8 if @file.skip /\xEF\xBB\xBF/    #bom
+     if @file.skip /\A#!/
+       loop do
+         til_charset /[\s\v]/
+         break if @file.skip( / ([^-\s\v]|--[\s\v])/,4 )
+         if @file.skip /.-K(.)/
+           case $1
+           when 'u'; @encoding=:utf8
+           when 'e'; @encoding=:euc
+           when 's'; @encoding=:sjis
+           end
+         end
+       end
+       til_charset /[\n]/
+     end
+     if @rubyversion>=1.9 and @file.skip /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i 
+       name=$1
+       name.downcase!
+       name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
+       @encoding=name.to_sym if ENCODINGS.include? name
+     end
    end
 
    def progress_printer
