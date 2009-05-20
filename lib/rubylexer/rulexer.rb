@@ -149,12 +149,12 @@ private
               huh
               case alt
               when "(?<"; huh
-                index=elem.index(/\G...(#{LCLETTER}#{LETTER_IDENT}+)>/o,index)
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)>/o,index)
                 index or huh
                 index+=$1.size+4
                 named_brs<<$1
               when "(?'"; huh
-                index=elem.index(/\G...(#{LCLETTER}#{LETTER_IDENT}+)'/o,index)
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)'/o,index)
                 index or huh
                 index+=$1.size+4
                 named_brs<<$1
