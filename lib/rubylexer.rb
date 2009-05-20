@@ -2000,7 +2000,11 @@ end
             if tofill.dash
               close+=til_charset(/[^#{WHSP}]/o)
             end
-            break if eof? #this is an error, should be handled better
+            if eof? #this is an error, should be handled better
+              lexerror tofill, "unterminated here body"
+              lexerror tofill.string, "unterminated here body"
+              break
+            end
             if read(tofill.ender.size)==tofill.ender
               crs=til_charset(/[^\r]/)||''
               if nl=readnl
@@ -2016,6 +2020,8 @@ end
               line=til_charset(/[\n]/)
               unless nl=readnl
                 assert eof?
+                lexerror tofill, "unterminated here body"
+                lexerror tofill.string, "unterminated here body"
                 break  #this is an error, should be handled better
               end
               line.chomp!("\r")
