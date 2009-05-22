@@ -25,7 +25,7 @@ require 'lib/rubylexer/version.rb'
    hoe=Hoe.new("rubylexer", RubyLexer::VERSION) do |_|
      _.author = "Caleb Clausen"
      _.email = "rubylexer-owner @at@ inforadical .dot. net"
-     _.url = ["http://rubylexer.rubyforge.org/", "http://rubyforge.org/projects/rubylexer/"]
+     _.url = ["http://github.com/coatl/rubylexer/", "http://rubyforge.org/projects/rubylexer/"]
      _.extra_deps << ['sequence', '>= 0.2.0']
      _.test_globs=["test/code/regression.rb"]
      _.description=desc
