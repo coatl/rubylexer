@@ -1,7 +1,7 @@
 Running the tests:
 The simplest thing to do is run "ruby -Ilib test/code/regression.rb". This 
 tests against a list of known ruby expressions. It will take several minutes 
-to run. Currently, there are 5 failures.
+to run. Currently, there are 4 (minor) failures.
 
 If you're ambitious, try this command: "ruby -Ilib test/code/locatetest.rb". 
 This will use locate to find as much ruby code on your system and test 
