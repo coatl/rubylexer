@@ -1,3 +1,19 @@
+=== 0.7.4/5-20-2009
+* 2 Major Enhancements:
+  * preliminary support for ruby 1.9
+  * utf8 inputs should now work... more or less
+
+* 5 Minor Enhancements:
+  * better detection of illegal escapes and interpolations in strings
+  * indicate error on unterminated here body
+  * fixed pattern of keywords that can't start a param list (ignores ?,! now)
+  * in is_var_name?, check for global/instance vars first
+  * comma and star in a true lhs should be correctly marked as such, now
+
+* 2 Bugfixes:
+  * added tag field to Token; I hope many flags can be coalesced into tag.
+  * note line that all strings (and here docs) start and end on
+
 === 0.7.3/4-19-2009
 * 9 Bugfixes:
   * remember whether comma was seen in paren context
