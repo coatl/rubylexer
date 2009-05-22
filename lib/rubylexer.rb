@@ -1848,7 +1848,7 @@ if true
       #was: @offset_adjust -= procrastinated.size
       bodysize=input_position-bodystart
       res.string.line=linenum-1
-      lexerror res,res.string
+      lexerror res,res.string.error
 
       #one or two already read characters are overwritten here,
       #in order to keep offsets correct in the long term
