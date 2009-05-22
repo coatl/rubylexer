@@ -92,11 +92,11 @@ expected_failures=Dir.getwd+"/test/code/"+File.basename(input)+".expected_failur
 nop_ruby "#{input[/\.gz$/]&&'z'}cat", input, nopfile, stringdata
 
 
-#legal=ruby_parsedump nopfile, origfile, ruby
-#if legal.nonzero?
-#  puts "skipping #{input}; not legal"
-#  return
-#end
+legal=ruby_parsedump nopfile, origfile, ruby
+if legal.nonzero?
+  puts "skipping #{input}; not legal"
+  return true
+end
 
 progress ruby, input
 begin
