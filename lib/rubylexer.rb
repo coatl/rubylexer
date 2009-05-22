@@ -198,12 +198,12 @@ class RubyLexer
    def read_leading_encoding
      return unless @encoding==:detect
      @encoding=:ascii
-     @encoding=:utf8 if @file.skip /\xEF\xBB\xBF/    #bom
-     if @file.skip /\A#!/
+     @encoding=:utf8 if @file.skip( /\xEF\xBB\xBF/ )   #bom
+     if @file.skip( /\A#!/ )
        loop do
-         til_charset /[\s\v]/
+         til_charset( /[\s\v]/ )
          break if @file.skip( / ([^-\s\v]|--[\s\v])/,4 )
-         if @file.skip /.-K(.)/
+         if @file.skip( /.-K(.)/ )
            case $1
            when 'u'; @encoding=:utf8
            when 'e'; @encoding=:euc
@@ -211,9 +211,11 @@ class RubyLexer
            end
          end
        end
-       til_charset /[\n]/
+       til_charset( /[\n]/ )
      end
-     if @rubyversion>=1.9 and @file.skip /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i 
+     if @rubyversion>=1.9 and @file.skip( 
+          /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i 
+        )
        name=$1
        name.downcase!
        name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
