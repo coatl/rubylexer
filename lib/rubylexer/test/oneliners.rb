@@ -5,11 +5,6 @@ def x; yield end #this must be first!!!!
 
 module A::B; end
 
-def (z,*a=0).b; end
-def (z,*a=0).b; a %(1) end
-def (z,*a=0).b; b %(1) end
-def (z,*a=0).b; z %(1) end
-
 p a rescue b
 p //e
 p //u
