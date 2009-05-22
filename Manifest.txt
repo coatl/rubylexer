@@ -15,6 +15,7 @@ lib/rubylexer/version.rb
 lib/rubylexer/rulexer.rb
 lib/rubylexer/tokenprinter.rb
 lib/rubylexer/charset.rb
+lib/rubylexer/lextable.rb
 lib/rubylexer/symboltable.rb
 lib/rubylexer/charhandler.rb
 lib/assert.rb
@@ -43,11 +44,13 @@ test/data/23.rb
 test/data/lbrack.rb
 test/data/untitled1.rb
 test/data/rescue.rb
+test/data/pleac.rb
 test/data/pleac.rb.broken
 test/data/heart.rb
 test/data/s.rb
 test/data/wsdlDriver.rb
 test/data/p-op.rb
+test/data/1.rb
 test/data/1.rb.broken
 test/data/untermed_here.rb.broken
 test/data/newsyntax.rb
@@ -72,7 +75,6 @@ test/code/regression.rb
 test/code/strgen.rb
 test/code/tarball.rb
 lib/rubylexer/test/testcases.rb
-test/data/chunky.plain.rb
 test/data/cvtesc.rb
 test/data/__eof2.rb
 test/data/__eof5.rb
