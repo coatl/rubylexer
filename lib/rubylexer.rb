@@ -977,7 +977,6 @@ private
          loop do
            offset=input_position
            @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)(::)?/o)
-           #this regexp---^ will need to change in order to support utf8 properly.
            md=@file.last_match
            all,ws,name,dc=*md
            if ws
@@ -1020,13 +1019,14 @@ private
          @parsestack.push ExpectThenOrNlContext.new(str,@linenum)
          return result
    end
+
    def keyword_begin(str,offset,result)   
          result.first.has_end!
          @parsestack.push WantsEndContext.new(str,@linenum)
          return result
    end
-
    alias keyword_case keyword_begin
+
    def keyword_while(str,offset,result) #could be infix form without end
          if after_nonid_op?{false} #prefix form
            result.first.has_end!
@@ -1038,7 +1038,6 @@ private
          end
          return result
    end
-
    alias keyword_until keyword_while
 
    def keyword_for(str,offset,result)
@@ -1050,6 +1049,7 @@ private
          @parsestack.push ForSMContext.new(@linenum)
          return result
    end
+
    def keyword_do(str,offset,result)
          result.unshift(*abort_noparens_for_do!(str))
          if ExpectDoOrNlContext===@parsestack.last
