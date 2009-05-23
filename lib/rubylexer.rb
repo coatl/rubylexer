@@ -2153,7 +2153,6 @@ end
       @offset_adjust=@min_offset_adjust
 
       @moretokens.unshift(*optional_here_bodies)
-      result=@moretokens.shift
 
       #adjust line count in fal to account for newlines in here bodys
       i=@moretokens.size-1
@@ -2168,12 +2167,13 @@ end
       end
 
       if pre_fal
-        @moretokens.unshift result
+        result=@moretokens.first
         pre.offset=result.offset
-        result=pre
+        @moretokens.unshift pre
       end
       start_of_line_directives
 
+      result=@moretokens.shift
       return result
    end
 
