@@ -1647,7 +1647,8 @@ end
 
      s=tok.to_s
      case s
-     when /^[@$<]/; true
+     when /^[@$]/; true
+     when /^<</; HerePlaceholderToken===tok
      when /(?!#@@LETTER_DIGIT).$/o; false
 #     when /^#@@LCLETTER/o; localvars===s or VARLIKE_KEYWORDS===s
      when /^#@@LETTER/o; VarNameToken===tok
