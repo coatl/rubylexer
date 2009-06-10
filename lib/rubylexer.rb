@@ -2411,6 +2411,15 @@ end
          /^(return|break|next)$/===@last_operative_token.ident
         if (?0..?9)===readahead(2)[1]
           return number(ch)
+        elsif @rubyversion>=1.9 and '->' == readahead(2) #stabby proc
+          #push down block context
+          localvars.start_block
+          @parsestack.push ctx=BlockContext.new(@linenum)
+          ctx.wanting_stabby_block_body=true
+          #read optional proc params
+          block_param_list_lookahead ?(, ParenedParamListLhsContext
+
+          
         else #unary operator
           result=getchar
           WHSPLF[nextchar.chr] or
