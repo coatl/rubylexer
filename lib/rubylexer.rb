@@ -1437,8 +1437,11 @@ else
              a<< KeywordToken.new('|',tok.offset)
              @moretokens.empty? or
                fixme %#moretokens might be set from get1token call above...might be bad#
-end
            end
+end
+         elsif starter==?(
+           ctx_type=UnparenedParamListLhsContext #hacky... should be a param?
+           @parsestack.push ctx_type.new(@linenum)
          end
 
          set_last_token KeywordToken.new( ';' )
