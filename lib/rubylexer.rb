@@ -1052,15 +1052,21 @@ private
 
    def keyword_do(str,offset,result)
          result.unshift(*abort_noparens_for_do!(str))
-         if ExpectDoOrNlContext===@parsestack.last
+         ctx=@parsestack.last
+         if ExpectDoOrNlContext===ctx
             @parsestack.pop
             assert WantsEndContext===@parsestack.last
             result.last.as=";"
          else
             result.last.has_end!
-            @parsestack.push WantsEndContext.new(str,@linenum)
-            localvars.start_block
-            block_param_list_lookahead
+            if BlockContext===ctx and ctx.wanting_stabby_block_body
+              ctx.wanting_stabby_block_body=false
+              ctx.starter,ctx.ender="do","end"
+            else
+              @parsestack.push WantsEndContext.new(str,@linenum)            
+              localvars.start_block
+              block_param_list_lookahead
+            end
          end
          return result
    end
