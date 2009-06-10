@@ -2625,9 +2625,13 @@ end
         end
 #=end
 
-        localvars.start_block
-        @parsestack.push BlockContext.new(@linenum)
-        block_param_list_lookahead
+        if BlockContext===@parsestack.last and @parsestack.last.wanting_stabby_block_body
+          @parsestack.last.wanting_stabby_block_body=false
+        else
+          localvars.start_block
+          @parsestack.push BlockContext.new(@linenum)
+          block_param_list_lookahead
+        end
       end
       end
       return (tokch)
