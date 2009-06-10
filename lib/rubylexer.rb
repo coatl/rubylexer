@@ -1601,7 +1601,8 @@ end
          when AssignmentRhsContext; result.tag= :rhs
          when ParamListContext,ParamListContextNoParen; #:call
          when ListImmedContext; #:array
-         when BlockParamListLhsContext; #:block
+         when BlockParamListLhsContext,UnparenedParamListLhsContext; #:block or stabby proc
+         when ParenedParamListLhsContext; #:stabby proc or method def'n?
          when KnownNestedLhsParenContext; #:nested
          else          result.tag=     :lhs if cill
          end
@@ -2597,6 +2598,8 @@ end
             !(KeywordToken===lasttok && lasttok.ident=="def")
           if maybe_def or 
              BlockParamListLhsContext===ctx or 
+             ParenedParamListLhsContext===ctx or 
+             UnparenedParamListLhsContext===ctx or 
              ParenContext===ctx && ctx.lhs
             @parsestack.push KnownNestedLhsParenContext.new(@linenum)
           else
@@ -2713,7 +2716,8 @@ end
     when AssignmentRhsContext; token.tag=:rhs
     when ParamListContext,ParamListContextNoParen; #:call
     when ListImmedContext; #:array
-    when BlockParamListLhsContext; #:block
+    when BlockParamListLhsContext,UnparenedParamListLhsContext; #:block or stabby proc
+    when ParenedParamListLhsContext; #stabby proc or method def'n?
     when KnownNestedLhsParenContext; #:nested
     else
       token.tag=:lhs if comma_in_lvalue_list? 
