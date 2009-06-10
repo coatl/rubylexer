@@ -73,6 +73,7 @@ module NestedContexts
     def initialize(linenum)
       super('{','}',linenum)
     end
+    attr_accessor :wanting_stabby_block_body
   end
 
   class BeginEndContext  < NestedContext
