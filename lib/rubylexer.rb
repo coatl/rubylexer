@@ -2672,6 +2672,10 @@ end
         assert ch==')'
         kw.set_callsite! #not needed?
       end
+      if ParenedParamListLhsContext===ctx
+        assert @parsestack.last.wanting_stabby_block_body
+        assert ch==')'
+      end
       return @moretokens.shift
    end
 
