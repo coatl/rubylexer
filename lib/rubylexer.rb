@@ -670,9 +670,9 @@ private
          maybe_local=false
          lastid=lasttok&&lasttok.ident
          case lastid
-           when /\A[;(]|do\Z/: was_after_nonid_op=false
-           when '|':  was_after_nonid_op=false unless BlockParamListLhsContext===@parsestack.last
-           when '{': was_after_nonid_op=false if  BlockContext===@parsestack.last or BeginEndContext===@parsestack.last
+           when /\A[;(]|do\Z/; was_after_nonid_op=false
+           when '|';  was_after_nonid_op=false unless BlockParamListLhsContext===@parsestack.last
+           when '{'; was_after_nonid_op=false if  BlockContext===@parsestack.last or BeginEndContext===@parsestack.last
          end if KeywordToken===lasttok
          was_after_nonid_op=false if NewlineToken===lasttok or lasttok.nil?
          want_parens=!(ws_toks.empty? or was_after_nonid_op) #or
