@@ -1386,16 +1386,17 @@ private
 
    
    #-----------------------------------
-   def block_param_list_lookahead
+   def block_param_list_lookahead starter=?|, ctx_type=BlockParamListLhsContext
       safe_recurse{ |la|
          set_last_token KeywordToken.new(  ';' )
          a=ignored_tokens
 
-         if eat_next_if(?|)
-           a<< KeywordToken.new("|", input_position-1)
+         if eat_next_if(starter)
+           mycontext=ctx_type.new(@linenum)
+           a<< KeywordToken.new(mycontext.starter, input_position-1)
 if true
-           @parsestack.push mycontext=BlockParamListLhsContext.new(@linenum)
-           nextchar==?| and a.push NoWsToken.new(input_position)
+           @parsestack.push mycontext
+           nextchar==mycontext.ender[0] and a.push NoWsToken.new(input_position)
 else
            if eat_next_if(?|)
              a.concat [NoWsToken.new(input_position-1),
