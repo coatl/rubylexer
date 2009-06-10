@@ -109,6 +109,16 @@ module NestedContexts
     def ender; '|' end
   end
 
+  class ParenedParamListLhsContext < ImplicitLhsContext
+    def starter; '(' end
+    def ender; ')' end
+  end
+
+  class UnparenedParamListLhsContext < ImplicitLhsContext
+    def starter; huh end  #" " ???
+    def ender; huh end    #; or \n when from method def, { or do when from stabby block
+  end
+
   class ImplicitContext < ListContext
   end
 
