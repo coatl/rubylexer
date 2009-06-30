@@ -803,6 +803,8 @@ private
            lexerror tok, "unexpected eof in parameter list"
          end
        }
+       result.concat @moretokens
+       @moretokens.replace []
        return [result,pass]
    end
 
