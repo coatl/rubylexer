@@ -918,8 +918,8 @@ private
      ws.scan(/\G#@@WSTOK/o){|ws|
        incr= $~.begin(0)
        klass=case ws
-       when /\A[\#=]/: CommentToken
-       when /\n\Z/: EscNlToken
+       when /\A[\#=]/; CommentToken
+       when /\n\Z/; EscNlToken
        else WsToken
        end
        result << klass.new(ws,offset+incr)
