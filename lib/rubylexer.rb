@@ -752,20 +752,21 @@ private
        result.unshift ImplicitParamListStartToken.new(oldpos),
                  ImplicitParamListEndToken.new(oldpos)
      when 1,3;
-       arr,pass=*param_list_coming_with_2_or_more_params?
-       result.push( *arr )
-       unless pass
+       if /^(break|next|return)$/===name and
+                !(KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident)
          #only 1 param in list
          result.unshift ImplicitParamListStartToken.new(oldpos)
-         last=result.last
-         last.set_callsite! false if last.respond_to? :callsite? and last.callsite? #KeywordToken===last and last.ident==')'
-         if /^(break|next|return)$/===name and 
-            !(KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident)
-           ty=KWParamListContextNoParen 
-         else
-           ty=ParamListContextNoParen
+         @parsestack.push ParamListContextNoParen.new(@linenum)
+       else
+         arr,pass=*param_list_coming_with_2_or_more_params?
+         result.push( *arr )
+         unless pass
+           #only 1 param in list
+           result.unshift ImplicitParamListStartToken.new(oldpos)
+           last=result.last
+           last.set_callsite! false if last.respond_to? :callsite? and last.callsite?
+           @parsestack.push ParamListContextNoParen.new(@linenum)
          end
-         @parsestack.push ty.new(@linenum)
        end
      when 0; #do nothing
      else raise 'invalid value of implicit_parens_to_emit'
