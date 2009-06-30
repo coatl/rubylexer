@@ -783,8 +783,11 @@ private
    end
 
    #-----------------------------------
+   #read ahead to see if there's method param list (with real parentheses)
+   #and 2 or more parameters (and hence a comma to separate them)
+   #ugly, lexer recursion
    def param_list_coming_with_2_or_more_params?
-     WHSPCHARS[prevchar] && (?(==nextchar) or return [[],false]
+       return [[],false] unless WHSPCHARS[prevchar] && (?(==nextchar)
        basesize=@parsestack.size
        result=[get1token]
        pass=loop{
