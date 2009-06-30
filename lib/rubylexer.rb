@@ -1274,7 +1274,7 @@ private
            result.push KwParamListStartToken.new(offset+str.length)
            #corresponding EndToken emitted by abort_noparens! on leaving rescue context
            @parsestack.push RescueSMContext.new(@linenum)
-           result.unshift(*abort_noparens!(str))  
+#           result.unshift(*abort_noparens!(str))  
          end
          return result
    end
