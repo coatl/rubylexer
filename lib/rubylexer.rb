@@ -2130,13 +2130,15 @@ end
       pre=FileAndLineToken.new(@filename,@linenum+1,input_position)
       pre.allow_ooo_offset=true
 
-      if NewlineToken===@last_operative_token or #hack
-         (KeywordToken===@last_operative_token and 
-          @last_operative_token.ident=="rescue" and
-          !@last_operative_token.infix?)  or 
-         #/^(;|begin|do|#{INNERBOUNDINGWORDS})$/ or #hack
-         !after_nonid_op?{false}
-      then   #hack-o-rama: probly cases left out above
+      hard=NewlineToken===@last_operative_token || #hack
+           (KeywordToken===@last_operative_token and
+            @last_operative_token.ident=="rescue" and
+            !@last_operative_token.infix?)  ||
+           !after_nonid_op?{false}
+
+      hard=false if @rubyversion>=1.9 and @file.check /\A\n(?:#@@WSTOKS)?\.[^.]/o
+
+      if hard
         @offset_adjust=@min_offset_adjust
         a= abort_noparens!
         case @parsestack.last  #these should be in the see:semi handler
