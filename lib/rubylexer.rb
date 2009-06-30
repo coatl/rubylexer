@@ -926,7 +926,7 @@ private
      }
      result.each_with_index{|ws,i|
        if WsToken===ws
-         ws.ident << result.delete(i+1).ident while WsToken===result[i+1]
+         ws.ident << result.delete_at(i+1).ident while WsToken===result[i+1]
        end
      }
      return result
