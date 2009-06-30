@@ -170,6 +170,11 @@ class RubyLexer
       @progress_thread=nil
       @rubyversion=options[:rubyversion]
       @encoding=options[:encoding]||:detect
+      @method_operators=if @rubyversion>=1.9 
+                          /#{RUBYSYMOPERATORREX}|\A![=~]?\Z/o
+                        else
+                          RUBYSYMOPERATORREX
+                        end
 
       @toptable=CharHandler.new(self, :illegal_char, CHARMAPPINGS)
 
@@ -1732,8 +1737,9 @@ end
           end
         when RescueSMContext
           tok.as=";"
-        end or 
+        end or
           fail ": not expected in #{@parsestack.last.class}->#{@parsestack.last.starter}"
+
         
         #end ternary context, if any
         @parsestack.last.see self,:colon
@@ -1766,7 +1772,7 @@ end
      klass=(notbare ? SymbolToken : MethNameToken)
      
      #look for operators
-     opmatches=readahead(3)[RUBYSYMOPERATORREX]
+     opmatches=readahead(3)[@method_operators]
      result= opmatches ? read(opmatches.size) :
        case nc=nextchar
          when ?" #"
@@ -1800,27 +1806,31 @@ end
      return result
    end
 
+   #-----------------------------------
    def merge_assignment_op_in_setter_callsites?
      false
    end
+
    #-----------------------------------
    def callsite_symbol(tok_to_errify)
      start= input_position
      
      #look for operators
-     opmatches=readahead(3)[RUBYSYMOPERATORREX]
-     return [opmatches ? read(opmatches.size) :
-       case nc=nextchar
-         when ?` then read(1) #`
-         when ?_,?a..?z,?A..?Z,NONASCII then 
+     opmatches=readahead(3)[@method_operators]
+     return [read(opmatches.size), start] if opmatches
+     case nc=nextchar
+         when ?` #`
+           return [read(1),start] 
+         when ?_,?a..?z,?A..?Z,NONASCII
            context=merge_assignment_op_in_setter_callsites? ? ?: : nc
-           identifier_as_string(context)
-         else 
-           set_last_token KeywordToken.new(';')
-           lexerror(tok_to_errify,"unexpected char starting callsite symbol: #{nc.chr}, tok=#{tok_to_errify.inspect}")
-           nil
-       end, start
-      ]
+           return [identifier_as_string(context), start]
+         when ?(
+           return [nil,start] if @enable_macro
+     end
+
+     set_last_token KeywordToken.new(';')
+     lexerror(tok_to_errify,"unexpected char starting callsite symbol: #{nc.chr}, tok=#{tok_to_errify.inspect}")
+     return [nil, start]
    end
 
    #-----------------------------------
