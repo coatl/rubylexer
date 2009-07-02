@@ -1,3 +1,16 @@
+=== 0.7.6/7-01-2009
+* 5 Bugfixes:
+  * don't treat <, <=, <=> as starting variables (only << for here header)
+  * space between break/return/next and following open paren is ignored
+  * fixed unusual whitespace is unlikely places (module header)
+  * some parentheses weren't being decorated right
+  * rescue should not end implicit parameter lists... unless its an op
+
+* 3 new ruby 1.9 features:
+  * stabby blocks
+  * dot at beginning of line
+  * !, !=, !~ are now valid method/symbol names
+
 === 0.7.5/5-23-2009
 * 1 Bugfix:
   * fixed problem with parsing shebang lines
