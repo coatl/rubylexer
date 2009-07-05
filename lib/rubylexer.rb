@@ -2614,8 +2614,13 @@ end
       when '('
         lasttok=last_token_maybe_implicit #last_operative_token
         #could be: lasttok===/^#@@LETTER/o
-        if (VarNameToken===lasttok or MethNameToken===lasttok or
-            lasttok===FUNCLIKE_KEYWORDS)
+        method_params= (
+          VarNameToken===lasttok or 
+          MethNameToken===lasttok or
+          lasttok===FUNCLIKE_KEYWORDS or
+          (@enable_macro and lasttok and lasttok.ident==')')
+        )
+        if method_params
           unless WHSPCHARS[lastchar]
                @moretokens << tokch
                tokch= NoWsToken.new(input_position-1)
