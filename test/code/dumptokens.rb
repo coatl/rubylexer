@@ -36,12 +36,13 @@ end
 end
 
 macros=silent=file=nil
-
+options={}
 #allow -e
 opts=GetoptLong.new(
   ["--eval", "-e", GetoptLong::REQUIRED_ARGUMENT],
   ["--silent", "-s", GetoptLong::NO_ARGUMENT],
-  ["--macro", "-m", GetoptLong::NO_ARGUMENT]
+  ["--macro", "-m", GetoptLong::NO_ARGUMENT],
+  ["--ruby19", "-9", GetoptLong::NO_ARGUMENT]
 )
 opts.each{|opt,arg|
   case opt
@@ -52,6 +53,8 @@ opts.each{|opt,arg|
     silent=true
   when '--macro'
     macros=true
+  when '--ruby19'
+    options[:rubyversion]=1.9
   end
 }
      
@@ -63,7 +66,9 @@ file||=if name=ARGV.first
     $stdin.read
   end
 
-lexer=RubyLexer.new(name, file) 
+args=name, file
+args.push 1,0,options unless options.empty?
+lexer=RubyLexer.new(*args) 
 lexer.enable_macros! if macros
 if silent
   until RubyLexer::EoiToken===(tok=lexer.get1token)
