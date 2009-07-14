@@ -2491,6 +2491,7 @@ end
         end
       when '' #plain assignment: record local variable definitions
         last_context_not_implicit.lhs=false
+        @last_operative_token=result
         @moretokens.push( *ignored_tokens(true).map{|x| 
           NewlineToken===x ? EscNlToken.new(@filename,@linenum,x.ident,x.offset) : x 
         } )
