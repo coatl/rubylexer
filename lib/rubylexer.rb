@@ -2426,12 +2426,13 @@ end
    #could be beginning of number, too
    #fixme: handle +@ and -@ here as well... (currently, this is done in symbol()?)
    def plusminus(ch)
+      pos=input_position
       assert(/^[+\-]$/===ch)
       if unary_op_expected?(ch) or 
          KeywordToken===@last_operative_token && 
          /^(return|break|next)$/===@last_operative_token.ident
         if (?0..?9)===readahead(2)[1]
-          return number(ch)
+          result= number(ch)
         elsif @rubyversion>=1.9 and '->' == readahead(2) #stabby proc
           #push down block context
           localvars.start_block
@@ -2456,6 +2457,7 @@ end
          end
          result=(operator_or_methname_token result)
       end
+      result.offset=pos
       return result
    end
 
@@ -2800,7 +2802,7 @@ end
   #-----------------------------------
   #tokenify_results_of  :identifier
   save_offsets_in(*CHARMAPPINGS.values.uniq-[
-    :symbol_or_op,:open_brace,:whitespace,:exclam,:backquote,:caret
+    :symbol_or_op,:open_brace,:whitespace,:exclam,:backquote,:caret,:plusminus
   ])
   #save_offsets_in :symbol
 
