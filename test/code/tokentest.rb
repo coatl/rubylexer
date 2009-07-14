@@ -66,15 +66,15 @@ class SymbolToken
   def verify_offset(fd)
     la=fd.read(2)
     case la
-      when '%s': 
+      when '%s'
         quote=fd.read(1)
         ender=RubyLexer::PAIRS[quote] || quote
         body=@ident[2...-1]
-      when /^:(['"])/: 
+      when /^:(['"])/
         #stay right here
         quote=ender=$1
         body=@ident[2...-1]
-      when /^:/: 
+      when /^:/
         fd.pos-=1
         body=@ident[1..-1]
       else raise 'unrecognized symbol type'
@@ -154,7 +154,7 @@ class StringToken
     #verify offsets of subtokens
     @elems.each{|elem|
       case elem
-      when String: 
+      when String
         #get string data to compare against,
         #translating dos newlines to unix.
         #(buffer mgt is a PITA)
@@ -245,7 +245,7 @@ def check_offset(tok,file=nil,endpos=nil)
     when RubyLexer::StringToken,RubyLexer::NumberToken,
          RubyLexer::HereBodyToken,RubyLexer::SymbolToken,
          RubyLexer::HerePlaceholderToken,
-         RubyLexer::FileAndLineToken: #do nothing
+         RubyLexer::FileAndLineToken #do nothing
     else 
       file.pos==endpos or allow_ooo or 
         $stderr.puts "positions don't line up, expected #{endpos}, got #{file.pos}, token: #{tok.to_s.gsub("\n","\n  ") }"
