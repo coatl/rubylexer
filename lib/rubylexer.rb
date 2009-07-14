@@ -761,7 +761,7 @@ private
                 !(KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident)
          #only 1 param in list
          result.unshift ImplicitParamListStartToken.new(oldpos)
-         @parsestack.push ParamListContextNoParen.new(@linenum)
+         @parsestack.push KWParamListContextNoParen.new(@linenum)
        else
          arr,pass=*param_list_coming_with_2_or_more_params?
          result.push( *arr )
