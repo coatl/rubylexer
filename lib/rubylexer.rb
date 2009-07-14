@@ -2440,7 +2440,7 @@ end
           ctx.wanting_stabby_block_body=true
           #read optional proc params
           block_param_list_lookahead ?(, ParenedParamListLhsContext
-
+          result=KeywordToken.new('->',pos)
           
         else #unary operator
           result=getchar
