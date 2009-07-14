@@ -75,11 +75,13 @@ class RubyLexer
       @moretokens=[ RubyLexer::FileAndLineToken.new(@filename, @linenum, input_position) ]
       @endsets={}
    end
+   alias rulexer_initialize initialize
 
    #-----------------------------------
    def endoffile_detected s=''
      EoiToken.new(s,@original_file, input_position-s.size)
    end
+   alias rulexer_endoffile_detected endoffile_detected
 
    #-----------------------------------
    def get1token
@@ -92,6 +94,7 @@ class RubyLexer
 
       @toptable.go( nextchar )
    end
+   alias rulexer_get1token get1token
 
    #-----------------------------------
    def no_more?
@@ -190,6 +193,7 @@ private
 
    #-----------------------------------
    def single_char_token(str)  getchar   end
+   alias rulexer_single_char_token single_char_token
 
    #-----------------------------------
    def illegal_char(ch)
@@ -913,6 +917,7 @@ else
       IgnoreToken.new(til_charset(/[\r\n]/))
    end
 end
+  alias rulexer_comment comment
 
    #-----------------------------------
    def whitespace(ch)
@@ -944,7 +949,7 @@ end
       @moretokens << FileAndLineToken.new( @filename, @linenum, offset+1 )
       return NewlineToken.new("\n",offset)
    end
-
+   alias rulexer_newline newline
 
    #-----------------------------------
    def getchar_maybe_escape
@@ -962,6 +967,7 @@ protected
   require 'forwardable'
   extend Forwardable
   def_delegators :@file, :readahead, :readback, :read, :eof?
+  alias rulexer_eof? eof?
 
   def til_charset cs,len=16; @file.read_til_charset cs,len end
   def getc; @file.read1 end
@@ -995,6 +1001,7 @@ protected
 
   #-----------------------------------
   def input_position; @file.pos end
+  alias rulexer_input_position input_position
 
   #-----------------------------------
   def input_position_set x; @file.pos=x end

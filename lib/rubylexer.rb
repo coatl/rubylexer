@@ -155,7 +155,7 @@ class RubyLexer
    #-----------------------------------
    def initialize(filename,file,linenum=1,offset_adjust=0,options={:rubyversion=>1.8})
       @offset_adjust=0 #set again in next line
-      super(filename,file, linenum,offset_adjust)
+      rulexer_initialize(filename,file, linenum,offset_adjust)
       @start_linenum=linenum
       @parsestack=[TopLevelContext.new]
       @incomplete_here_tokens=[] #not used anymore
@@ -256,7 +256,7 @@ class RubyLexer
 
    #-----------------------------------
    def get1token
-      result=super  #most of the action's here
+      result=rulexer_get1token  #most of the action's here
 
       if ENV['PROGRESS']
       @last_cp_pos||=0
@@ -300,12 +300,12 @@ class RubyLexer
 
    #-----------------------------------
    def eof?
-     super or EoiToken===@last_operative_token
+     rulexer_eof? or EoiToken===@last_operative_token
    end
 
    #-----------------------------------
    def input_position
-     super+@offset_adjust
+     rulexer_input_position+@offset_adjust
    end
 
    #-----------------------------------
@@ -2158,7 +2158,7 @@ end
         assert !@parsestack.empty?
         @parsestack.last.see self,:semi
 
-        a << super(ch)
+        a << rulexer_newline(ch)
         @moretokens.replace a+@moretokens
       else
         @offset_adjust=@min_offset_adjust
@@ -2565,7 +2565,7 @@ if false
    def comment(str)
      result=""
      #loop{
-       result<< super(nil).to_s
+       result<< rulexer_comment(nil).to_s
 
        if /^\#.*\#$/===result #if comment was ended by a crunch
 
@@ -2719,7 +2719,7 @@ end
 
    #-----------------------------------
    def endoffile_detected(s='')
-     @moretokens.push( *(abort_noparens!.push super(s)))
+     @moretokens.push( *(abort_noparens!.push rulexer_endoffile_detected(s)))
      if @progress_thread
        @progress_thread.kill
        @progress_thread=nil
@@ -2731,7 +2731,7 @@ end
 
   #-----------------------------------
   def single_char_token(ch)
-    KeywordToken.new super(ch), input_position-1
+    KeywordToken.new rulexer_single_char_token(ch), input_position-1
   end
 
   #-----------------------------------
