@@ -2152,8 +2152,8 @@ end
         @offset_adjust=@min_offset_adjust
         a= abort_noparens!
         case @parsestack.last  #these should be in the see:semi handler
-          when ExpectDoOrNlContext: @parsestack.pop
-          when ExpectThenOrNlContext: @parsestack.pop        
+          when ExpectDoOrNlContext; @parsestack.pop
+          when ExpectThenOrNlContext; @parsestack.pop        
         end
         assert !@parsestack.empty?
         @parsestack.last.see self,:semi
