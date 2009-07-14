@@ -239,12 +239,12 @@ else
 end
       result=send(strlex, beg, type, close=(PAIRS[beg] or beg))
       case ch
-      when /^[Wwr]$/:
+      when /^[Wwr]$/
         str=result
         result=RenderExactlyStringToken.new(type).append_token(result)
         result.open=str.open; result.close=str.close
         result.line=@linenum
-      when 's': 
+      when 's'
         result.open=open+beg
         result.close=close
         result=SymbolToken.new result,nil,"%s"
@@ -302,8 +302,8 @@ if FASTER_STRING_ESCAPES
         escaped=/\\(?>[^xcCM0-7]|(?>c|[CM].)(?>[^\\]|(?=\\))|(?>x.[0-9a-fA-F]?)|(?>[0-7]{1,3}))/m
         special=
           case delimiter
-          when '\\': crunch
-          when '#': escaped
+          when '\\'; crunch
+          when '#'; escaped
           else /#{escaped}|#{crunch}/o
           end
         special_char<< maybe_crunch="#"
@@ -571,9 +571,9 @@ end
    def Wquote_esc_seq(ch,nester,delimiter)
       assert ch == '\\'
       case ch=getchar
-      when "\n": @linenum+=1; ch
-      when nester,delimiter: ch
-      when /[\s\v\\]/: ch
+      when "\n"; @linenum+=1; ch
+      when nester,delimiter; ch
+      when /[\s\v\\]/; ch
       else 
         back1char
         result=dquote_esc_seq('\\',nester,delimiter)
@@ -592,10 +592,10 @@ end
          #all \ sequences 
          #are unescaped; actual
          #newlines are counted but not changed
-         when delimiter,nester,'\\': escchar
-#         when delimiter,nester: escchar
-         when "\n": @linenum+=1; escchar
-         when /[\s\v]/: escchar
+         when delimiter,nester,'\\'; escchar
+#         when delimiter,nester; escchar
+         when "\n"; @linenum+=1; escchar
+         when /[\s\v]/; escchar
          else       "\\"+escchar
       end
    end
@@ -610,9 +610,9 @@ end
          #all \ sequences 
          #are unescaped; actual
          #newlines are counted but not changed
-         when delimiter,nester,'\\': escchar
-#         when delimiter,nester: escchar
-         when "\n": @linenum+=1; "\\"+escchar
+         when delimiter,nester,'\\'; escchar
+#         when delimiter,nester; escchar
+         when "\n"; @linenum+=1; "\\"+escchar
          else       "\\"+escchar
       end
    end
@@ -627,9 +627,9 @@ end
          #all \ sequences 
          #are unescaped; actual
          #newlines are counted but not changed
-         when delimiter,nester: escchar
-#         when delimiter,nester: escchar
-         when "\n": @linenum+=1; "\\"+escchar
+         when delimiter,nester; escchar
+#         when delimiter,nester; escchar
+         when "\n"; @linenum+=1; "\\"+escchar
          else       "\\"+escchar
       end
    end
@@ -663,8 +663,8 @@ end
 
   def merge_levels levels, nil_empty_class
     case (levels.size rescue 0)
-    when 0: {} unless nil_empty_class
-    when 1: levels.first.dup
+    when 0; {} unless nil_empty_class
+    when 1; levels.first.dup
     else levels.inject{|a,b| a.merge b} 
     end
   end

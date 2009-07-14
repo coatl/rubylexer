@@ -389,7 +389,7 @@ private
       unless @moretokens.empty?
         case @moretokens.first
         when StillIgnoreToken
-        when NewlineToken: allow_eol or break
+        when NewlineToken; allow_eol or break
         else break
         end 
       else
@@ -645,7 +645,7 @@ private
        IMPLICIT_PARENS_BEFORE_ACCESSOR_ASSIGNMENT
      else
      case nc
-       when nil: 2
+       when nil; 2
        when ?!; /^![=~]$/===readahead(2) ? 2 : 1
        when ?d; 
          if /^do((?!#@@LETTER_DIGIT)|$)/o===readahead(3)
@@ -2513,7 +2513,7 @@ end
       k=eat_next_if(/[~=]/)
       if k
         result+=k
-      elsif eof?: #do nothing
+      elsif eof? #do nothing
       else
         WHSPLF[nextchar.chr] or
           @moretokens << NoWsToken.new(input_position)

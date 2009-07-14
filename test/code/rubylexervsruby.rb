@@ -194,7 +194,7 @@ end
 return false
 =end
 
-rescue Interrupt: raise
+rescue Interrupt; raise
 rescue Exception
   File.exist? nopfile and
     system "ruby -c #{nopfile} >/dev/null 2>&1" or expected="(expected) " unless stringdata

@@ -283,13 +283,13 @@ module NestedContexts
       stack=lxr.parsestack
       assert msg!=:for
       case msg
-      when :for: WantsEndContext===stack.last or raise 'syntax error: for not expected at this time'
+      when :for; WantsEndContext===stack.last or raise 'syntax error: for not expected at this time'
                  #local var defined in this state
                  #never actually used?
-      when :in:  self.equal? stack.pop or raise 'syntax error: in not expected at this time'
+      when :in;  self.equal? stack.pop or raise 'syntax error: in not expected at this time'
                  stack.push ExpectDoOrNlContext.new("for",/(do|;|:|\n)/,@linenum) 
                  #pop self off owning context stack and push ExpectDoOrNlContext
-      when :comma, :splat: return
+      when :comma, :splat; return
       else super
       end
       LEGAL_SUCCESSORS[@state].include? msg or raise "for syntax error: #{msg} unexpected in #@state"

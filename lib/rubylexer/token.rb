@@ -255,16 +255,16 @@ class StringToken < Token
       ender=close
       elems.each{|e|
         case e
-        when String: result<<e
+        when String; result<<e
 #        strfrag=translate_escapes strfrag if RubyLexer::FASTER_STRING_ESCAPES
 #        result << send(transname,strfrag,starter,ender)
-        when VarNameToken: 
+        when VarNameToken;
           if /^[$@]/===e.to_s
             result << '#' + e.to_s
           else 
             result << "\#{#{e}}"
           end
-        when RubyCode: result << '#' + e.to_s
+        when RubyCode; result << '#' + e.to_s
         else fail
         end
       }

@@ -71,8 +71,8 @@ end
              res=RubyLexerVsRuby.rubylexervsruby('__#{name}','#{esctc}',difflines) 
              difflines.empty? or raise DifferencesFromMRILex, difflines
              res or raise LexerTestFailure, ''
-           rescue Interrupt: exit
-           rescue Exception=>e: 
+           rescue Interrupt; exit
+           rescue Exception=>e 
              e.message<<"\n"+'while lexing: #{esctc[0...1000]}'
              raise e
            end
@@ -91,10 +91,10 @@ end
              res=RubyLexerVsRuby.rubylexervsruby('__#{name}','#{esctc}',difflines) 
              difflines.empty? or raise DifferencesFromMRILex, difflines
              res or raise LexerTestFailure, ''
-           rescue LexerTestFailure: 
+           rescue LexerTestFailure
              puts 'warning: test failure lexing "#{esctc}"' 
-           rescue Interrupt: exit
-           rescue Exception=>e: 
+           rescue Interrupt; exit
+           rescue Exception=>e;
              e.message<<"\n"+'while lexing: #{esctc}'
              raise e
            end

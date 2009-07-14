@@ -87,9 +87,9 @@ end
    end end
    class ZwToken; def ws_munge(tp)
       case tp.showzw 
-      when 2: explicit_form_all
-      when 1: explicit_form
-      when 0: nil
+      when 2; explicit_form_all
+      when 1; explicit_form
+      when 0; nil
       else raise 'unknown showzw'
       end
    end end
@@ -139,7 +139,7 @@ class KeepWsTokenPrinter
       result=
       case tok
       when ZwToken,EoiToken,NoWsToken, HereBodyToken, NewlineToken,
-           ImplicitParamListStartToken,ImplicitParamListEndToken:
+           ImplicitParamListStartToken,ImplicitParamListEndToken;
         tok
       else
         [@sep.dup,tok]
