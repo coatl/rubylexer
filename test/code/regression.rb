@@ -78,7 +78,7 @@ end
            end
          end  
       ]
-    }.to_s
+    }
     
     illegal_test_code= TestCases::ILLEGAL_TESTCASES.map{|tc|
       i+=1
@@ -100,9 +100,9 @@ end
            end
          end  
       ]
-    }.to_s
+    }
 
-
-#    puts test_code+illegal_test_code
-    eval test_code+illegal_test_code
+    src=(test_code+illegal_test_code).join
+#    p src
+    eval src
   end
