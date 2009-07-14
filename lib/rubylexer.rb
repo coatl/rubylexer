@@ -2146,7 +2146,7 @@ end
             !@last_operative_token.infix?)  ||
            !after_nonid_op?{false}
 
-      hard=false if @rubyversion>=1.9 and @file.check /\A\n(?:#@@WSTOKS)?\.[^.]/o
+      hard=false if @rubyversion>=1.9 and @file.check /\A\n(?:#@@WSTOKS)?[.:][^.:]/o
 
       if hard
         @offset_adjust=@min_offset_adjust
