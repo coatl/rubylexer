@@ -561,6 +561,33 @@ end
    end
 
    #-----------------------------------
+   def dquote19_esc_seq(ch,nester,delimiter)
+      assert ch == '\\'
+      case ch=getchar
+      when 'u'
+        case ch=getchar
+        when /[a-f0-9]/i
+          u=read(4)
+          raise "bad unicode escape" unless /[0-9a-f]{4}/i===u
+          [u.hex].pack "U"
+        when '{'
+          result=[]
+          until eat_next_if '}'
+            u=@file.scan(/\A[0-9a-f]{1,6}[ \t]?/i,7)
+            result<<u.hex
+          end
+          result=result.pack "U*"
+        else raise "bad unicode escape"
+        end 
+      else 
+        back1char
+        result=dquote_esc_seq('\\',nester,delimiter)
+        #/\s|\v/===result and result="\\"+result
+        result
+      end
+   end
+
+   #-----------------------------------
    def regex_esc_seq(ch,nester,delimiter)
       assert ch == '\\'
       ch=getchar
@@ -581,6 +608,21 @@ end
       else 
         back1char
         result=dquote_esc_seq('\\',nester,delimiter)
+        #/\s|\v/===result and result="\\"+result
+        result
+      end
+   end
+
+   #-----------------------------------
+   def Wquote19_esc_seq(ch,nester,delimiter)
+      assert ch == '\\'
+      case ch=getchar
+      when "\n"; @linenum+=1; ch
+      when nester,delimiter; ch
+      when /[\s\v\\]/; ch
+      else 
+        back1char
+        result=dquote19_esc_seq('\\',nester,delimiter)
         #/\s|\v/===result and result="\\"+result
         result
       end
