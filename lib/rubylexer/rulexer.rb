@@ -529,16 +529,16 @@ end
             k.tr(ESCAPECHRS,ESCAPESEQS)
          when "M"
             eat_next_if(?-) or raise 'bad \\M sequence'
-            (getchar_maybe_escape | 0x80).chr
+            (getchar_maybe_escape[0] | 0x80).chr
 
          when "C"
             eat_next_if(?-) or raise 'bad \\C sequence'
             nextchar==?? and getchar and return "\177" #wtf?
-            (getchar_maybe_escape & 0x9F).chr
+            (getchar_maybe_escape[0] & 0x9F).chr
 
          when "c"
             nextchar==?? and getchar and return "\177" #wtf?
-            (getchar_maybe_escape & 0x9F).chr
+            (getchar_maybe_escape[0] & 0x9F).chr
 
          when /^[0-7]$/
             str=k
@@ -996,11 +996,12 @@ end
    #-----------------------------------
    def getchar_maybe_escape
       eof? and raise "unterminated dq string"
-      c=getc
+      c=getc.chr
 
-      c == ?\\ and
-         (c = (dquote_esc_seq('\\')[-1] or ?\n))
-
+      if c == "\\"
+         c = @rubyversion >= 1.9 ? dquote19_esc_seq('\\') : dquote_esc_seq('\\')
+         c = "\n" if c.empty?
+      end
       return c
    end
 
