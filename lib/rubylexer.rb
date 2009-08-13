@@ -109,9 +109,6 @@ class RubyLexer
          #?\r => :newline, #implicitly escaped after op
 
          ?\\ => :escnewline,
-         ?\x00 => :eof,
-         ?\x04 => :eof,
-         ?\x1a => :eof,
 
          "[({" => :open_brace,
          "])}" => :close_brace,
@@ -119,7 +116,15 @@ class RubyLexer
 
          ?# => :comment,
 
-         NONASCII => :identifier,
+         ?\x00 => :eof,
+         ?\x04 => :eof,
+         ?\x1a => :eof,
+
+         ?\x01..?\x03 => :illegal_char,
+         ?\x05..?\x08 => :illegal_char,
+         ?\x0E..?\x19 => :illegal_char,
+         ?\x1b..?\x1F => :illegal_char,
+         ?\x7F => :illegal_char,
    }
 
    attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
@@ -176,7 +181,7 @@ class RubyLexer
                           RUBYSYMOPERATORREX
                         end
 
-      @toptable=CharHandler.new(self, :illegal_char, CHARMAPPINGS)
+      @toptable=CharHandler.new(self, :identifier, CHARMAPPINGS)
 
       read_leading_encoding
       start_of_line_directives
