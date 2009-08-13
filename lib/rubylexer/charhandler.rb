@@ -57,6 +57,17 @@ class CharHandler
   end
 
   #-----------------------------------
+  if ( "string".method :each_char  rescue false )
+    def each_char(str,&block)
+      str.each_char(&block)
+    end
+  else
+    def each_char(str,&block)
+      str.each_byte(&block)
+    end
+  end
+
+  #-----------------------------------
   def []=(b,action)  #for use in initialize only
     assert b >= ?\x00
     assert b <= ?\xFF
