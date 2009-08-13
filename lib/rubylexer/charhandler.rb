@@ -69,17 +69,6 @@ class CharHandler
     @receiver.send((@table[b] or @default), b.chr, *args)
   end
 
-  #-----------------------------------
-  def eat_file(file,blocksize,*args)
-    begin
-      chars=file.read(blocksize)
-      md=@matcher.match(chars)
-      mychar=md[0][0]
-      #get file back in the right pos
-      file.pos+=md.offset(0)[0] - chars.length
-      @receiver.send(@default,md[0])
-    end until go(mychar,*args)
-  end
 end
 end
 
