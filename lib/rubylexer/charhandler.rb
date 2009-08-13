@@ -44,7 +44,7 @@ class CharHandler
           self[c]=action
         }
       when String
-        pattern.each_byte {|b| self[b]=action }
+        each_char(pattern) {|b| self[b]=action }
       when Fixnum
         self[pattern]=action
       else
