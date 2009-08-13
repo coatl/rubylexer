@@ -38,17 +38,10 @@ require 'sequence/file'
 require 'sequence/list'
 #-----------------------------------
 assert !defined? ::RubyLexer
-$RuLexer=Class.new{}
-class RubyLexer < $RuLexer
-  RuLexer=$RuLexer
-end
-$RuLexer=nil
-#------------------------------------
 class RubyLexer
   FASTER_STRING_ESCAPES=true
   warn "FASTER_STRING_ESCAPES is off" unless FASTER_STRING_ESCAPES
   AUTO_UNESCAPE_STRINGS=false
-  class RuLexer
    WHSP=" \t\r\v\f"
    WHSPLF=WHSP+"\n"
    #maybe \r should be in WHSPLF instead
@@ -1065,7 +1058,6 @@ protected
     endeval
   end
 
-  end
 
 end
 
