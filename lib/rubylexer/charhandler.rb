@@ -70,7 +70,7 @@ class CharHandler
   #-----------------------------------
   def []=(b,action)  #for use in initialize only
     assert b >= ?\x00
-    assert b <= ?\xFF
+    assert b <= ?\x7F
     assert !frozen?
 
     @table[b]=action
