@@ -30,8 +30,11 @@ class CharHandler
   def initialize(receiver,default,hash) 
     @default=default 
     @receiver=receiver
- #breakpoint
-    @table=Array.new(0)
+    if ?A.is_a? String #ruby >= 1.9
+      @table={}
+    else
+      @table=Array.new(0)
+    end
     @matcher='^[^'
 
     hash.each_pair {|pattern,action|
