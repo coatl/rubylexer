@@ -38,7 +38,6 @@ class CharHandler
       case pattern
       when Range
         pattern.each { |c|
-          c.kind_of? String and c=c[0] #cvt to integer  #still needed?
           self[c]=action
         }
       when String
