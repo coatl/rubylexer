@@ -22,7 +22,11 @@ class RubyLexer
 #------------------------------------
 class CharHandler
   #-----------------------------------
-  CHARSETSPECIALS=CharSet[?[ ,?] ,?\\ ,?-]
+  if ?A.is_a? String #ruby >= 1.9
+    CHARSETSPECIALS=/[\[\]\\\-]/
+  else
+    CHARSETSPECIALS=CharSet[?[ ,?] ,?\\ ,?-]
+  end
   def initialize(receiver,default,hash) 
     @default=default 
     @receiver=receiver

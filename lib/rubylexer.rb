@@ -146,7 +146,11 @@ class RubyLexer
    }.to_s
 
    NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)((?:(?!#@@LETTER_DIGIT).)|\Z)/om
-   NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
+   if ?A.is_a? String #ruby >= 1.9
+     NEVERSTARTPARAMLISTFIRST=/[aoeitrwu]/
+   else
+     NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
+   end
    NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
 
 =begin
