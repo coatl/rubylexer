@@ -30,7 +30,7 @@ class Token
   def strify
     [self.class.name[/[^:]+$/],": ",instance_variables.sort.collect{|v| 
       [v,"=",instance_variable_get(v).inspect," "]
-    }].to_s
+    }].join
   end
 end
 end
