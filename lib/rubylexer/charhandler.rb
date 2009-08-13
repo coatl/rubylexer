@@ -51,7 +51,7 @@ class CharHandler
     }
 
     @matcher += ']$'
-    @matcher=Regexp.new(@matcher)
+    @matcher=Regexp.new(@matcher,0,'n')
 
     freeze
   end
