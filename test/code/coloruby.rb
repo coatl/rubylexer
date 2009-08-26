@@ -5,11 +5,10 @@ require 'term/ansicolor'
 
 def coloruby file,fd=open(file)
   lexer=RubyLexer.new(file,fd)
-  while true
+  begin
     token=lexer.get1token
-    break if RubyLexer::EoiToken===token
     print token.colorize
-  end
+  end until RubyLexer::EoiToken===token
 ensure
   print Term::ANSIColor.reset
 end
@@ -126,6 +125,19 @@ class RubyLexer
   class HereBodyToken
     def colorize
       headtok.string.colorize
+    end
+  end
+
+  class EoiToken
+    def colorize
+      return '' #gyaah, @offset has off by one errors
+      data=begin
+             @file.pos=@offset-1
+             @file.read
+           rescue
+             @file[@offset-1..-1]
+           end
+      dark+green+data+reset
     end
   end
 end
