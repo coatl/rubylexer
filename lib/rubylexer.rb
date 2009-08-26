@@ -2535,8 +2535,11 @@ end
       else
         @moretokens << NoWsToken.new(input_position)
       end
-      return KeywordToken.new(result, input_position-result.size)
-      #result should distinguish unary !
+      ty= @rubyversion>=1.9 ? OperatorToken : KeywordToken
+      result=ty.new(result, input_position-result.size)
+      result.unary=!k #result should distinguish unary !
+
+      return result
    end
 
 
