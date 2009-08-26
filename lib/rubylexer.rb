@@ -629,6 +629,7 @@ private
      assignment_coming=case nc=nextchar
        when ?=;  not /^=[>=~]$/===readahead(2)
        when ?,; comma_in_lvalue_list? 
+       when (?; if @rubyversion>=1.9); BlockParamListLhsContext===@parsestack.last
        when ?); last_context_not_implicit.lhs
        when ?i; /^in(?!#@@LETTER_DIGIT)/o===readahead(3) and 
                   ForSMContext===last_context_not_implicit
