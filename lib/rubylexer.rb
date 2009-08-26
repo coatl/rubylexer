@@ -162,7 +162,7 @@ class RubyLexer
 =end
 
    #-----------------------------------
-   def initialize(filename,file,linenum=1,offset_adjust=0,options={:rubyversion=>1.8})
+   def initialize(filename,file,linenum=1,offset_adjust=0,options={})
       @offset_adjust=0 #set again in next line
       rulexer_initialize(filename,file, linenum,offset_adjust)
       @start_linenum=linenum
@@ -177,7 +177,7 @@ class RubyLexer
       @enable_macro=nil
       @base_file=nil
       @progress_thread=nil
-      @rubyversion=options[:rubyversion]
+      @rubyversion=options[:rubyversion]||1.8
       @encoding=options[:encoding]||:detect
       @method_operators=if @rubyversion>=1.9 
                           /#{RUBYSYMOPERATORREX}|\A![=~]?\Z/o
