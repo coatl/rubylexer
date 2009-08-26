@@ -180,7 +180,7 @@ class RubyLexer
       @rubyversion=options[:rubyversion]||1.8
       @encoding=options[:encoding]||:detect
       @method_operators=if @rubyversion>=1.9 
-                          /#{RUBYSYMOPERATORREX}|\A![=~]?\Z/o
+                          /#{RUBYSYMOPERATORREX}|\A![=~@]?/o
                         else
                           RUBYSYMOPERATORREX
                         end
