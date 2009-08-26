@@ -2531,10 +2531,9 @@ end
       k=eat_next_if(/[~=]/)
       if k
         result+=k
-      elsif eof? #do nothing
+      elsif eof? or WHSPLF[nextchar.chr] #do nothing
       else
-        WHSPLF[nextchar.chr] or
-          @moretokens << NoWsToken.new(input_position)
+        @moretokens << NoWsToken.new(input_position)
       end
       return KeywordToken.new(result, input_position-result.size)
       #result should distinguish unary !
