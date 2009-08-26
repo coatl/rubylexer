@@ -360,6 +360,7 @@ private
      return true if (defined? @in_def) and @in_def
      @parsestack.reverse_each{|ctx|
        ctx.starter=='def' and ctx.state!=:saw_def and return true
+       ctx.starter=='class' || ctx.starter=='module' and return false
      }
      return false
    end
