@@ -83,15 +83,17 @@ class RubyLexer
   end
 
   class NumberToken
-    def color; dark+blue end
+    def colorize
+      dark+blue+ident+reset
+    end
   end
 
   class SymbolToken
     def colorize
       if StringToken===ident
-        dark+blue+':'+ident.colorize
+        dark+blue+':'+ident.colorize+reset
       else
-        dark+blue+ident
+        dark+blue+ident+reset
       end
     end
   end
