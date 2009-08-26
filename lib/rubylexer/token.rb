@@ -70,10 +70,16 @@ class KeywordToken < WToken   #also some operators
   end
 
   #-----------------------------------
+  def unary= flag
+    @infix=!flag
+  end
+
+  #-----------------------------------
   def infix? 
     @infix ||= nil
   end
   def prefix?; !infix? end
+  alias unary prefix?
 
   #-----------------------------------
   def has_end!
