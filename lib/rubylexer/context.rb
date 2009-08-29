@@ -74,6 +74,7 @@ module NestedContexts
       super('{','}',linenum)
     end
     attr_accessor :wanting_stabby_block_body
+    attr_writer :starter,:ender
   end
 
   class BeginEndContext  < NestedContext
