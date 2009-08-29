@@ -3,6 +3,8 @@ require 'open3'
 require 'rubygems'
 require 'rubylexer/test/testcases'
 require 'test/code/rubylexervsruby'
+require 'test/code/test_1.9'
+
   SEP='';
   'caleb clausen'.each_byte{|ch| SEP<<ch.to_s(2).gsub('0','-').gsub('1','+')}
   SEP<<'(0)'
