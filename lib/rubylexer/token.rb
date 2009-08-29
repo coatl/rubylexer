@@ -563,7 +563,7 @@ EndDefHeaderToken=EndHeaderToken
 
 #-------------------------
 class EscNlToken < IgnoreToken
-   def initialize(filename,linenum,ident="\\\n",offset=nil)
+   def initialize(ident,offset,filename=nil,linenum=nil)
       super(ident,offset)
       #@char='\\'
       @filename=filename
