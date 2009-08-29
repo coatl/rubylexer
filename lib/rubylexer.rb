@@ -1994,7 +1994,7 @@ end
       @offset_adjust=@min_offset_adjust
       @moretokens.push( *optional_here_bodies )
       ln=@linenum
-      @moretokens.push lexerror(EscNlToken.new(@filename,ln-1,result,input_position-result.size), error),
+      @moretokens.push lexerror(EscNlToken.new(result,input_position-result.size,@filename,ln-1), error),
                        FileAndLineToken.new(@filename,ln,input_position)
 
       start_of_line_directives
@@ -2010,7 +2010,7 @@ if true
       pos=input_position
       while body=@pending_here_bodies.shift
         #body.offset=pos
-        result.push EscNlToken.new(@filename,nil,"\n",body.offset-1)
+        result.push EscNlToken.new("\n",body.offset-1,@filename,nil)
         result.push FileAndLineToken.new(@filename,body.ident.line,body.offset)
         result.push body
         #result.push NoWsToken.new @pending_here_bodies.empty? ? input_position : @pending_here_bodies.first
@@ -2179,7 +2179,7 @@ end
         @offset_adjust=@min_offset_adjust
         offset= input_position
         nl=readnl
-        @moretokens.push EscNlToken.new(@filename,@linenum-1,nl,offset),
+        @moretokens.push EscNlToken.new(nl,offset,@filename,@linenum-1),
            FileAndLineToken.new(@filename,@linenum,input_position)
       end
 
@@ -2508,7 +2508,7 @@ end
         last_context_not_implicit.lhs=false
         @last_operative_token=result
         @moretokens.push( *ignored_tokens(true).map{|x| 
-          NewlineToken===x ? EscNlToken.new(@filename,@linenum,x.ident,x.offset) : x 
+          NewlineToken===x ? EscNlToken.new(x.ident,x.offset,@filename,@linenum) : x 
         } )
         @parsestack.push AssignmentRhsContext.new(@linenum)
         if eat_next_if ?* 
