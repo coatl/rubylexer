@@ -2673,14 +2673,32 @@ end
         #abort_noparens!
         tokch.set_infix!
         tokch.as="do"
-#=begin not needed now, i think
+
+        #if (perhaps deep) inside a stabby block param list context, end it
+        if @rubyversion>=1.9     
+          (@parsestack.size-1).downto(1){|i|
+            case @parsestack[i]
+            when ParamListContextNoParen,AssignmentRhsContext
+              #do nothing yet... see if inside a UnparenedParamListLhsContext
+            when UnparenedParamListLhsContext #stabby proc
+              @moretokens<<tokch
+              (@parsestack.size-1).downto(i){|j|
+                @moretokens.unshift @parsestack[j].endtoken(input_position-1)
+              }
+              @parsestack[i..-1]=[]
+              tokch=@moretokens.shift
+              break
+            else break
+            end
+          }
+        end
+
         # 'need to find matching callsite context and end it if implicit'
         lasttok=last_operative_token
         if !(lasttok===')' and lasttok.callsite?) #or ParamListContextNoParen===parsestack.last
           @moretokens.push( *(abort_1_noparen!(1).push tokch) )
           tokch=@moretokens.shift
         end
-#=end
 
         if BlockContext===@parsestack.last and @parsestack.last.wanting_stabby_block_body
           @parsestack.last.wanting_stabby_block_body=false
