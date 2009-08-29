@@ -935,12 +935,13 @@ private
      result=[]
      ws.scan(/\G#@@WSTOK/o){|ws|
        incr= $~.begin(0)
-       klass=case ws
-       when /\A[\#=]/; CommentToken
-       when /\n\Z/; EscNlToken
-       else WsToken
+       tok=case ws
+       when /\A[\#=]/; IgnoreToken.new(ws,offset+incr)
+       when /\n\Z/; EscNlToken.new(ws,offset+incr,@filename,@linenum)
+       else WsToken.new(ws,offset+incr)
        end
-       result << klass.new(ws,offset+incr)
+       result << tok
+       @linenum+=ws.count "\n"
      }
      result.each_with_index{|ws,i|
        if WsToken===ws
