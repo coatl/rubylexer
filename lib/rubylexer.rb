@@ -877,6 +877,7 @@ private
   CONTEXT2ENDTOK_FOR_DO={
     AssignmentRhsContext=>AssignmentRhsListEndToken, 
     ParamListContextNoParen=>ImplicitParamListEndToken,
+    UnparenedParamListLhsContext=>KwParamListEndToken,
     ExpectDoOrNlContext=>1,
     #WhenParamListContext=>KwParamListEndToken,
     #RescueSMContext=>KwParamListEndToken
