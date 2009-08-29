@@ -35,7 +35,7 @@ class Token
 end
 end
 
-macros=silent=file=nil
+name=macros=silent=file=nil
 options={}
 #allow -e
 opts=GetoptLong.new(
