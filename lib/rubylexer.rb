@@ -2336,7 +2336,7 @@ end
             #for is also in NewlineToken branch, below.
             #what about rescue?
             return false
-         when /^(#{RUBYOPERATORREX}|#{INNERBOUNDINGWORDS}|do)$/o.token_pat
+         when /^(#{RUBYOPERATORREX}|#{INNERBOUNDINGWORDS}|do|->)$/o.token_pat
             #regexs above must match whole string
             #assert(@last_operative_token==$&) #disabled 'cause $& is now always nil :(
             return true if OperatorToken===@last_operative_token || KeywordToken===@last_operative_token
