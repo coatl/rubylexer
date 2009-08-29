@@ -930,7 +930,7 @@ private
    #-----------------------------------
    @@SPACES=/[\ \t\v\f\v]/
    @@WSTOK=/\r?\n|\r*#@@SPACES+(?:#@@SPACES|\r(?!\n))*|\#[^\n]*\n|\\\r?\n|
-            ^=begin(?:[\s].*)?\n(?:(?!=end).*\n)*=end[\s\n].*\n/x
+            ^=begin(?:#@@SPACES.*)?\n(?:(?!=end).*\n)*=end(?:#@@SPACES.*)?\n/x
    @@WSTOKS=/(?!=begin)#@@WSTOK+/o
    def divide_ws(ws,offset)
      result=[]
