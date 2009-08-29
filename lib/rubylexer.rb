@@ -2451,6 +2451,7 @@ end
         if (?0..?9)===readahead(2)[1]
           result= number(ch)
         elsif @rubyversion>=1.9 and '->' == readahead(2) #stabby proc
+          @file.pos+=2
           #push down block context
           localvars.start_block
           @parsestack.push ctx=BlockContext.new(@linenum)
