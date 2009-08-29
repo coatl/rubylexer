@@ -216,7 +216,7 @@ class RubyLexer
      if @file.skip( /\A#!/ )
        loop do
          til_charset( /[\s\v]/ )
-         break if @file.match( / ([^-\s\v]|--[\s\v])/,4 )
+         break if @file.match( /^\n|[\s\v]([^-\s\v]|--?[\s\v])/,4 )
          if @file.skip( /.-K(.)/ )
            case $1
            when 'u'; @encoding=:utf8
