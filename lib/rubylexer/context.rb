@@ -119,6 +119,9 @@ module NestedContexts
   class UnparenedParamListLhsContext < ImplicitLhsContext
     def starter; huh end  #" " ???
     def ender; huh end    #; or \n when from method def, { or do when from stabby block
+    def endtoken offset
+      KwParamListEndToken.new offset
+    end
   end
 
   class ImplicitContext < ListContext
@@ -130,6 +133,9 @@ module NestedContexts
     end
     def lhs; false end
     def wantarrow; true end
+    def endtoken offset
+      ImplicitParamListEndToken.new offset
+    end
   end
 
   class KWParamListContextNoParen < ParamListContextNoParen
@@ -159,6 +165,9 @@ module NestedContexts
     end
     def multi_assign?
       @multi if defined? @multi 
+    end
+    def endtoken offset
+      AssignmentRhsEndToken.new offset
     end
   end
 
