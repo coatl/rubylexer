@@ -1465,6 +1465,7 @@ end
          elsif starter==?(
            ctx_type=UnparenedParamListLhsContext #hacky... should be a param?
            @parsestack.push ctx_type.new(@linenum)
+           a<<KwParamListStartToken.new( input_position )
          end
 
          set_last_token KeywordToken.new( ';' )
