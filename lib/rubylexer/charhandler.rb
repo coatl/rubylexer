@@ -59,7 +59,7 @@ class CharHandler
   end
 
   #-----------------------------------
-  if ( "string".method :each_char  rescue false )
+  if String===?a 
     def each_char(str,&block)
       str.each_char(&block)
     end
