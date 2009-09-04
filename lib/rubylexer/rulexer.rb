@@ -837,11 +837,6 @@ end
       return result
    end
    
-   #-----------------------------------
-   def here_spread_over_ruby_code(rl,tok)
-     lexerror tok, 'here body outside string inclusion'
-   end
-   
 
    #-----------------------------------
 #   BINCHARS=?0..?1
