@@ -2,41 +2,28 @@ require 'test/unit'
 require "rubylexer"
 
 class Ruby1_9Tests < Test::Unit::TestCase
+  EXPECT_NO_METHODS=[ #no errors either
+    '->a; h do 123 end',
+    '->{}',
+    '-> {}',
+    '->;{}',
+    '->(;){}',
+    '->a{}',
+    '->a {}',
+    '->a;{}',
+    '->(a;){}',
+    '->a,b{}',
+    '->a,b;{}',
+    '->a,b;c{}',
+    '->(a,b;){}',
+    '->(a,b;c){}',
+  ]
+
   def test_stabby_roughly
-    tokens=RubyLexer.new('string','->a; h do 123 end',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-
-    tokens=RubyLexer.new('string','-> {}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-
-    tokens=RubyLexer.new('string','->;{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-
-    tokens=RubyLexer.new('string','->a{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->a {}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->a;{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->a,b{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->a,b;{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
-
-    tokens=RubyLexer.new('string','->a,b;c{}',1,0,:rubyversion=>1.9).to_a
-    assert_equal [],tokens.grep(RubyLexer::ErrorToken)
-    assert_equal [],tokens.grep(RubyLexer::MethNameToken)
+    EXPECT_NO_METHODS.each{|snippet| 
+      tokens=RubyLexer.new('string',snippet,1,0,:rubyversion=>1.9).to_a
+      assert_equal [],tokens.grep(RubyLexer::MethNameToken)
+      assert_equal [],tokens.grep(RubyLexer::ErrorToken)
+    }
   end
 end
