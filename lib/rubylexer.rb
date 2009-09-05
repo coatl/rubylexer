@@ -886,6 +886,17 @@ private
     #assert @moretokens.empty?
     result=[]
     while klass=CONTEXT2ENDTOK_FOR_DO[@parsestack.last.class]
+      if klass==AssignmentRhsListEndToken
+        i=@parsestack.size
+        end_the_assign=false
+        while AssignmentRhsContext===@parsestack[i-=1]
+          if CONTEXT2ENDTOK_FOR_DO[@parsestack[i-1].class] and 
+             @parsestack[i-1].class!=AssignmentRhsContext
+               break end_the_assign=true
+          end
+        end
+        break unless end_the_assign
+      end
       break if klass==1
       result << klass.new(input_position-str.length)
       @parsestack.pop 
