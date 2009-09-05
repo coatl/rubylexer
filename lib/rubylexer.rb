@@ -857,14 +857,14 @@ private
     result=[]
     ctx=@parsestack.last
     while klass=CONTEXT2ENDTOK_FOR_RESCUE[ctx.class]
-      break if AssignmentRhsContext===ctx && !ctx.multi_assign? 
-      if ParamListContextNoParen===ctx && AssignmentRhsContext===@parsestack[-2]
-        result.push ImplicitParamListEndToken.new(input_position-str.length),
-                    AssignmentRhsListEndToken.new(input_position-str.length)
-          @parsestack.pop
-          @parsestack.pop
-        break
-      end
+#      break if AssignmentRhsContext===ctx && !ctx.multi_assign? 
+#      if ParamListContextNoParen===ctx && AssignmentRhsContext===@parsestack[-2]
+#        result.push ImplicitParamListEndToken.new(input_position-str.length),
+#                    AssignmentRhsListEndToken.new(input_position-str.length)
+#          @parsestack.pop
+#          @parsestack.pop
+#        break
+#      end
       result << klass.new(input_position-str.length) #unless AssignmentRhsContext===ctx and !ctx.multi_assign?
       break if RescueSMContext===ctx #why is this here?
       @parsestack.pop 
