@@ -2515,6 +2515,7 @@ end
           NewlineToken===x ? EscNlToken.new(x.ident,x.offset,@filename,@linenum) : x 
         } )
         @parsestack.push AssignmentRhsContext.new(@linenum)
+        @moretokens.push AssignmentRhsListStartToken.new( input_position)
         if eat_next_if ?* 
           tok=OperatorToken.new('*', input_position-1)
           tok.tag=:unary
@@ -2523,7 +2524,6 @@ end
             @moretokens << NoWsToken.new(input_position)
           comma_in_lvalue_list? #is this needed?
         end
-        @moretokens.push AssignmentRhsListStartToken.new( input_position)
       end
       return result
    end
