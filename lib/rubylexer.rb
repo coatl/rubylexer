@@ -2791,31 +2791,29 @@ end
   def comma(ch)
     @moretokens.push token=single_char_token(ch)
 
-    #if 1 or more assignment rhs seen inside method param list, when param list, 
-    #       array or hash literal, rescue where comma is expected, or method def param list
-    #          then end the assignment rhs now
-       #+[OBS,ParamListContext|ParamListContextNoParen|WhenParamListContext|ListImmedContext|
-       #      (RescueSMContext&-{:state=>:rescue})|(DefContext&-{:in_body=>FalseClass|nil}),
-       #  AssignmentRhsContext.+
-       #]===@parsestack
-    assign_rhss=ii=0
-    (@parsestack.size-1).downto(1) do |i| ii=i
-      break unless AssignmentRhsContext===@parsestack[i]
-      assign_rhss+=1
-    end
-    if ParamListContext===@parsestack[ii] || 
-       ParamListContextNoParen===@parsestack[ii] ||
-       WhenParamListContext===@parsestack[ii] ||
-       ListImmedContext===@parsestack[ii] ||
-       (RescueSMContext===@parsestack[ii] && @parsestack[ii].state==:rescue) ||
-       (DefContext===@parsestack[ii] && !@parsestack[ii].in_body)
-         assign_rhss.times do
-           @parsestack.pop
-           @moretokens.unshift AssignmentRhsListEndToken.new(input_position)
-         end
-    end
     case @parsestack[-1]
-    when AssignmentRhsContext; token.tag=:rhs
+    when AssignmentRhsContext; 
+       token.tag=:rhs
+      #if assignment rhs seen inside method param list, when param list, 
+      #       array or hash literal, rescue where comma is expected, method def param list,
+      #       or another right hand side
+      #          then end the assignment rhs now
+       #+[OBS,ParamListContext|ParamListContextNoParen|WhenParamListContext|ListImmedContext|AssignmentRhsContext|
+       #      (RescueSMContext&-{:state=>:rescue})|(DefContext&-{:in_body=>FalseClass|nil}),
+       #  AssignmentRhsContext
+       #]===@parsestack
+       pop=
+         case @parsestack[-2]
+         when ParamListContext,ParamListContextNoParen,WhenParamListContext,
+              ListImmedContext,AssignmentRhsContext; true
+         when RescueSMContext; @parsestack[-2].state==:rescue
+         when DefContext; !@parsestack[-2].in_body
+         else false
+         end
+       if pop
+         @parsestack.pop
+         @moretokens.unshift AssignmentRhsListEndToken.new(input_position)
+       end
     when ParamListContext,ParamListContextNoParen; #:call
     when ListImmedContext; #:array
     when BlockParamListLhsContext,UnparenedParamListLhsContext; #:block or stabby proc
