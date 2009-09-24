@@ -1,4 +1,4 @@
-=begin legal crap
+=begin 
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2008  Caleb Clausen
 
@@ -74,7 +74,7 @@ module NestedContexts
       super('{','}',linenum)
     end
     attr_accessor :wanting_stabby_block_body
-    attr_writer :starter,:ender
+    #attr_writer :starter,:ender
   end
 
   class BeginEndContext  < NestedContext
