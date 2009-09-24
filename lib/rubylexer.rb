@@ -2698,7 +2698,8 @@ end
       when '{'
       #check if we are in a hash literal or string inclusion (#{}),
       #in which case below would be bad.
-      if after_nonid_op?{false} or @last_operative_token.has_no_block?
+      if  !(UnparenedParamListLhsContext===@parsestack.last) and 
+          after_nonid_op?{false} || @last_operative_token.has_no_block?
         @parsestack.push ListImmedContext.new(ch,@linenum) #that is, a hash
       else
         #abort_noparens!
