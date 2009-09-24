@@ -558,6 +558,7 @@ private
      #@defining_lvar is a hack
      @defining_lvar or case ctx=@parsestack.last
        #when ForSMContext; ctx.state==:for
+       when UnparenedParamListLhsContext;  /^(->|,|;)$/===lasttok.ident
        when RescueSMContext
          lasttok.ident=="=>" and @file.match?( /\A[\s\v]*([:;#\n]|then(?!#@@LETTER_DIGIT))/om )
        #when BlockParamListLhsContext; true
