@@ -1407,9 +1407,11 @@ private
          #do nothing
          return result
    end
-   for kw in VARLIKE_KEYWORDLIST+["defined?", "not"] do
+   for kw in VARLIKE_KEYWORDLIST-["__FILE__","__LINE__"]+["defined?", "not"] do
      alias_method "keyword_#{kw}".to_sym, :_keyword_varlike
    end
+
+   
 
    private
 
