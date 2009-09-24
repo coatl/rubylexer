@@ -17,6 +17,7 @@ class Ruby1_9Tests < Test::Unit::TestCase
     '->a,b;c{}',
     '->(a,b;){}',
     '->(a,b;c){}',
+    '$f.($x,$y)',
   ]
 
   def test_stabby_roughly
