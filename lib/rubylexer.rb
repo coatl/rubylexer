@@ -2707,6 +2707,7 @@ end
 
         #if (perhaps deep) inside a stabby block param list context, end it
         if @rubyversion>=1.9     
+          stabby_params_just_ended=false
           (@parsestack.size-1).downto(1){|i|
             case @parsestack[i]
             when ParamListContextNoParen,AssignmentRhsContext
@@ -2718,6 +2719,7 @@ end
               }
               @parsestack[i..-1]=[]
               tokch=@moretokens.shift
+              stabby_params_just_ended=true
               break
             else break
             end
@@ -2726,7 +2728,7 @@ end
 
         # 'need to find matching callsite context and end it if implicit'
         lasttok=last_operative_token
-        if !(lasttok===')' and lasttok.callsite?) #or ParamListContextNoParen===parsestack.last
+        if !(lasttok===')' and lasttok.callsite?) and !stabby_params_just_ended #or ParamListContextNoParen===parsestack.last
           @moretokens.push( *(abort_1_noparen!(1).push tokch) )
           tokch=@moretokens.shift
         end
