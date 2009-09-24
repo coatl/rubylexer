@@ -1373,6 +1373,22 @@ private
          return result
    end
 
+   def keyword___FILE__(str,offset,result)
+     result.last.value=@filename
+     return result
+   end
+
+   def keyword___LINE__(str,offset,result)
+     result.last.value=@linenum
+     return result
+   end
+ 
+   module RubyLexer1_9
+     def keyword___ENCODING__(str,offset,result)
+       #result.last.value=huh
+       return result
+     end
+   end
 
    def _keyword_funclike(str,offset,result)
          if @last_operative_token===/^(\.|::)$/
