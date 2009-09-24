@@ -1296,10 +1296,19 @@ private
 
    def keyword_rescue(str,offset,result)
          unless after_nonid_op? {false}
+           result.replace []
            #rescue needs to be treated differently when in operator context... 
            #i think no RescueSMContext should be pushed on the stack...
-           result.first.set_infix!            #plus, the rescue token should be marked as infix
-           result.unshift(*abort_noparens_for_rescue!(str))  
+           tok=OperatorToken.new(str,offset)
+           tok.unary=false           #plus, the rescue token should be marked as infix
+           if AssignmentRhsContext===@parsestack.last
+             tok.as="rescue3"
+             @parsestack.pop #end rhs context
+             result.push AssignmentRhsListEndToken.new(offset) #end rhs token
+           else
+             result.concat abort_noparens_for_rescue!(str)
+           end
+           result.push tok
          else         
            result.push KwParamListStartToken.new(offset+str.length)
            #corresponding EndToken emitted by abort_noparens! on leaving rescue context
