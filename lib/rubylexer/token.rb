@@ -63,6 +63,7 @@ class KeywordToken < WToken   #also some operators
     @callsite if defined? @callsite
   end
 
+  attr_accessor :value
 
   #-----------------------------------
   def set_infix! 
