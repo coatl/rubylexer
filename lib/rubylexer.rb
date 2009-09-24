@@ -158,7 +158,7 @@ class RubyLexer
    utf8=String::PATTERN_UTF8 #or euc, or sjis...
    LCLETTER_U="(?>[a-z_]|#{utf8})"
    LETTER_U="(?>[A-Za-z_]|#{utf8})"
-   IDENTCHAR_U="(?>[A-Za-z_0-9]|#{utf8})"
+   LETTER_DIGIT_U="(?>[A-Za-z_0-9]|#{utf8})"
 =end
 
    #-----------------------------------
