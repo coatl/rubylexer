@@ -1097,8 +1097,7 @@ private
          else
             result.last.has_end!
             if BlockContext===ctx and ctx.wanting_stabby_block_body
-              ctx.wanting_stabby_block_body=false
-              ctx.starter,ctx.ender="do","end"
+              @parsestack[-1]= WantsEndContext.new(str,@linenum)            
             else
               @parsestack.push WantsEndContext.new(str,@linenum)            
               localvars.start_block
