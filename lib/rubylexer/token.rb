@@ -110,9 +110,16 @@ end
 #-------------------------
 class OperatorToken < WToken
   attr_accessor :unary
+  attr_writer :as
   alias prefix? unary
   def infix?; !prefix? end
 
+  def as
+    return @as if defined? @as
+    if tag and ident[/^[,*&]$/]
+      tag.to_s+ident
+    end
+  end       
 end
 
 
