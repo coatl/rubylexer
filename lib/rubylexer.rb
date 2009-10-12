@@ -2280,15 +2280,15 @@ end
 
          begin
            eof? and raise "eof before =end"
-           more<< til_charset(/[\r\n]/)
+           more<< til_charset(/\n/)
            eof? and raise "eof before =end"
            more<< readnl
          end until readahead(EQENDLENGTH)==EQEND
 
          #read rest of line after =end
-         more << til_charset(/[\r\n]/)  
-         assert((eof? or ?\r===nextchar or ?\n===nextchar))
-         assert !(/[\r\n]/===more[-1,1])
+         more << til_charset(/\n/)  
+         assert((eof? or ?\n===nextchar))
+         assert !(/\n/===more[-1,1])
          more<< readnl unless eof?
 
 #         newls= more.scan(/\r\n?|\n\r?/)
