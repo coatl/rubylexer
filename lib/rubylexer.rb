@@ -1133,8 +1133,8 @@ private
                 result << tok
               end until  parencount==0 #@parsestack.size==old_size
               @localvars_stack.push SymbolTable.new
-           else #no parentheses, all tail
-             set_last_token KeywordToken.new(".") #hack hack
+            else #no parentheses, all tail
+              set_last_token KeywordToken.new(".") #hack hack
               tokindex=result.size
               result << tok=symbol(false,false)
               name=tok.to_s
