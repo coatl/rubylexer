@@ -211,6 +211,9 @@ module NestedContexts
     end
 
     attr :in_body
+
+    attr_writer :has_parens
+    def has_parens?; @has_parens end
   end
 
   class StringContext < NestedContext #not used yet
