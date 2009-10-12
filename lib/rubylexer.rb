@@ -579,6 +579,7 @@ private
    #whitespace before but not after the 'operator' indicates it is to be considered a
    #value token instead. otherwise it is a binary operator. (unary (prefix) ops count 
    #as 'values' here.)
+   #this is by far the ugliest method in RubyLexer.
    def var_or_meth_name(name,lasttok,pos,was_after_nonid_op)
      #look for call site if not a keyword or keyword is function-like
      #look for and ignore local variable names
