@@ -1190,6 +1190,7 @@ private
                nc=(@moretokens.empty? ? nextchar.chr : @moretokens.first.to_s[0,1])
                if state==:expect_op and /^(?:#@@LETTER|[(&*])/o===nc
                   ctx.state=:def_param_list
+                  ctx.has_parens= '('==nc
                   list,listend=def_param_list
                   result.concat list
                   end_index=result.index(listend)
