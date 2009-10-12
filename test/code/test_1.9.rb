@@ -32,7 +32,7 @@ class Ruby1_9Tests < Test::Unit::TestCase
     'def __LINE__.foo; 1 end',
   ]
 
-  def test_stabby_roughly
+  def test_1_9_roughly
     EXPECT_NO_METHODS.each{|snippet| 
       begin
         tokens=RubyLexer.new('string',snippet,1,0,:rubyversion=>1.9).to_a
