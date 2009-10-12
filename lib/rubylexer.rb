@@ -478,12 +478,9 @@ private
       if @parsestack.last.wantarrow and @rubyversion>=1.9 and @file.skip ":"
         @moretokens.push SymbolToken.new(str,oldpos), KeywordToken.new("=>",input_position-1)
       else
-        @moretokens.unshift(*parse_keywords(str,oldpos) do |tok|
-          #if not a keyword, decide if it should be var or method
-          case str
-            when FUNCLIKE_KEYWORDS; except=tok
-            when VARLIKE_KEYWORDS,RUBYKEYWORDS; raise "shouldnt see keywords here, now"
-          end
+        @moretokens.unshift(*parse_keywords(str,oldpos) do |tok,except|
+          #most callers of this block pass nothing(==nil) for except. only _keyword_funclike passes a true val
+
           was_last=@last_operative_token
           @last_operative_token=tok if tok
           normally=safe_recurse { |a| var_or_meth_name(str,was_last,oldpos,after_nonid_op?{true}) }
@@ -1406,7 +1403,8 @@ private
          if @last_operative_token===/^(\.|::)$/
            result=yield MethNameToken.new(str) #should pass a methname token here
          else
-           result=yield KeywordToken.new(str)
+           tok=KeywordToken.new(str)
+           result=yield tok,tok
          end
          return result
    end
