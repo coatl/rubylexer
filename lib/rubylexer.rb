@@ -1397,6 +1397,8 @@ private
        #result.last.value=huh
        return result
      end
+
+     def keyword_not(*args,&block) _keyword_funclike(*args,&block) end
    end
 
    def _keyword_funclike(str,offset,result)
