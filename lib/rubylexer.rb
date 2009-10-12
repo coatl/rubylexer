@@ -1883,7 +1883,7 @@ end
            context=merge_assignment_op_in_setter_callsites? ? ?: : nc
            return [identifier_as_string(context), start]
          when ?(
-           return [nil,start] if @enable_macro
+           return [nil,start] if @enable_macro or @rubyversion>=1.9
      end
 
      set_last_token KeywordToken.new(';')
