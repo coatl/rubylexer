@@ -42,7 +42,7 @@ class Ruby1_9Tests < Test::Unit::TestCase
         raise e.class.new(e.message+" while testing '#{snippet}'")
       end
     }
-    EXPECT_1_METHODS.each{|snippet| 
+    EXPECT_1_METHOD.each{|snippet| 
       begin
         tokens=RubyLexer.new('string',snippet,1,0,:rubyversion=>1.9).to_a
         assert_equal 1,tokens.grep(RubyLexer::MethNameToken).size
