@@ -23,12 +23,13 @@ class Ruby1_9Tests < Test::Unit::TestCase
   ]
 
   EXPECT_1_METHOD=[
-    'def __ENCODING__.foo; 1 end',
-    'def __FILE__.foo; 1 end',
-    'def __LINE__.foo; 1 end',
     'def self.foo; 1 end',
     '->{ foo=1 }; foo',
     '->do foo=1 end; foo',
+    'def __ENCODING__; 342 end',
+    'def __ENCODING__.foo; 1 end',
+    'def __FILE__.foo; 1 end',
+    'def __LINE__.foo; 1 end',
   ]
 
   def test_stabby_roughly
