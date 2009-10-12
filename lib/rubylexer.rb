@@ -977,7 +977,7 @@ private
       assert !(KeywordToken===@last_operative_token and /A(\.|::|def)\Z/===@last_operative_token.ident)
       result=[KeywordToken.new(str,offset)]
 
-      m="keyword_#{str}"
+      m=:"keyword_#{str}"
       respond_to?(m) ? (send m,str,offset,result,&block) : block[MethNameToken.new(str)]
    end
    public #these have to be public so respond_to? can see them (sigh)
