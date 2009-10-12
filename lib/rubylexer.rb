@@ -2835,15 +2835,16 @@ end
        #      (RescueSMContext&-{:state=>:rescue})|(DefContext&-{:in_body=>FalseClass|nil}),
        #  AssignmentRhsContext
        #]===@parsestack
-       pop=
-         case @parsestack[-2]
-         when ParamListContext,ParamListContextNoParen,WhenParamListContext,
-              ListImmedContext,AssignmentRhsContext; true
-         when RescueSMContext; @parsestack[-2].state==:rescue
-         when DefContext; !@parsestack[-2].in_body
-         else false
-         end
-       if pop
+       while AssignmentRhsContext===@parsestack[-1]
+         pop=
+           case @parsestack[-2]
+           when ParamListContext,ParamListContextNoParen,WhenParamListContext,
+                ListImmedContext,AssignmentRhsContext; true
+           when RescueSMContext; @parsestack[-2].state==:rescue
+           when DefContext; !@parsestack[-2].in_body and !@parsestack[-2].has_parens?
+           else false
+           end
+         break unless pop
          @parsestack.pop
          @moretokens.unshift AssignmentRhsListEndToken.new(input_position)
        end
