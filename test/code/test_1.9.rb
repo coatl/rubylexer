@@ -18,6 +18,8 @@ class Ruby1_9Tests < Test::Unit::TestCase
     '->(a,b;){}',
     '->(a,b;c){}',
     '$f.($x,$y)',
+    '$f::($x,$y)',
+    '__ENCODING__',
   ]
 
   EXPECT_1_METHOD=[
