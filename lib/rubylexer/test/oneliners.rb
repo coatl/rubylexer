@@ -6,6 +6,10 @@ def x; yield end #this must be first!!!!
 module A 55 end
 module Array([Array]).first::E; end
 module Array ([Array]).first::E; end
+module Array([Array]).first::E include M; end
+module Array ([Array]).first::E include M; end
+module Array([Array]).first::E include M end
+module Array ([Array]).first::E include M end
 x{a=Array; module a::Foo; 55 end}
 x{a=Array; module a::Foo include a; 55 end}
 x{a=Array; module a::Foo include a; a end}
