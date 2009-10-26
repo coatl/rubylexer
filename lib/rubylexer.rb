@@ -1017,29 +1017,40 @@ private
    def keyword_module(str,offset,result) 
          result.first.has_end!
          @parsestack.push WantsEndContext.new(str,@linenum)
-         @localvars_stack.push SymbolTable.new 
          offset=input_position
-         @file.scan(/\A(#@@WSTOKS)?(::)?/o) 
-         md=@file.last_match
-         all,ws,dc=*md
-         fail if all.empty?
-         @moretokens.concat divide_ws(ws,offset) if ws
-         @moretokens.push KeywordToken.new('::',offset+md.end(0)-2) if dc
-         loop do
-           offset=input_position
-           @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)(::)?/o)
+         assert @moretokens.empty?
+         tokens=[]
+         if @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) 
            md=@file.last_match
-           all,ws,name,dc=*md
-           if ws
-             @moretokens.concat divide_ws(ws,offset)
-             incr=ws.size
+           all,ws,name=*md
+           tokens.concat divide_ws(ws,offset) if ws
+           tokens.push VarNameToken.new(name,offset+md.begin(2))
+         end
+         tokens.push *read_arbitrary_expression{|tok|
+           @file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o #or
+             #VarNameToken===tok && !@file.check( /\A(#@@WSTOKS)?::/ )
+           #NewlineToken===tok or 
+           #  KeywordToken===tok && /^(::|;|end)$/===tok.ident
+         } if !name or @file.check /#@@WSTOKS?::/
+         @moretokens[0,0]=tokens
+         @localvars_stack.push SymbolTable.new
+         while @file.check /\A::/
+               #VarNameToken===@moretokens.last or 
+               #KeywordToken===@moretokens.last && @moretokens.last.ident=="::"
+           offset=input_position
+           @file.scan(/\A(#@@WSTOKS)?(::)?(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) or break
+           md=@file.last_match
+           all,ws1,dc,ws2,name=*md
+           if ws1
+             @moretokens.concat divide_ws(ws1,offset)
+             incr=ws1.size
            else
              incr=0
            end
-           @moretokens.push VarNameToken.new(name,offset+incr)
-           break unless dc
-           @moretokens.push NoWsToken.new(offset+md.end(0)-2)
-           @moretokens.push KeywordToken.new('::',offset+md.end(0)-2)
+           @moretokens.push NoWsToken.new(offset+md.begin(2)) if dc
+           @moretokens.push KeywordToken.new('::',offset+md.begin(2)) if dc
+           @moretokens.concat divide_ws(ws2,offset+md.begin(3)) if ws2
+           @moretokens.push VarNameToken.new(name,offset+md.begin(4))
          end
          @moretokens.push EndHeaderToken.new(input_position)
          return result
