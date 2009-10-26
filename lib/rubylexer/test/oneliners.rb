@@ -3,6 +3,19 @@ def x; yield end #this must be first!!!!
 #modifying the list of known local variables. it may be omitted
 #in cases where it is known that no local vars are defined.
 
+module A 55 end
+module Array([Array]).first::E; end
+module Array ([Array]).first::E; end
+x{a=Array; module a::Foo; 55 end}
+x{a=Array; module a::Foo include a; 55 end}
+x{a=Array; module a::Foo include a; a end}
+module a.b.c.d.e.f::Quux; YYY=534 end
+module[Array][0]::Foo; Bazz=556 end
+
+module(@a)::Foo; Bar=111 end
+
+module@x::Foo; Bar=1 end
+
 module A::B; end
 
 p a rescue b
