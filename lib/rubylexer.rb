@@ -963,6 +963,22 @@ private
      return result
    end
    
+   #-----------------------------------
+   #lex tokens until a predefined end token is found.
+   #returns a list of tokens seen.
+   def read_arbitrary_expression(&endcondition)
+     result=[]
+     oldsize=@parsestack.size
+     safe_recurse{
+       tok=nil
+       until endcondition[tok] and @parsestack.size==oldsize
+         tok=get1token
+         result<<tok
+         EoiToken===tok and break lexerror( tok, "unexpected eof" )
+       end
+     }
+     result
+   end
 
 
    #-----------------------------------
