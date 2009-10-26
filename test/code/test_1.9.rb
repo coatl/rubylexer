@@ -20,6 +20,7 @@ class Ruby1_9Tests < Test::Unit::TestCase
     '$f.($x,$y)',
     '$f::($x,$y)',
     '__ENCODING__',
+    'module __ENCODING__::A; end',
   ]
 
   EXPECT_1_METHOD=[
@@ -30,6 +31,23 @@ class Ruby1_9Tests < Test::Unit::TestCase
     'def __ENCODING__.foo; 1 end',
     'def __FILE__.foo; 1 end',
     'def __LINE__.foo; 1 end',
+    'def a(b,*c,d) 1 end',
+    'def a(*c,d) 1 end',
+    'a{|b,*c,d| 1 }',
+    'a{|*c,d| 1 }',
+    'def a(b,(x,y),d) 1 end',
+    'def a((x,y),d) 1 end',
+    'a{|b,(x,y),d| 1 }',
+    'a{|(x,y),d| 1 }',
+    'def a(b,(x,*y),d) 1 end',
+    'def a((x,*y),d) 1 end',
+    'a{|b,(x,*y),d| 1 }',
+    'a{|(x,*y),d| 1 }',
+    'def a(b,(x,(y,z)),d) 1 end',
+    'def a((x,(y,z)),d) 1 end',
+    'a{|b,(x,(y,z)),d| 1 }',
+    'a{|(x,(y,z)),d| 1 }',
+    'module __ENCODING__::A include B; end',
   ]
 
   def test_1_9_roughly
