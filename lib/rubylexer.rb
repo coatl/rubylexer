@@ -1590,8 +1590,38 @@ end
             alias === call
          end
 
+         listend=method_parameters(result,normal_comma_level,endingblock,old_parsestack_size)
+
+         @defining_lvar=false
+         @parsestack.last.see self,:semi
+
+         assert(@parsestack.size <= old_parsestack_size)
+         assert(endingblock[tok] || ErrorToken===tok)
+
+         #hack: force next token to look like start of a
+         #new stmt, if the last ignored_tokens
+         #call above did not find a newline
+         #(just in case the next token parsed
+         #happens to call quote_expected? or after_nonid_op)
+         result.concat ignored_tokens
+#         if  !eof? and nextchar.chr[/[iuw\/<|>+\-*&%?:({]/] and
+#             !(NewlineToken===@last_operative_token) and
+#             !(/^(end|;)$/===@last_operative_token)
+           #result<<EndHeaderToken.new(result.last.offset+result.last.to_s.size)
+           set_last_token KeywordToken.new( ';' )
+           result<< get1token
+#         end
+      }
+
+      return result,listend
+   end
+
+
+   #-----------------------------------
+   #read local parameter names in method definition
+   def method_parameters(result,normal_comma_level,endingblock,old_parsestack_size)
+         listend=nil
          set_last_token KeywordToken.new( ',' )#hack
-         #read local parameter names
          nextvar=nil
          loop do
             expect_name=(@last_operative_token===',' and
@@ -1642,31 +1672,8 @@ end
               end
             end
          end
-         
-         @defining_lvar=false
-         @parsestack.last.see self,:semi
-
-         assert(@parsestack.size <= old_parsestack_size)
-         assert(endingblock[tok] || ErrorToken===tok)
-
-         #hack: force next token to look like start of a
-         #new stmt, if the last ignored_tokens
-         #call above did not find a newline
-         #(just in case the next token parsed
-         #happens to call quote_expected? or after_nonid_op)
-         result.concat ignored_tokens
-#         if  !eof? and nextchar.chr[/[iuw\/<|>+\-*&%?:({]/] and
-#             !(NewlineToken===@last_operative_token) and
-#             !(/^(end|;)$/===@last_operative_token)
-           #result<<EndHeaderToken.new(result.last.offset+result.last.to_s.size)
-           set_last_token KeywordToken.new( ';' )
-           result<< get1token
-#         end
-      }
-
-      return result,listend
+         return listend
    end
-
 
    #-----------------------------------
    #handle % in ruby code. is it part of fancy quote or a modulo operator?
