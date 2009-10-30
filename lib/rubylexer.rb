@@ -940,9 +940,16 @@ private
 
    #-----------------------------------
    @@SPACES=/[\ \t\v\f\v]/
-   @@WSTOK=/\r?\n|\r*#@@SPACES+(?:#@@SPACES|\r(?!\n))*|\#[^\n]*\n|\\\r?\n|
-            ^=begin(?:#@@SPACES.*)?\n(?:(?!=end).*\n)*=end(?:#@@SPACES.*)?\n/x
-   @@WSTOKS=/(?!=begin)#@@WSTOK+/o
+   @@WSTOK=/(?>
+               (?>\r?)\n|
+               (?>\r*)(?>#@@SPACES+)(?>(?:#@@SPACES|\r(?!\n))*)|
+               \#(?>[^\n]*)\n|
+               \\(?>\r?)\n|
+               ^=begin(?>(?>#@@SPACES.*)?)\n
+                 (?>(?:(?!=end)(?>.*)\n))*
+               =end(?>(?>#@@SPACES.*)?)\n
+            )/x
+   @@WSTOKS=/(?!=begin)(?>#@@WSTOK+)/o
    def divide_ws(ws,offset)
      result=[]
      ws.scan(/\G#@@WSTOK/o){|ws|
