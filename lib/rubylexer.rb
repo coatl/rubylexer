@@ -1027,18 +1027,15 @@ private
          offset=input_position
          assert @moretokens.empty?
          tokens=[]
-         if @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) 
+         if @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)(?=[#{WHSP}]+(?:[^(])|[#;\n]|::)/o) 
            md=@file.last_match
            all,ws,name=*md
            tokens.concat divide_ws(ws,offset) if ws
            tokens.push VarNameToken.new(name,offset+md.begin(2))
          end
          tokens.push *read_arbitrary_expression{|tok|
-           @file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o #or
-             #VarNameToken===tok && !@file.check( /\A(#@@WSTOKS)?::/ )
-           #NewlineToken===tok or 
-           #  KeywordToken===tok && /^(::|;|end)$/===tok.ident
-         } if !name or @file.check /#@@WSTOKS?::/
+           @file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o
+         } if !name #or @file.check /#@@WSTOKS?::/o
          @moretokens[0,0]=tokens
          @localvars_stack.push SymbolTable.new
          while @file.check /\A::/
