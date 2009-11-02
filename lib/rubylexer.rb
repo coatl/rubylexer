@@ -589,7 +589,7 @@ private
        when /(?!#@@LETTER_DIGIT).$/o #do nothing
        when /^#@@LCLETTER/o  
          (localvars===name or 
-          VARLIKE_KEYWORDS===name or 
+          #VARLIKE_KEYWORDS===name or 
           was_in_lvar_define_state
          ) and not lasttok===/^(\.|::)$/
        when /^#@@UCLETTER/o
