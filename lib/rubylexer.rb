@@ -1175,7 +1175,7 @@ private
               maybe_local=case name
                 when /(?!#@@LETTER_DIGIT).$/o; #do nothing
                 when /^[@$]/; true
-                when VARLIKE_KEYWORDS,FUNCLIKE_KEYWORDS; ty=KeywordToken
+                when VARLIKE_KEYWORDS,FUNCLIKE_KEYWORDS,("__ENCODING__" if @rubyversion>=1.9); ty=KeywordToken
                 when /^#@@LCLETTER/o;  localvars===name 
                 when /^#@@UCLETTER/o; is_const=true  #this is the right algorithm for constants... 
               end
