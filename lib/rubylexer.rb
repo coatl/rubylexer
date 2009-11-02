@@ -2429,6 +2429,7 @@ end
               /x.token_pat
             return true
          when KeywordToken
+            return false if "__ENCODING__"===@last_operative_token.ident
             return true if /^(alias|undef)$/===@last_operative_token.ident  #is this ever actually true???
          when IgnoreToken
             raise "last_operative_token shouldn't be ignoreable"
