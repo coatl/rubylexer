@@ -987,7 +987,6 @@ private
      result
    end
 
-
    #-----------------------------------
    #parse keywords now, to prevent confusion over bare symbols
    #and match end with corresponding preceding def or class or whatever.
