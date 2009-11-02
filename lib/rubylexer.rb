@@ -1652,7 +1652,7 @@ end
 #                  assert !nextvar
                   nextvar=tok.ident
                   localvars[nextvar]=false #remove nextvar from list of local vars for now
-                when /^[&*]$/.token_pat #unary form...
+                when /^[&*(]$/.token_pat #unary form...
                   #a NoWsToken is also expected... read it now
                   result.concat maybe_no_ws_token #not needed?
                   set_last_token KeywordToken.new( ',' )
