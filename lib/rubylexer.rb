@@ -1032,15 +1032,15 @@ private
            tokens.concat divide_ws(ws,md.begin(1)) if ws
            tokens.push VarNameToken.new(name,md.begin(2))
          end
-         tokens.push *read_arbitrary_expression{|tok,extra_contexts|
+         tokens.push( *read_arbitrary_expression{|tok,extra_contexts|
            #@file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o
-           @file.check /\A(\n|;|end(?!#@@LETTER_DIGIT))/o or 
+           @file.check( /\A(\n|;|end(?!#@@LETTER_DIGIT))/o ) or 
              @file.check("::") && extra_contexts.all?{|ctx| ImplicitParamListContext===ctx } &&
                @moretokens.push(*abort_noparens!)
-         } if !name #or @file.check /#@@WSTOKS?::/o
+         } ) if !name #or @file.check /#@@WSTOKS?::/o
          @moretokens[0,0]=tokens
          @localvars_stack.push SymbolTable.new
-         while @file.check /\A::/
+         while @file.check( /\A::/ )
                #VarNameToken===@moretokens.last or 
                #KeywordToken===@moretokens.last && @moretokens.last.ident=="::"
            @file.scan(/\A(#@@WSTOKS)?(::)?(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) or break
