@@ -978,7 +978,7 @@ private
      oldsize=@parsestack.size
      safe_recurse{
        tok=nil
-       until endcondition[tok] and @parsestack.size==oldsize
+       until endcondition[tok,@parsestack[oldsize+1..-1]||[]] and @parsestack.size==oldsize
          tok=get1token
          result<<tok
          EoiToken===tok and break lexerror( tok, "unexpected eof" )
@@ -1032,8 +1032,11 @@ private
            tokens.concat divide_ws(ws,md.begin(1)) if ws
            tokens.push VarNameToken.new(name,md.begin(2))
          end
-         tokens.push *read_arbitrary_expression{|tok|
-           @file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o
+         tokens.push *read_arbitrary_expression{|tok,extra_contexts|
+           #@file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o
+           @file.check /\A(\n|;|end(?!#@@LETTER_DIGIT))/o or 
+             @file.check("::") && extra_contexts.all?{|ctx| ImplicitParamListContext===ctx } &&
+               @moretokens.push(*abort_noparens!)
          } if !name #or @file.check /#@@WSTOKS?::/o
          @moretokens[0,0]=tokens
          @localvars_stack.push SymbolTable.new
