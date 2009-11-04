@@ -2407,7 +2407,7 @@ end
          when StringToken, SymbolToken, NumberToken, HerePlaceholderToken,
               %r{^(
                 end|self|true|false|nil|->|  
-                __FILE__|__LINE__|[\})\]]
+                __FILE__|__LINE__|__ENCODING__|[\})\]]
               )$}x.token_pat
             #dunno about def/undef
             #maybe class/module shouldn't he here either?  
@@ -2424,7 +2424,6 @@ end
               /x.token_pat
             return true
          when KeywordToken
-            return false if "__ENCODING__"===@last_operative_token.ident
             return true if /^(alias|undef)$/===@last_operative_token.ident  #is this ever actually true???
          when IgnoreToken
             raise "last_operative_token shouldn't be ignoreable"
