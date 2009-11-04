@@ -1029,8 +1029,8 @@ private
          if @file.scan(/\A(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)(?=[#{WHSP}]+(?:[^(])|[#;\n]|::)/o) 
            md=@file.last_match
            all,ws,name=*md
-           tokens.concat divide_ws(ws,offset) if ws
-           tokens.push VarNameToken.new(name,offset+md.begin(2))
+           tokens.concat divide_ws(ws,md.begin(1)) if ws
+           tokens.push VarNameToken.new(name,md.begin(2))
          end
          tokens.push *read_arbitrary_expression{|tok|
            @file.check /\A(\n|;|::|end(?!#@@LETTER_DIGIT)|(#@@UCLETTER#@@LETTER_DIGIT*)(?!(#@@WSTOKS)?::))/o
@@ -1040,20 +1040,19 @@ private
          while @file.check /\A::/
                #VarNameToken===@moretokens.last or 
                #KeywordToken===@moretokens.last && @moretokens.last.ident=="::"
-           offset=input_position
            @file.scan(/\A(#@@WSTOKS)?(::)?(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) or break
            md=@file.last_match
            all,ws1,dc,ws2,name=*md
            if ws1
-             @moretokens.concat divide_ws(ws1,offset)
+             @moretokens.concat divide_ws(ws1,md.begin(1))
              incr=ws1.size
            else
              incr=0
            end
-           @moretokens.push NoWsToken.new(offset+md.begin(2)) if dc
-           @moretokens.push KeywordToken.new('::',offset+md.begin(2)) if dc
-           @moretokens.concat divide_ws(ws2,offset+md.begin(3)) if ws2
-           @moretokens.push VarNameToken.new(name,offset+md.begin(4))
+           @moretokens.push NoWsToken.new(md.begin(2)) if dc
+           @moretokens.push KeywordToken.new('::',md.begin(2)) if dc
+           @moretokens.concat divide_ws(ws2,md.begin(3)) if ws2
+           @moretokens.push VarNameToken.new(name,md.begin(4))
          end
          @moretokens.push EndHeaderToken.new(input_position)
          return result
