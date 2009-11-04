@@ -2883,7 +2883,7 @@ end
            end
          break unless pop
          @parsestack.pop
-         @moretokens.unshift AssignmentRhsListEndToken.new(input_position)
+         @moretokens.unshift AssignmentRhsListEndToken.new(input_position-1)
        end
     when ParamListContext,ParamListContextNoParen; #:call
     when ListImmedContext; #:array
