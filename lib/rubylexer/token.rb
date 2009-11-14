@@ -443,7 +443,7 @@ class HerePlaceholderToken < WToken
 
       #@termex=/^#{'[\s\v]*' if dash}#{Regexp.escape ender}$/
       @termex=Regexp.new \
-         ["^", ('[\s\v]*' if dash), Regexp.escape(ender), "$"].to_s
+         ["^", ('[\s\v]*' if dash), Regexp.escape(ender), "$"].join
       @bodyclass=HereBodyToken
    end
 

@@ -1951,7 +1951,7 @@ end
 
       res= HerePlaceholderToken.new( dash, quote, ender, quote_real )
 if true
-      res.open=["<<",dash,quote,ender,quote].to_s
+      res.open=["<<",dash,quote,ender,quote].join
       procrastinated=til_charset(/[\n]/)#+readnl
       unless @base_file
         @base_file=@file
