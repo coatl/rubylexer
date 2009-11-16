@@ -226,6 +226,8 @@ class StringToken < Token
 
    attr_accessor :open #exact sequence of chars used to start the str
    attr_accessor :close #exact seq of (1) char to stop the str
+
+   attr_accessor :lvars #names used in named backrefs if this is a regex
    
    def with_line(line)
      @line=line

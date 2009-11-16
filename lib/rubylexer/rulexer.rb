@@ -139,40 +139,41 @@ private
       if @rubyversion>=1.9
         named_brs=[]
         if result.elems.size==1 and String===result.elems.first
+            elem=result.elems.first
             index=0
-            huh
-            while index=elem.index(/#{EVEN_BS_S}( \(\?[<'] | \(\?\# | \[ )/xo,index)
-              huh
-              case alt
-              when "(?<"; huh
+            while index=elem.index(/(#{EVEN_BS_S})( \(\?[<'] | \(\?\# | \[ )/xo,index)
+              index+=$1.size
+              case $2
+              when "(?<"
                 index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)>/o,index)
-                index or huh
-                index+=$1.size+4
+                break lexerror(result, "malformed named backreference") unless index
+                index+=$&.size
                 named_brs<<$1
-              when "(?'"; huh
+              when "(?'"
                 index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)'/o,index)
-                index or huh
-                index+=$1.size+4
+                break lexerror(result, "malformed named backreference") unless index
+                index+=$&.size
                 named_brs<<$1
-              when "(?#"; huh
+              when "(?#"
                 index+=3
-                index=elem.index(/#{EVEN_BS_S}\)/,index)
-                index or huh
-                index+=1
-              when "["; huh
+                index=elem.index(/#{EVEN_BS_S}\)/o,index)
+                break lexerror(result, "unterminated regexp comment") unless index
+                index+=$&.size
+              when "["
                 index+=1
                 paren_ctr=1
                 loop do
                   index=elem.index(/#{EVEN_BS_S}(&&\[\^|\])/o,index)
-                  index or huh
+                  break lexerror(result, "unterminated character class") unless index
                   index+=$&.size
-                  unless $1[-1]==?]
-                    paren_ctr+=1
-                  else 
+                  if $1==']'
                     paren_ctr-=1
                     break if paren_ctr==0 
+                  else 
+                    paren_ctr+=1
                   end
                 end
+                break unless index
                 
               end
             end
@@ -271,12 +272,12 @@ end
    #-----------------------------------
    INTERIOR_REX_CACHE={}
    EVEN_BS_S=/
-     ($|
+     (?:\G|
       [^\\c-]|
-      ($|[^\\])(c|[CM]-)|
-      ($|[^CM])-
+      (?:\G|[^\\])(?:c|[CM]-)|
+      (?:\G|[^CM])-
      )
-     (\\(?:c|[CM]-)?){2}*
+     (?:\\(?:c|[CM]-)?){2}*
    /x
    ILLEGAL_ESCAPED=/#{EVEN_BS_S}(\\([CM][^-]|x[^a-fA-F0-9]))/o #whaddaya do with this?
    def all_quote(nester, type, delimiter, bs_handler=nil)

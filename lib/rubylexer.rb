@@ -2586,7 +2586,7 @@ end
           #ruby delays adding lvars from regexps to known lvars table
           #for several tokens in some cases. not sure why or if on purpose
           #i'm just going to add them right away
-          localvars.concat last.lvars
+          last.lvars.each{|lvar| localvars[lvar]=true }
         end
       when '' #plain assignment: record local variable definitions
         last_context_not_implicit.lhs=false
