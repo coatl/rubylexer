@@ -11,7 +11,9 @@ class Ruby1_9Tests < Test::Unit::TestCase
         assert_equal [],tokens.grep(RubyLexer::MethNameToken)
         assert_equal [],tokens.grep(RubyLexer::ErrorToken)
       rescue Exception=>e
-        raise e.class.new(e.message+" while testing '#{snippet}'")
+        e2=e.class.new(e.message+" while testing '#{snippet}'")
+        e2.set_backtrace(e.backtrace)
+        raise e2
       end
     }
     EXPECT_1_METHOD.each{|snippet| 
@@ -20,7 +22,9 @@ class Ruby1_9Tests < Test::Unit::TestCase
         assert_equal 1,tokens.grep(RubyLexer::MethNameToken).size
         assert_equal [],tokens.grep(RubyLexer::ErrorToken)
       rescue Exception=>e
-        raise e.class.new(e.message+" while testing '#{snippet}'")
+        e2=e.class.new(e.message+" while testing '#{snippet}'")
+        e2.set_backtrace(e.backtrace)
+        raise e2
       end
     }
   end
