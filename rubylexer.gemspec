@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.date = Time.now.strftime("%Y-%m-%d")
   s.authors = ["Caleb Clausen"]
   s.email = %q{caleb (at) inforadical (dot) net}
-  s.summary = huh
+  s.summary = "RubyLexer is a lexer library for Ruby, written in Ruby."
   s.description = RubyLexer::Description
   s.homepage = %{http://github.com/coatl/rubylexer}
   s.rubyforge_project = %q{rubylexer}
