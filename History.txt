@@ -1,3 +1,48 @@
+=== 0.7.7/11-17-2009
+* 5 Major Enhancements:
+  * Got rid of the hacky RuLexer ancestor class. woo-hoo!
+  * Input charsets other than 7bit ascii now supported
+    * binary (8bit ascii), utf8, and euc now work; sjis does not
+  * __FILE__ and __LINE__ now have their correct values attached to them
+  * Build scripts completely rewritten; hoe is now gone!
+  * Improved ruby 1.9 compatibility (see below)
+
+* 4 Major Bugfixes:
+  * Module names may begin with arbitrary expressions
+    * but such expressions are always ended by ::
+    * even if inside a implicit parens context
+    * and positions of whitespace tokens in module header are better tracked
+  * Finally learned to disable rdoc for files it dislikes (thanks, Roger!)
+  * Rescue in rhs context is always ternary now
+    * (this is incorrect if in a multiassign, but redparse will handle that)
+  * Parsing of do, comma, and unary star on assign rhs is better now
+
+* 2 Minor Enhancements:
+  * Colorizer example
+  * Changes to token classes to incorporate modifications made by redparse
+
+* 5 Minor Bugfixes:
+  * Newline after = is now soft
+  * Fixed type of local var if inside class/method inside def
+  * Fixed parsing of shebang line if no args
+  * Fixed incorrect offsets in a few obscure cases
+  * Don't treat \r as newline in =begin..=end
+
+* Improved 1.9 compatibility:
+  * code works under 1.9 interpreter
+  * stabby blocks
+  * __ENCODING__ keyword
+  * tolerate ternary : at beginning of line
+  * character constants are string, not integer, literals
+  * new \u escape sequence allowed in double-quotish strings
+  * allow nested () in def param list
+  * not is a funclike keyword
+  * parens allowed as method name; alias for #call
+  * block private locals declared after ; inside block param
+  * !, !=, and !~ are methods in 1.9
+  * local variables declared by named backreferences in regexps
+  * tests for many 1.9 features
+
 === 0.7.6/7-01-2009
 * 5 Bugfixes:
   * don't treat <, <=, <=> as starting variables (only << for here header)
