@@ -11,6 +11,10 @@ module TestCases
   FILENAMES=Dir[datadir+'/../test/data/*.rb'].reject{|fn| File.directory? fn}
   FILES=FILENAMES.map{|fn| File.read fn }
 
+  ILLEGAL_FILENAMES=(Dir[datadir+'/../test/data/*']-Dir[datadir+'/../test/data/*.rb'])
+  ILLEGAL_FILENAMES.reject!{|fn| File.directory? fn}
+  ILLEGAL_FILES=ILLEGAL_FILENAMES.map{|fn| File.read fn }
+
   TESTCASES=ONELINERS+STANZAS+FILES
-  ILLEGAL_TESTCASES=ILLEGAL_ONELINERS+ILLEGAL_STANZAS
+  ILLEGAL_TESTCASES=ILLEGAL_ONELINERS+ILLEGAL_STANZAS+ILLEGAL_FILES
 end
