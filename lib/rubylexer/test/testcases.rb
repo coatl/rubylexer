@@ -8,7 +8,7 @@ module TestCases
   ILLEGAL_STANZAS=IO.read(rldir+'/rubylexer/test/illegal_stanzas.rb').split("\n\n").grep(/./).reverse
 
   datadir=$:.find{|dir| File.exist? dir+'/../test/data/p.rb' }
-  FILENAMES=Dir[datadir+'/../test/data/*'].reject{|fn| File.directory? fn}
+  FILENAMES=Dir[datadir+'/../test/data/*.rb'].reject{|fn| File.directory? fn}
   FILES=FILENAMES.map{|fn| File.read fn }
 
   TESTCASES=ONELINERS+STANZAS+FILES
