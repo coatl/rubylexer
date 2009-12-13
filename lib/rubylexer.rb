@@ -253,6 +253,8 @@ class RubyLexer
      @localvars_stack.last
    end
 
+   attr_accessor :localvars_stack
+
    attr_accessor :in_def
    attr :localvars_stack	
    attr :offset_adjust
