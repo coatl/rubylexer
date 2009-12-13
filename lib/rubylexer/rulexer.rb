@@ -689,9 +689,11 @@ end
 #   alias squote_esc_seq	wquote_esc_seq
 
   module RecursiveRubyLexer
+=begin
     def initial_nonblock_levels
       @localvars_stack.size==1 ? 2 : 1
     end
+=end
   end
 
   def initial_nonblock_levels; 1 end
