@@ -37,7 +37,7 @@ class SymbolTable
       list or raise "unbalanced end block"
       list.each_key {|sym|
          @symbols[sym].pop
-         @symbols[sym].empty? and @symbols[sym]=nil
+         @symbols[sym].empty? and @symbols.delete sym
       }
       assert @locals_lists.last
    end
