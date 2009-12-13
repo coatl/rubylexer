@@ -753,30 +753,7 @@ end
       #pass current local vars into new parser
       #must pass the lists of nonblock, parentblock and currentblock vars separately
       #then a table increment after each
-      nonblocky,blocky,current=decompose_lvars(true)
-      nonblocky.keys.each{|varname|
-        rl.localvars[varname]=true
-      }
-      rl.localvars.start_block  
-      #incremental table, tells us what :local vars are defined in the str inclusion
-
-      if blocky
-        rl.localvars.start_block  
-        blocky.keys.each{|varname|
-          rl.localvars[varname]=true
-        }
-        rl.localvars.start_block
-        #incremental table, tells us what :block vars are defined in the str inclusion
-      end
-
-      if current
-        rl.localvars.start_block  
-        current.keys.each{|varname|
-          rl.localvars[varname]=true
-        }
-        rl.localvars.start_block
-        #incremental table, tells us what :current vars are defined in the str inclusion
-      end
+      rl.localvars_stack=@localvars_stack.map{|lvs| lvs.deep_copy}
       
       rl.pending_here_bodies=@pending_here_bodies
 
@@ -830,8 +807,7 @@ end
 #      @pending_here_bodies=rl.pending_here_bodies      
 
       #local vars defined in inclusion get propagated to outer parser
-      newvars=rl.localvars.__locals_lists[1..-1].map{|bag| bag.keys }.flatten
-      newvars.each{|newvar| localvars[newvar]=true }
+      @localvars_stack=rl.localvars_stack
 
       result=RubyCode.new(tokens,@filename,@linenum)
       @linenum=rl.linenum
