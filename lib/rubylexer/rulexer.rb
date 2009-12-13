@@ -296,7 +296,7 @@ if FASTER_STRING_ESCAPES
         single_quotish=true
         special=/\\./m
       else
-        crunch=/#(?=[^{$@])/
+        crunch=/\#(?=[^{$@])/
         escaped=/\\(?>[^xcCM0-7]|(?>c|[CM].)(?>[^\\]|(?=\\))|(?>x.[0-9a-fA-F]?)|(?>[0-7]{1,3}))/m
         special=
           case delimiter
