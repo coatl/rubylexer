@@ -42,6 +42,27 @@ class SymbolTable
       assert @locals_lists.last
    end
 
+   def deep_copy
+     result=SymbolTable.allocate
+     new_symbols={}
+     @symbols.each_pair{|str,stack|
+       new_symbols[str.clone]=stack.map{|elem| elem.clone rescue elem }
+     }
+     new_locals_lists=[]
+     @locals_lists.each{|hash|
+       new_locals_lists.push({})
+       hash.each_pair{|str,bool|
+         new_locals_lists.last[str.dup]=bool
+       }
+     }
+     new_locals_lists.push({}) if new_locals_lists.empty?
+     result.instance_eval{
+       @symbols=new_symbols
+       @locals_lists=new_locals_lists
+     }
+     return result
+   end
+
    def names
      @symbols.keys
    end
