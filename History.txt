@@ -21,12 +21,14 @@
   * Colorizer example
   * Changes to token classes to incorporate modifications made by redparse
 
-* 5 Minor Bugfixes:
+* 7 Minor Bugfixes:
   * Newline after = is now soft
   * Fixed type of local var if inside class/method inside def
   * Fixed parsing of shebang line if no args
   * Fixed incorrect offsets in a few obscure cases
   * Don't treat \r as newline in =begin..=end
+  * Cleaned up test data
+  * Fixed mistypings of local vars in string inclusions
 
 * Improved 1.9 compatibility:
   * code works under 1.9 interpreter
