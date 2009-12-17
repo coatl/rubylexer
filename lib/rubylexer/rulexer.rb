@@ -523,16 +523,25 @@ end
             k.tr(ESCAPECHRS,ESCAPESEQS)
          when "M"
             eat_next_if(?-) or raise 'bad \\M sequence'
-            (getchar_maybe_escape[0] | 0x80).chr
+            ch=getchar_maybe_escape[0]
+            ch=ch.ord if ch.respond_to? :ord
+            ch>=0xFF and raise 'bad \\M sequence'
+            (ch | 0x80).chr
 
          when "C"
             eat_next_if(?-) or raise 'bad \\C sequence'
             nextchar==?? and getchar and return "\177" #wtf?
-            (getchar_maybe_escape[0] & 0x9F).chr
+            ch=getchar_maybe_escape[0]
+            ch=ch.ord if ch.respond_to? :ord
+            ch>=0xFF and raise 'bad \\M sequence'
+            (ch & 0x9F).chr
 
          when "c"
             nextchar==?? and getchar and return "\177" #wtf?
-            (getchar_maybe_escape[0] & 0x9F).chr
+            ch=getchar_maybe_escape[0]
+            ch=ch.ord if ch.respond_to? :ord
+            ch>=0xFF and raise 'bad \\M sequence'
+            (ch & 0x9F).chr
 
          when /^[0-7]$/
             str=k

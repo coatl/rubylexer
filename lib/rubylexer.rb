@@ -1728,7 +1728,9 @@ end
          if @rubyversion >= 1.9
            StringToken.new getchar_maybe_escape
          else
-           NumberToken.new getchar_maybe_escape[0]
+           ch=getchar_maybe_escape[0]
+           ch=ch.ord if ch.respond_to? :ord
+           NumberToken.new ch
          end
       else
          @parsestack.push TernaryContext.new(@linenum)
