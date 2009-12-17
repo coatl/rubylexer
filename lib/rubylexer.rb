@@ -256,7 +256,6 @@ class RubyLexer
    attr_accessor :localvars_stack
 
    attr_accessor :in_def
-   attr :localvars_stack	
    attr :offset_adjust
    attr_writer :pending_here_bodies
    attr :rubyversion
