@@ -629,7 +629,7 @@ private
      #if next op is assignment (or comma in lvalue list)
      #then omit implicit parens
      assignment_coming=case nc=nextchar
-       when ?=;  not /^=[>=~]$/===readahead(2)
+       when ?=;  not( /^=[>=~]$/===readahead(2) )
        when ?,; comma_in_lvalue_list? 
        when (?; if @rubyversion>=1.9); ParenedParamListLhsContext===@parsestack.last
        when ?); last_context_not_implicit.lhs
