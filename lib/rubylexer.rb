@@ -143,7 +143,7 @@ class RubyLexer
      def #{n}; #{n}; end
      def self.#{n}; @@#{n}; end
      " 
-   }.to_s
+   }.join
 
    NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)((?:(?!#@@LETTER_DIGIT).)|\Z)/om
    if ?A.is_a? String #ruby >= 1.9

@@ -41,7 +41,7 @@ class RubyCode < Token
       result=[]
       keepwsprinter=KeepWsTokenPrinter.new('',@linenum)
       ident.each{|tok| result << keepwsprinter.sprint(tok) }
-      return result.to_s
+      return result.join
    end
 end
 end
