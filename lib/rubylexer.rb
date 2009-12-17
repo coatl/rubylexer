@@ -952,9 +952,9 @@ private
                =end(?>(?>#@@SPACES.*)?)\n
             )/x
    @@WSTOKS=/(?!=begin)(?>#@@WSTOK+)/o
-   def divide_ws(ws,offset)
+   def divide_ws(ws0,offset)
      result=[]
-     ws.scan(/\G#@@WSTOK/o){|ws|
+     ws0.scan(/\G#@@WSTOK/o){|ws|
        incr= $~.begin(0)
        tok=case ws
        when /\A[\#=]/; IgnoreToken.new(ws,offset+incr)
@@ -1582,9 +1582,9 @@ end
             #parsestack was changed by get1token above...
             normal_comma_level+=1
             assert(normal_comma_level==@parsestack.size)
-            endingblock=proc{|tok| tok===')' }
+            endingblock=proc{|tok2| tok2===')' }
          else
-            endingblock=proc{|tok| tok===';' or NewlineToken===tok}
+            endingblock=proc{|tok2| tok2===';' or NewlineToken===tok2}
          end
          class << endingblock
             alias === call
