@@ -458,7 +458,7 @@ class HerePlaceholderToken < WToken
         else
           @ender
         end
-        return ["<<",@dash,@quote_real&&@quote,result,@quote_real&&@quote].to_s
+        return ["<<",@dash,@quote_real&&@quote,result,@quote_real&&@quote].join
 #      else
 #        assert !unsafe_to_use
 #        return @string.to_s
