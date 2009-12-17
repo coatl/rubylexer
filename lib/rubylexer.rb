@@ -2498,7 +2498,7 @@ end
       result= operator_or_methname_token( result)
       result.offset=oldpos
       return result
-   end
+    end
 
    #-----------------------------------
    def tilde(ch) #match ~
