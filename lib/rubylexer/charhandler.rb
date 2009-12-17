@@ -1,4 +1,4 @@
-=begin legal crap
+=begin
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
@@ -44,7 +44,7 @@ class CharHandler
           self[c]=action
         }
       when String
-        each_char(pattern) {|b| self[b]=action }
+        CharHandler.each_char(pattern) {|b| self[b]=action }
       when Fixnum
         self[pattern]=action
       else
@@ -60,11 +60,11 @@ class CharHandler
 
   #-----------------------------------
   if String===?a 
-    def each_char(str,&block)
+    def self.each_char(str,&block)
       str.each_char(&block)
     end
   else
-    def each_char(str,&block)
+    def self.each_char(str,&block)
       str.each_byte(&block)
     end
   end
