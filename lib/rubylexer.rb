@@ -1596,7 +1596,6 @@ end
          @parsestack.last.see self,:semi
 
          assert(@parsestack.size <= old_parsestack_size)
-         assert(endingblock[tok] || ErrorToken===tok)
 
          #hack: force next token to look like start of a
          #new stmt, if the last ignored_tokens
