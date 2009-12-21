@@ -516,6 +516,9 @@ def ~@; :foo end
 undef ~@
 alias ~@ non
 alias non ~@
+undef :~@
+alias :~@ non
+alias non :~@
 p :~@
 a.~@
 a::~@
