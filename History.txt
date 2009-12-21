@@ -1,4 +1,4 @@
-=== 0.7.7/11-17-2009
+=== 0.7.7/21dec2009
 * 5 Major Enhancements:
   * Got rid of the hacky RuLexer ancestor class. woo-hoo!
   * Input charsets other than 7bit ascii now supported
@@ -45,7 +45,7 @@
   * local variables declared by named backreferences in regexps
   * tests for many 1.9 features
 
-=== 0.7.6/7-01-2009
+=== 0.7.6/1jul2009
 * 5 Bugfixes:
   * don't treat <, <=, <=> as starting variables (only << for here header)
   * space between break/return/next and following open paren is ignored
@@ -58,11 +58,11 @@
   * dot at beginning of line
   * !, !=, !~ are now valid method/symbol names
 
-=== 0.7.5/5-23-2009
+=== 0.7.5/23may2009
 * 1 Bugfix:
   * fixed problem with parsing shebang lines
 
-=== 0.7.4/5-20-2009
+=== 0.7.4/20may2009
 * 2 Major Enhancements:
   * preliminary support for ruby 1.9
   * utf8 inputs should now work... more or less
@@ -78,7 +78,7 @@
   * added tag field to Token; I hope many flags can be coalesced into tag.
   * note line that all strings (and here docs) start and end on
 
-=== 0.7.3/4-19-2009
+=== 0.7.3/19apr2009
 * 9 Bugfixes:
   * remember whether comma was seen in paren context
   * reducing the warning load
@@ -103,7 +103,7 @@
   * various other little helper methods needed by redparse in Tokens
   * hack Rakefile so 'rake test' will stay in 1 process (keeps netbeans happy)
 
-=== 0.7.2/10-12-2008
+=== 0.7.2/12oct2008
 * 12 Minor Enhancements:
   * a new context for then kw expected
   * disable all backtracking when scanning string interiors
@@ -118,7 +118,7 @@
   * trying to make 'rake test' work right
   * certain other changes of no importance whatsoever
 
-=== 0.7.1/8-29-2008
+=== 0.7.1/28aug2008
 * 6 Major Enhancements:
   * handling of empty string fragments now more closely mirrors ruby; this resolves many warnings
   * yet more hacks in aid of string inclusions
@@ -208,7 +208,7 @@
   * offset problems in here head and body, symbol and fal tokens are always ignored (a hack)
   * tokentest has a --loop option, for load testing
 
-=== 0.7.0/2-15-2008
+=== 0.7.0/15feb2008
 * implicit tokens are now emitted at the right times (need more test code)
 * local variables are now temporarily hidden by class, module, and def
 * line numbers should always be correct now (=begin...=end caused this) (??)
