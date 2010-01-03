@@ -117,7 +117,7 @@ class KeepWsTokenPrinter
    def pprint(tok,output=$stdout)
       @accum<<aprint(tok).to_s
       if (@accum.size>ACCUMSIZE and NewlineToken===tok) or EoiToken===tok
-         output.print(@accum)
+         output.print(@accum.join)
          @accum=[]
       end
    end
@@ -142,7 +142,7 @@ class KeepWsTokenPrinter
            ImplicitParamListStartToken,ImplicitParamListEndToken;
         tok
       else
-        [@sep.dup,tok]
+        @sep.dup<<tok.to_s
       end unless NoWsToken===lasttok
       
       if str_needs_escnls

@@ -1027,7 +1027,7 @@ protected
 
   #-----------------------------------
   def self.save_offsets_in(*funcnames)
-    eval funcnames.collect{|fn| <<-endeval }.to_s
+    eval funcnames.collect{|fn| <<-endeval }.join
       class ::#{self}
         alias #{fn}__no_offset #{fn}   #rename old ver of fn
         def #{fn}(*args)               #create new version
