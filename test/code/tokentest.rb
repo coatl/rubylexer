@@ -85,7 +85,7 @@ class SymbolToken
     #punt if its too hard
     if quote
       bs="\\"
-      hardstuff= /[#{bs}#{quote}#{bs}#{ender}\#\\]/
+      hardstuff= Regexp.new %/[#{bs}#{quote}#{bs}#{ender}\#\\\\]/
       return true if (body+bodyread).match(hardstuff)
     end
 
