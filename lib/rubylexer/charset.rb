@@ -49,10 +49,18 @@ class CharSet
       #this math works right with bignums... (i'm pretty sure)
    end
 
-   def ===(c) #c is String|Fixnum|nil
-      c.nil? and return false
-      c.kind_of? String and c=c[0]
-      return ( @bitset[c] != 0 )
+   if String==="a"[0]
+     def ===(c) #c is String|Fixnum|nil
+       c.nil? and return false
+       c.kind_of? String and c=c.getbyte(0)
+       return ( @bitset[c] != 0 )
+     end
+   else
+     def ===(c) #c is String|Fixnum|nil
+       c.nil? and return false
+       c.kind_of? String and c=c[0]
+       return ( @bitset[c] != 0 )
+     end
    end
 
    #enumerate the chars in n AS INTEGERS
