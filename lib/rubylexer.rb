@@ -2374,13 +2374,9 @@ end
       pre=FileAndLineToken.new(@filename,@linenum+1,input_position)
       pre.allow_ooo_offset=true
 
-      hard=NewlineToken===@last_operative_token || #hack
-           (KeywordToken===@last_operative_token and
-            @last_operative_token.ident=="rescue" and
-            !@last_operative_token.infix?)  ||
-           !after_nonid_op?{false}
+      hard=want_hard_nl?
 
-      hard=false if @rubyversion>=1.9 and @file.check( /\A\n(?:#@@WSTOKS)?[.:][^.:]/o )
+#      hard=false if @rubyversion>=1.9 and @file.check( /\A\n(?:#@@WSTOKS)?[.:][^.:]/o )
 
       if hard
         @offset_adjust=@min_offset_adjust
