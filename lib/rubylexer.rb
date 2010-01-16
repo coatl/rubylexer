@@ -635,6 +635,20 @@ private
      
      #if next op is assignment (or comma in lvalue list)
      #then omit implicit parens
+     assignment_coming=
+       /\A(?:
+         =[^>=~] | (,) | (;) | (\)) | 
+         (in(?!#@@LETTER_DIGIT)) | (\|[^\|=]) | [%\/\-+^*&|]= | ([<>*&|])\6=
+       )/mox===readahead(3) &&
+            case
+            when $1; comma_in_lvalue_list?  #comma
+            when $2; @rubyversion>=1.9 && ParenedParamListLhsContext===@parsestack.last #semicolon in block param list
+            when $3; last_context_not_implicit.lhs #right paren in lhs
+            when $4; ForSMContext===last_context_not_implicit #in
+            when $5; BlockParamListLhsContext===last_context_not_implicit #ending goalpost
+            else true
+            end
+=begin was     
      assignment_coming=case nc=nextchar
        when ?=;  not( /^=[>=~]$/===readahead(2) )
        when ?,; comma_in_lvalue_list? 
@@ -650,6 +664,8 @@ private
                 readahead(2)[1] != ?|
        when ?%,?/,?-,?+,?^; readahead(2)[1]== ?=
      end 
+=end
+
      if (assignment_coming && !(lasttok===/^(\.|::)$/) or was_in_lvar_define_state)
         tok=assign_lvar_type! VarNameToken.new(name,pos)
         #if /(?!#@@LETTER_DIGIT).$/o===name 
@@ -661,6 +677,7 @@ private
         return result.unshift(tok)
      end
      
+     nc=nextchar 
      implicit_parens_to_emit=
      if assignment_coming
        @parsestack.push AssignmentContext.new(nil) if nc==?% or nc==?/
