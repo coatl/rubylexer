@@ -192,8 +192,10 @@ class RubyLexer
       @toptable=CharHandler.new(self, :identifier, CHARMAPPINGS)
 
       extend RubyLexer1_9 if @rubyversion>=1.9
-      read_leading_encoding
-      start_of_line_directives
+      if input_position.zero?
+        read_leading_encoding
+        start_of_line_directives
+      end
       progress_printer
    end
 
