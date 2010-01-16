@@ -687,12 +687,6 @@ private
        when ?{
          maybe_local=false
          1
-=begin
-         x=2
-         x-=1 if /\A(return|break|next)\Z/===name and 
-                 !(KeywordToken===oldlast and oldlast===/\A(\.|::)\Z/)
-         x
-=end
        when ?(
          maybe_local=false
          lastid=lasttok&&lasttok.ident
@@ -702,19 +696,10 @@ private
            when '{'; was_after_nonid_op=false if  BlockContext===@parsestack.last or BeginEndContext===@parsestack.last
          end if KeywordToken===lasttok
          was_after_nonid_op=false if NewlineToken===lasttok or lasttok.nil?
-         want_parens=!(ws_toks.empty? or was_after_nonid_op) #or
-#                      /^(::|rescue|yield|else|case|when|if|unless|until|while|and|or|&&|\|\||[?:]|\.\.?\.?|=>)$/===lastid or 
-#                      MethNameToken===lasttok or
-#                      RUBYNONSYMOPERATORREX===lastid && /=$/===lastid && '!='!=lastid
-#                     )
+         want_parens=!(ws_toks.empty? or was_after_nonid_op)
 
          #look ahead for closing paren (after some whitespace...)
          want_parens=false if @file.match?( /\A.(?:\s|\v|\#.*\n)*\)/ )
-#         afterparen=@file.pos
-#         getchar
-#         ignored_tokens(true)
-#         want_parens=false if nextchar==?)
-#         @file.pos=afterparen
          want_parens=true if /^(return|break|next)$/===@last_operative_token.ident and not(
               KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident
             )
@@ -729,7 +714,6 @@ private
            (ws_toks.empty? || readahead(2)[/^.[#{WHSPLF}]/o]) ? 2 : 3
          end
        when ?*, ?&
- #        lasttok=@last_operative_token
          if /^(return|break|next)$/===@last_operative_token.ident and not(
               KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident
             )
@@ -748,7 +732,6 @@ private
                 #? never begins a char constant if immediately followed 
                 #by 2 or more letters or digits
                    /^\?([#{WHSPLF}]|#@@LETTER_DIGIT{2})/o===next3 ? 2 : 3
-#       when ?:,??; (readahead(2)[/^.[#{WHSPLF}]/o]) ? 2 : 3
        when ?<; (!ws_toks.empty? && readahead(4)[/^<<-?(?:["'`]|#@@LETTER_DIGIT)/o]) ? 3 : 2 
        when ?[; 
            if ws_toks.empty? 
