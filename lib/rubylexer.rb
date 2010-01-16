@@ -652,8 +652,10 @@ private
      end 
      if (assignment_coming && !(lasttok===/^(\.|::)$/) or was_in_lvar_define_state)
         tok=assign_lvar_type! VarNameToken.new(name,pos)
-        if /(?!#@@LETTER_DIGIT).$/o===name 
-        elsif /^#@@LCLETTER/o===name and !(lasttok===/^(\.|::)$/)
+        #if /(?!#@@LETTER_DIGIT).$/o===name 
+          #nonalphabetics... operator? skip it
+        #els
+        if /^#@@LCLETTER/o===name #and !(lasttok===/^(\.|::)$/)
           localvars[name]=true
         end
         return result.unshift(tok)
