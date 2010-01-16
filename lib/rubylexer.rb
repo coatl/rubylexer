@@ -2770,7 +2770,7 @@ end
 
       #else saw just single .
       #match a valid ruby id after the dot
-      result= KeywordToken.new( ".")
+      result= KeywordToken.new( "." )
       dot_rhs(result)
       return result
    end
@@ -2824,6 +2824,8 @@ if false
 end
    #-----------------------------------
    def open_brace(ch)
+      #there are 3 distinct cases here; this method should be divided in 3
+
       assert((ch!='[' or !want_op_name))
       assert(@moretokens.empty?)
       lastchar=prevchar
