@@ -523,6 +523,15 @@ class NoWsToken < ZwToken
 end
 
 #-------------------------
+class EncodingDeclToken < IgnoreToken
+  def initialize(text,encoding)
+    super text,0
+    @encoding=encoding
+  end
+  attr :encoding
+end
+
+#-------------------------
 class ImplicitParamListStartToken < KeywordToken
   include StillIgnoreToken
   def initialize(offset)
