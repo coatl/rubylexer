@@ -185,6 +185,10 @@ class RubyLexer
                           RUBYSYMOPERATORREX
                         end
 
+      @always_binary_chars=CharSet['}]);|>,.=^']
+      @unary_or_binary_chars=CharSet['+-%/']
+
+
       @toptable=CharHandler.new(self, :identifier, CHARMAPPINGS)
 
       extend RubyLexer1_9 if @rubyversion>=1.9
