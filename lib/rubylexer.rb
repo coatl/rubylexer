@@ -939,6 +939,8 @@ private
      class <<self
        alias keyword_macro keyword_def
      end
+     @unary_or_binary_chars.add '^'
+     @always_binary_chars.remove '^'
    end
    public :enable_macros!
 
