@@ -34,7 +34,7 @@ class CharSet
       case chars
       when ::String
          chars.each_byte {|c| @bitset |= (1<<c) }
-      when ::Fixnum then        @bitset |= (1<<chars)
+      when ::Fixnum then      @bitset |= (1<<chars)
       else chars.each    {|c| @bitset |= (1<<c) }
       end
    end
@@ -67,7 +67,7 @@ class CharSet
    def each_byte(&block)
       #should use ffs... not available in ruby
       (0..255).each { |n|
-         @bitset[n] and block[n]
+         @bitset[n].nonzero? and block[n]
       }
    end
 
