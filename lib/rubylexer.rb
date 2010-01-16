@@ -713,8 +713,8 @@ private
               KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident
             )
          want_parens ? 1 : 0
-       when ?},?],?),?;,(?^ unless @enable_macro), ?|, ?>, ?,, ?., ?=; 2
-       when ?+, ?-, ?%, ?/, (?^ if @enable_macro)
+       when @always_binary_chars; 2 # ?},?],?),?;,(?^ unless @enable_macro), ?|, ?>, ?,, ?., ?=; 2
+       when @unary_or_binary_chars;     #?+, ?-, ?%, ?/, (?^ if @enable_macro)
          if /^(return|break|next)$/===@last_operative_token.ident and not(
               KeywordToken===lasttok and /^(\.|::)$/===lasttok.ident
             )
