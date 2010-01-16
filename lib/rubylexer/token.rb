@@ -52,6 +52,17 @@ end
 
 #-------------------------
 class KeywordToken < WToken   #also some operators
+  def initialize(*args)
+    if Hash===args.last
+      opts=args.pop
+      as=opts.delete :as
+      fail unless opts.empty?
+    end
+
+    super(*args)
+    self.as=as
+  end
+
 
   #-----------------------------------
   def set_callsite!(x=true)
