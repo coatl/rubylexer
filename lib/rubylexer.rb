@@ -219,8 +219,8 @@ class RubyLexer
    def read_leading_encoding
      return unless @encoding==:detect
      @encoding=:ascii
-     @encoding=:utf8 if @file.skip( "\xEF\xBB\xBF" )   #bom
-     if @file.skip( /\A#!/ )
+     return @encoding=:utf8 if @file.skip( "\xEF\xBB\xBF" )   #bom
+     if text=@file.skip( /\A#!/ )
        loop do
          til_charset( /[\s\v]/ )
          break if @file.match( /^\n|[\s\v]([^-\s\v]|--?[\s\v])/,4 )
