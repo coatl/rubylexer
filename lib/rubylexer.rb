@@ -242,6 +242,8 @@ class RubyLexer
        name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
        @encoding=name.to_sym if ENCODINGS.include? name
      end
+   ensure
+     @moretokens<<EncodingDeclToken.new(@file[0...input_position],@encoding) if input_position!=0
    end
 
    def progress_printer
