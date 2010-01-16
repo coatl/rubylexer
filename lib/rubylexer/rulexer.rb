@@ -136,7 +136,7 @@ private
    #-----------------------------------
    def regex(ch=nil)
       result=RenderExactlyStringToken.new('/').append_token double_quote("/")
-      if @rubyversion>=1.9
+      if false and @rubyversion>=1.9
         named_brs=[]
         if result.elems.size==1 and String===result.elems.first
             elem=result.elems.first
