@@ -2667,15 +2667,15 @@ end
          /^(return|break|next)$/===@last_operative_token.ident
         if (?0..?9)===readahead(2)[1]
           result= number(ch)
-        elsif @rubyversion>=1.9 and '->' == readahead(2) #stabby proc
-          @file.pos+=2
-          #push down block context
-          localvars.start_block
-          @parsestack.push ctx=BlockContext.new(@linenum)
-          ctx.wanting_stabby_block_body=true
-          #read optional proc params
-          block_param_list_lookahead ?(, ParenedParamListLhsContext
-          result=KeywordToken.new('->',pos)
+#        elsif @rubyversion>=1.9 and '->' == readahead(2) #stabby proc
+#          @file.pos+=2
+#          #push down block context
+#          localvars.start_block
+#          @parsestack.push ctx=BlockContext.new(@linenum)
+#          ctx.wanting_stabby_block_body=true
+#          #read optional proc params
+#          block_param_list_lookahead ?(, ParenedParamListLhsContext
+#          result=KeywordToken.new('->',pos)
           
         else #unary operator
           result=getchar
