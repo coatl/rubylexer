@@ -180,9 +180,9 @@ class RubyLexer
       @rubyversion=options[:rubyversion]||1.8
       @encoding=options[:encoding]||:detect
       @method_operators=if @rubyversion>=1.9 
-                          /#{RUBYSYMOPERATORREX}|\A![=~@]?/o
+                          /#{RUBYSYMOPERATORREX}|\A![=~@]?|\A`/o
                         else
-                          RUBYSYMOPERATORREX
+                          /#{RUBYSYMOPERATORREX}|\A`/o
                         end
 
       @always_binary_chars=CharSet['}]);|>,.=^']
@@ -1889,7 +1889,7 @@ end
            assert notbare
            open=":'"; close="'"
            single_quote("'")
-         when ?` then read(1) #`
+#         when ?` then read(1) #`
          when ?@ then at_identifier.to_s
          when ?$ then dollar_identifier.to_s
          when ?_,?a..?z,NONASCII then identifier_as_string(?:)
@@ -1925,8 +1925,8 @@ end
      opmatches=readahead(3)[@method_operators]
      return [read(opmatches.size), start] if opmatches
      case nc=nextchar
-         when ?` #`
-           return [read(1),start] 
+#         when ?` #`
+#           return [read(1),start] 
          when ?_,?a..?z,?A..?Z,NONASCII
            context=merge_assignment_op_in_setter_callsites? ? ?: : nc
            return [identifier_as_string(context), start]
