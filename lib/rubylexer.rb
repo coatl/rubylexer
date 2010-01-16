@@ -484,10 +484,10 @@ private
       assert( /^#@@LETTER$/o===context)
       assert MethNameToken===@last_operative_token || !(@last_operative_token===/^(\.|::|(un)?def|alias)$/)
 
-      if @parsestack.last.wantarrow and @rubyversion>=1.9 and @file.skip ":"
-        @moretokens.push SymbolToken.new(str,oldpos), KeywordToken.new("=>",input_position-1)
-      else
-        @moretokens.unshift(*parse_keywords(str,oldpos) do |tok,except|
+#      if @parsestack.last.wantarrow and @rubyversion>=1.9 and @file.skip ":"
+#        @moretokens.unshift SymbolToken.new(str,oldpos), KeywordToken.new(":",input_position-1,:as=>"=>")
+#      else
+        @moretokens.unshift(*special_identifier?(str,oldpos) do |tok,except|
           #most callers of this block pass nothing(==nil) for except. only _keyword_funclike passes a true val
 
           was_last=@last_operative_token
@@ -496,7 +496,7 @@ private
           (Array===normally ? normally[0]=except : normally=except) if except
           normally
         end)
-      end
+#      end
       return @moretokens.shift
    end
 
@@ -1004,7 +1004,7 @@ private
    #parse keywords now, to prevent confusion over bare symbols
    #and match end with corresponding preceding def or class or whatever.
    #if arg is not a keyword, the block is called
-   def parse_keywords(str,offset,&block)
+   def special_identifier?(str,offset,&block)
       assert @moretokens.empty?
       assert !(KeywordToken===@last_operative_token and /A(\.|::|def)\Z/===@last_operative_token.ident)
       result=[KeywordToken.new(str,offset)]
