@@ -1443,7 +1443,120 @@ private
        return result
      end
 
+     #-----------------------------------
      def keyword_not(*args,&block) _keyword_funclike(*args,&block) end
+
+     #-----------------------------------
+     def special_identifier?(str,oldpos)
+       if @parsestack.last.wantarrow and @file.skip ":"
+         return SymbolToken.new(str,oldpos), KeywordToken.new(":",input_position-1,:as=>"=>")
+       else
+         return super
+       end
+     end
+
+     #-----------------------------------
+     def want_hard_nl?
+       return false if @file.check( /\A\n(?:#@@WSTOKS)?[.:][^.:]/o )
+       super
+     end
+
+     #-----------------------------------
+     #handle ? in ruby code. is it part of ?..: or a character literal?
+     def char_literal_or_op(ch)
+       if colon_quote_expected? ch
+         getchar
+         StringToken.new "'", getchar_maybe_escape
+       else
+         super
+       end
+     end
+
+     #-----------------------------------
+     def plusminus(ch)
+       pos=input_position
+       assert(/^[+\-]$/===ch)
+       if unary_op_expected?(ch) or
+         KeywordToken===@last_operative_token &&
+         /^(return|break|next)$/===@last_operative_token.ident
+           if '->' == readahead(2) #stabby proc
+             @file.pos+=2
+             #push down block context
+             localvars.start_block
+             @parsestack.push ctx=RubyLexer::BlockContext.new(@linenum)
+             ctx.wanting_stabby_block_body=true
+             #read optional proc params
+             block_param_list_lookahead ?(, RubyLexer::ParenedParamListLhsContext
+             result=RubyLexer::KeywordToken.new('->',pos)
+             result.offset=pos
+             return result
+           end
+       end
+       super
+     end
+
+     #-----------------------------------
+     def equals(ch) #match /=(>|~|==?)?/ (= or == or =~ or === or =>)
+       if readahead(2)=='=~' # =~... after regex, maybe?
+         last=last_operative_token
+        
+         if StringToken===last and last.lvars
+           #ruby delays adding lvars from regexps to known lvars table
+           #for several tokens in some cases. not sure why or if on purpose
+           #i'm just going to add them right away
+           last.lvars.each{|lvar| localvars[lvar]=true }
+         end
+       end
+       return super
+     end
+
+     #-----------------------------------
+     def regex(ch=nil)
+      result=super
+        named_brs=[]
+        if result.elems.size==1 and String===result.elems.first
+            elem=result.elems.first
+            index=0
+            while index=elem.index(/(#{EVEN_BS_S})( \(\?[<'] | \(\?\# | \[ )/xo,index)
+              index+=$1.size
+              case $2
+              when "(?<"
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)>/o,index)
+                break lexerror(result, "malformed named backreference") unless index
+                index+=$&.size
+                named_brs<<$1
+              when "(?'"
+                index=elem.index(/\G...(#{LCLETTER}#{LETTER_DIGIT}+)'/o,index)
+                break lexerror(result, "malformed named backreference") unless index
+                index+=$&.size
+                named_brs<<$1
+              when "(?#"
+                index+=3
+                index=elem.index(/#{EVEN_BS_S}\)/o,index)
+                break lexerror(result, "unterminated regexp comment") unless index
+                index+=$&.size
+              when "["
+                index+=1
+                paren_ctr=1
+                loop do
+                  index=elem.index(/#{EVEN_BS_S}(&&\[\^|\])/o,index)
+                  break lexerror(result, "unterminated character class") unless index
+                  index+=$&.size
+                  if $1==']'
+                    paren_ctr-=1
+                    break if paren_ctr==0
+                  else
+                    paren_ctr+=1
+                  end
+                end
+                break unless index
+
+              end
+            end
+            result.lvars= named_brs unless named_brs.empty?
+        end
+      return result
+     end
    end
 
    def _keyword_funclike(str,offset,result)
