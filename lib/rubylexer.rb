@@ -1849,13 +1849,13 @@ end
    def char_literal_or_op(ch)
       if colon_quote_expected? ch
          getchar
-         if @rubyversion >= 1.9
-           StringToken.new getchar_maybe_escape
-         else
+#         if @rubyversion >= 1.9
+#           StringToken.new getchar_maybe_escape
+#         else
            ch=getchar_maybe_escape[0]
            ch=ch.ord if ch.respond_to? :ord
            NumberToken.new ch
-         end
+#         end
       else
          @parsestack.push TernaryContext.new(@linenum)
          KeywordToken.new getchar   #operator
