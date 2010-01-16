@@ -2715,15 +2715,15 @@ end
           result=@moretokens.shift
         end
         @parsestack.last.see self,:arrow
-      when '~' # =~... after regex, maybe?
-        last=last_operative_token
-        
-        if @rubyversion>=1.9 and StringToken===last and last.lvars
-          #ruby delays adding lvars from regexps to known lvars table
-          #for several tokens in some cases. not sure why or if on purpose
-          #i'm just going to add them right away
-          last.lvars.each{|lvar| localvars[lvar]=true }
-        end
+#      when '~' # =~... after regex, maybe?
+#        last=last_operative_token
+#        
+#        if @rubyversion>=1.9 and StringToken===last and last.lvars
+#          #ruby delays adding lvars from regexps to known lvars table
+#          #for several tokens in some cases. not sure why or if on purpose
+#          #i'm just going to add them right away
+#          last.lvars.each{|lvar| localvars[lvar]=true }
+#        end
       when '' #plain assignment: record local variable definitions
         last_context_not_implicit.lhs=false
         @last_operative_token=result
