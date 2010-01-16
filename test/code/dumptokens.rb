@@ -42,7 +42,7 @@ opts=GetoptLong.new(
   ["--eval", "-e", GetoptLong::REQUIRED_ARGUMENT],
   ["--silent", "-s", GetoptLong::NO_ARGUMENT],
   ["--macro", "-m", GetoptLong::NO_ARGUMENT],
-  ["--ruby19", "-9", GetoptLong::NO_ARGUMENT]
+  ["--ruby19", "--1.9", "-9", GetoptLong::NO_ARGUMENT]
 )
 opts.each{|opt,arg|
   case opt
