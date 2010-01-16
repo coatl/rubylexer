@@ -2241,6 +2241,15 @@ end
    end
 
    #-----------------------------------
+   def want_hard_nl?
+      NewlineToken===@last_operative_token || #hack
+           (KeywordToken===@last_operative_token and
+            @last_operative_token.ident=="rescue" and
+            !@last_operative_token.infix?)  ||
+        !after_nonid_op?{false}
+   end
+
+   #-----------------------------------
    def newline(ch)
       assert("\r\n"[nextchar.chr])
 
