@@ -2837,7 +2837,7 @@ end
         # in contexts expecting an (operator) method name, we 
         #       would want to match [] or []= at this point
         #but control never comes this way in those cases... goes 
-        #to custom parsers for alias, undef, and def in #parse_keywords
+        #to custom parsers for alias, undef, and def in #special_identifier?
         tokch.set_infix! unless after_nonid_op?{WHSPLF[lastchar]}
         @parsestack.push ListImmedContext.new(ch,@linenum)
         lasttok=last_operative_token
