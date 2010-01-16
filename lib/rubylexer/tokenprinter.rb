@@ -85,6 +85,9 @@ end
    class OutlinedHereBodyToken; def ws_munge(tp)
      nil
    end end
+   class EncodingDeclToken; def ws_munge(tp)
+     nil
+   end end
    class ZwToken; def ws_munge(tp)
       case tp.showzw 
       when 2; explicit_form_all
