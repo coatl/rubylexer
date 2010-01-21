@@ -2035,7 +2035,7 @@ end
       #return single : token
       else 
         #cancel implicit contexts...
-        @moretokens.push(*abort_noparens!(':'))
+        @moretokens.push(*abort_noparens!(':')) #special treatment not needed in 1.9 mode?
         @moretokens.push tok=KeywordToken.new(':',startpos)
         
         case @parsestack.last
