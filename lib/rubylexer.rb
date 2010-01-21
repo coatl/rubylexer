@@ -1993,10 +1993,27 @@ end
       end
 
       #handle quoted symbols like  :"foobar",  :"[]"
-      qe and return symbol(':')
+      if qe 
+        return symbol(':')
+      elsif eat_next_if(?:)
+        #we definately found a ::
 
-      #look for another colon; return single : if not found
-      unless eat_next_if(?:) 
+        colon2=KeywordToken.new( '::',startpos)
+        lasttok=@last_operative_token
+        assert !(String===lasttok)
+        if (VarNameToken===lasttok or MethNameToken===lasttok) and
+           lasttok===/^(?:[$@]|#@@LETTER)/o and !WHSPCHARS[lastchar]
+        then
+          @moretokens << colon2
+          result= NoWsToken.new(startpos)
+        else
+          result=colon2
+        end
+        dot_rhs(colon2)
+        return result
+
+      #return single : token
+      else 
         #cancel implicit contexts...
         @moretokens.push(*abort_noparens!(':'))
         @moretokens.push tok=KeywordToken.new(':',startpos)
@@ -2029,21 +2046,6 @@ end
         return @moretokens.shift
       end
       
-      #we definately found a ::
-
-      colon2=KeywordToken.new( '::',startpos)
-      lasttok=@last_operative_token
-      assert !(String===lasttok)
-      if (VarNameToken===lasttok or MethNameToken===lasttok) and
-          lasttok===/^(?:[$@]|#@@LETTER)/o and !WHSPCHARS[lastchar]
-      then
-         @moretokens << colon2
-         result= NoWsToken.new(startpos)
-      else
-         result=colon2
-      end
-      dot_rhs(colon2)
-      return result
    end
 
    #-----------------------------------
