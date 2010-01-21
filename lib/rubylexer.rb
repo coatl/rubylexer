@@ -249,16 +249,20 @@ class RubyLexer
        end
        til_charset( /[\n]/ )
      end
-     if @rubyversion>=1.9 and @file.skip( 
-          /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i 
+     read_encoding_line
+   ensure
+     @moretokens<<EncodingDeclToken.new(@file[0...input_position],@encoding) if input_position!=0
+   end
+
+   def read_encoding_line
+     if @rubyversion>=1.9 and @file.skip(
+          /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i
         )
        name=$1
        name.downcase!
        name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
        @encoding=name.to_sym if ENCODINGS.include? name
      end
-   ensure
-     @moretokens<<EncodingDeclToken.new(@file[0...input_position],@encoding) if input_position!=0
    end
 
    def progress_printer
