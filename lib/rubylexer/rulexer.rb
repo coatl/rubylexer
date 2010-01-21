@@ -316,8 +316,8 @@ if FASTER_STRING_ESCAPES
       str=StringToken.new type
       str.bs_handler ||= case type
         when '/' then :regex_esc_seq
-        when '{' then @rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
-        when '"','`',':' then @rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
+        when '{' then Wquote_handler_name() #@rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
+        when '"','`',':' then dquote_handler_name #@rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
         when "'"     then :squote_esc_seq
         when "["     then :wquote_esc_seq
         else raise "unknown quote type: #{type}"
@@ -429,8 +429,8 @@ else
 
       bs_handler ||= case type
         when '/' then :regex_esc_seq
-        when '{' then @rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
-        when '"','`',':' then @rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
+        when '{' then Wquote_handler_name #@rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
+        when '"','`',':' then dquote_handler_name #@rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
         when "'"     then :squote_esc_seq
         when "["     then :wquote_esc_seq
         else raise "unknown quote type: #{type}"
@@ -1014,7 +1014,7 @@ end
       c=getc.chr
 
       if c == "\\"
-         c = @rubyversion >= 1.9 ? dquote19_esc_seq('\\') : dquote_esc_seq('\\')
+         c = dquote_handle('\\') #@rubyversion >= 1.9 ? dquote19_esc_seq('\\') : dquote_esc_seq('\\')
          c = "\n" if c.empty?
       end
       return c
