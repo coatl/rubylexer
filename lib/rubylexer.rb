@@ -1456,6 +1456,44 @@ private
      return result
    end
  
+   module WithMacros     
+     #-----------------------------------
+     def method_params
+       lasttok=last_token_maybe_implicit #last_operative_token
+       super or 
+         (lasttok and lasttok.ident==')')
+     end
+
+     #-----------------------------------
+     def symbol_or_op(ch)
+       startpos= input_position
+       if readahead(2)==":("
+         result= OperatorToken.new(read(1), startpos)
+         result.unary=true
+         return result
+       end
+       super
+     end
+
+     #-----------------------------------
+     def caret(ch) #match /^=?/ (^ or ^=) (maybe unary ^ too)
+       if @last_token_maybe_implicit&&@last_token_maybe_implicit.ident=='(' or 
+          unary_op_expected?(ch)
+           result=OperatorToken.new(read(1),input_position)
+           result.unary=true
+           result
+       else
+           super
+       end
+     end
+
+     #-----------------------------------
+     def callsite_symbol(x)
+       return if nextchar==?(
+       super
+     end
+   end
+
    module RubyLexer1_9
      def keyword___ENCODING__(str,offset,result)
        #result.last.value=huh
