@@ -509,6 +509,45 @@ end
    end
 
    #-----------------------------------
+   def dquote_handle(ch)
+     @rubyversion >= 1.9 ? dquote19_esc_seq(ch) : dquote_esc_seq(ch)
+   end
+   #-----------------------------------
+   def dquote_handler_name
+     @rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
+   end
+   #-----------------------------------
+   def Wquote_handler_name
+     @rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
+   end
+
+   #-----------------------------------
+   if "".respond_to? :encoding
+     def codepoint2utf8(cp)
+       cp=cp.to_i(16) if String===cp
+       result="".force_encoding Encoding::UTF_8
+       result<<cp
+     end
+   else
+     def codepoint2utf8(cp)
+       cp=cp.to_i(16) if String===cp
+       result=""
+       if cp<=0x7F
+         [cp]
+       elsif cp<=0x7FF
+         [                                     cp>>6&0x1F|0xC0, cp&0x3F|0x80]
+       elsif cp<=0xFFFF
+         [                   cp>>12&0x0F|0xE0, cp>>6&0x3F|0x80, cp&0x3F|0x80]
+       elsif cp<=0x10FFFF
+         [ cp>>18&0x07|0xF0, cp>>12&0x3F|0x80, cp>>6&0x3F|0x80, cp&0x3F|0x80]
+       else huh error
+       end.each{|byte| result<<byte }
+       result
+     end
+   end
+
+
+   #-----------------------------------
    ESCAPECHRS="abefnrstv"
    ESCAPESEQS="\a\b\e\f\n\r\s\t\v"
    def dquote_esc_seq(ch,nester=nil,delimiter=nil)
