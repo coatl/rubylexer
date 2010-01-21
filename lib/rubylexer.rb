@@ -2881,6 +2881,16 @@ if false
      return IgnoreToken.new(result)
    end
 end
+
+   #-----------------------------------
+   def method_params
+     lasttok=last_token_maybe_implicit #last_operative_token
+     VarNameToken===lasttok or 
+       MethNameToken===lasttok or
+       lasttok===FUNCLIKE_KEYWORDS or
+       (@enable_macro and lasttok and lasttok.ident==')') #factored
+   end
+
    #-----------------------------------
    def open_brace(ch)
       #there are 3 distinct cases here; this method should be divided in 3
@@ -2909,14 +2919,7 @@ end
                tokch= NoWsToken.new(input_position-1)
         end
       when '('
-        lasttok=last_token_maybe_implicit #last_operative_token
         #could be: lasttok===/^#@@LETTER/o
-        method_params= (
-          VarNameToken===lasttok or 
-          MethNameToken===lasttok or
-          lasttok===FUNCLIKE_KEYWORDS or
-          (@enable_macro and lasttok and lasttok.ident==')')
-        )
         if method_params
           unless WHSPCHARS[lastchar]
                @moretokens << tokch
