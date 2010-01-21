@@ -1495,6 +1495,26 @@ private
    end
 
    module RubyLexer1_9
+     #-----------------------------------
+     def dquote_handle(ch)
+       dquote19_esc_seq(ch)
+     end
+     #-----------------------------------
+     def dquote_handler_name
+       :dquote19_esc_seq
+     end
+     #-----------------------------------
+     def Wquote_handler_name
+       :Wquote19_esc_seq
+     end
+
+     #-----------------------------------
+     def callsite_symbol(x)
+       return if nextchar==?(
+       super
+     end
+
+     #-----------------------------------
      def keyword___ENCODING__(str,offset,result)
        #result.last.value=huh
        return result
