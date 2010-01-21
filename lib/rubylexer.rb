@@ -1169,9 +1169,9 @@ private
          return result
    end
    def keyword_def(str,offset,result)         #macros too, if enabled
-         result.first.has_end!
-         @parsestack.push ctx=DefContext.new(@linenum)
-         ctx.state=:saw_def
+      result.first.has_end!
+      @parsestack.push ctx=DefContext.new(@linenum)
+      ctx.state=:saw_def
       old_moretokens=@moretokens
       @moretokens=[]
       aa=@moretokens
