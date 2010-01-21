@@ -1174,7 +1174,7 @@ private
       ctx.state=:saw_def
       old_moretokens=@moretokens
       @moretokens=[]
-      aa=@moretokens
+      #aa=@moretokens
          #safe_recurse { |aa|
             set_last_token KeywordToken.new(str) #hack
             result.concat ignored_tokens
