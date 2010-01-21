@@ -73,9 +73,9 @@ end
          else
            ''
          end
-         if ?= == @ident.to_s[0]
+         #if ?= == @ident.to_s[0]
            result+="\\\n"*@ident.to_s.scan(/\r\n?|\n\r?/).size
-         end
+         #end
          
          return result
    end end
