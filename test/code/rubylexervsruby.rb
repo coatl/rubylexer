@@ -53,9 +53,10 @@ def ruby_parsedump(input,output,ruby)
         #elsif /(warning|error)/i===line
         #  raise("a warning or error, appearently, not caught by rex above: "+line)
       }
-      pid,status=Process.waitpid2 pipe.pid #get err status of subprocess
+      #pid,status=Process.waitpid2 pipe.pid #get err status of subprocess
     } 
   }
+  status=$?
   ENABLEMD5 and status==0 and system "md5sum #{input} > #{input}.md5" #compute sum only if no errors
   return status>>8
 end
