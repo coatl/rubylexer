@@ -1229,7 +1229,12 @@ private
               end
 
               assert result[tokindex].equal?(tok)
-              var=assign_lvar_type! ty.new(tok.to_s,tok.offset)
+              var=ty.new(tok.to_s,tok.offset)
+              if ty==KeywordToken and name[0,2]=="__"
+                send("keyword_#{name}",name,tok.offset,[var])
+              end
+
+              var=assign_lvar_type! var
               @localvars_stack.push SymbolTable.new
               var.in_def=true if inside_method_def? and var.respond_to? :in_def=
               result[tokindex]=var
