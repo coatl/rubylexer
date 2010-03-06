@@ -632,6 +632,7 @@ private
      tok=set_last_token assign_lvar_type!(VarNameToken.new(name,pos))
 
      oldpos= input_position
+     oldline= linenum
      sawnl=false
      result=ws_toks=ignored_tokens(true) {|nl| sawnl=true }
      if sawnl || eof? 
@@ -644,11 +645,13 @@ private
          elsif maybe_local
            return result.unshift(tok) #if is_const
          else 
-           return result.unshift(
+           toks=[
              MethNameToken.new(name,pos),  #insert implicit parens right after tok
              ImplicitParamListStartToken.new( oldpos),
              ImplicitParamListEndToken.new( oldpos) 
-           )
+           ]
+           toks.each{|tok| tok.endline=oldline}
+           return result.unshift(*toks)
          end
      end
      
