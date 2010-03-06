@@ -34,7 +34,7 @@ class SimpleTokenPrinter
    TOKENSPERLINE=8
    TOKENSMAGICMAP="\n"+' '*(TOKENSPERLINE-1)
 
-   def pprint(tok,output=$stdout) output.print(sprint(tok)) end
+   def pprint(tok,output=$stdout) output<<(sprint(tok)) end
 
    def sprint(tok)
       case tok
@@ -120,7 +120,7 @@ class KeepWsTokenPrinter
    def pprint(tok,output=$stdout)
       @accum<<aprint(tok).to_s
       if (@accum.size>ACCUMSIZE and NewlineToken===tok) or EoiToken===tok
-         output.print(@accum.join)
+         output<<(@accum.join)
          @accum=[]
       end
    end
