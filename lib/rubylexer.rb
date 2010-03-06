@@ -46,23 +46,23 @@ class RubyLexer
       %r{^([%^/\-+|&]=|(\|\||&&)=?|(<<|>>|\*\*?)=|\.{1,3}|[?:,;]|::|=>?|![=~]?)$}
    RUBYOPERATORREX=/#{RUBYSYMOPERATORREX}|#{RUBYNONSYMOPERATORREX}/o
    UNSYMOPS=/^[~!]$/ #always unary
-   UBSYMOPS=/^([*&+-]|::)$/  #ops that could be unary or binary
+   UBSYMOPS=/^(?:[*&+-]|::)$/  #ops that could be unary or binary
    WHSPCHARS=WHSPLF+"\\#"
    OPORBEGINWORDLIST=%w(if unless while until)
    BEGINWORDLIST=%w(def class module begin for case do)+OPORBEGINWORDLIST
-   OPORBEGINWORDS="(#{OPORBEGINWORDLIST.join '|'})"
-   BEGINWORDS=/^(#{BEGINWORDLIST.join '|'})$/o
+   OPORBEGINWORDS="(?:#{OPORBEGINWORDLIST.join '|'})"
+   BEGINWORDS=/^(?:#{BEGINWORDLIST.join '|'})$/o
    FUNCLIKE_KEYWORDLIST=%w/break next redo return yield retry super BEGIN END/
-   FUNCLIKE_KEYWORDS=/^(#{FUNCLIKE_KEYWORDLIST.join '|'})$/
+   FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
    VARLIKE_KEYWORDLIST=%w/__FILE__ __LINE__ false nil self true/
-   VARLIKE_KEYWORDS=/^(#{VARLIKE_KEYWORDLIST.join '|'})$/
+   VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
    INNERBOUNDINGWORDLIST=%w"else elsif ensure in then rescue when"
-   INNERBOUNDINGWORDS="(#{INNERBOUNDINGWORDLIST.join '|'})"
+   INNERBOUNDINGWORDS="(?:#{INNERBOUNDINGWORDLIST.join '|'})"
    BINOPWORDLIST=%w"and or"
-   BINOPWORDS="(#{BINOPWORDLIST.join '|'})"
+   BINOPWORDS="(?:#{BINOPWORDLIST.join '|'})"
    
    RUBYKEYWORDS=%r{
-     ^(alias|#{BINOPWORDS}|defined\?|not|undef|end|
+     ^(?:alias|#{BINOPWORDS}|defined\?|not|undef|end|
        #{VARLIKE_KEYWORDS}|#{FUNCLIKE_KEYWORDS}|
        #{INNERBOUNDINGWORDS}|#{BEGINWORDS}
      )$
