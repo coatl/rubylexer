@@ -2480,13 +2480,15 @@ end
         @parsestack.last.see self,:semi
 
         a << rulexer_newline(ch)
-        @moretokens.replace a+@moretokens
+        a+=@moretokens
+        @moretokens.replace a
       else
         @offset_adjust=@min_offset_adjust
         offset= input_position
         nl=readnl
-        @moretokens.push EscNlToken.new(nl,offset,@filename,@linenum-1),
-           FileAndLineToken.new(@filename,@linenum,input_position)
+        a=[EscNlToken.new(nl,offset,@filename,@linenum),
+           FileAndLineToken.new(@filename,@linenum,input_position)]
+        @moretokens.push( *a )
       end
 
       #optimization: when thru with regurgitated text from a here document,
@@ -2505,6 +2507,14 @@ end
 
       @moretokens.unshift(*optional_here_bodies)
 
+      #adjust line #s to account for newlines in here bodys
+      l=@linenum
+      a.reverse_each{|implicit| 
+        implicit.endline=l 
+        l-=1 if EscNlToken===implicit or NewlineToken===implicit
+      }
+
+=begin
       #adjust line count in fal to account for newlines in here bodys
       i=@moretokens.size-1
       while(i>=0)
@@ -2522,6 +2532,7 @@ end
         pre.offset=result.offset
         @moretokens.unshift pre
       end
+=end
       start_of_line_directives
 
       result=@moretokens.shift
