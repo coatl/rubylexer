@@ -391,7 +391,7 @@ private
    UNESC_DELIMS={}
 
    #simpler transform, preserves original exactly
-   def simple_transform(strfrag,starter,ender)
+   def simple_transform(strfrag,starter,ender) #appears to be unused
       assert('[{/'[@char])
       #strfrag.gsub!(/(\A|[^\\])(?:\\\\)*\#([{$@])/){$1+'\\#'+$2} unless @char=='['
       delimchars=Regexp.quote starter+ender
@@ -419,7 +419,7 @@ private
       return strfrag
    end
 
-   def transform(strfrag,starter,ender)
+   def transform(strfrag,starter,ender) #appears to be unused
       strfrag.gsub!("\\",'\\'*4)
       strfrag.gsub!(/#([{$@])/,'\\#\\1')
       strfrag.gsub!(Regexp.new("[\\"+starter+"\\"+ender+"]"),'\\\\\\&') unless @char=='?'
@@ -456,8 +456,9 @@ private
 end
 
 #-------------------------
-class RenderExactlyStringToken < StringToken
+class RenderExactlyStringToken < StringToken 
    alias transform simple_transform
+   #transform isn't called anymore, so there's no need for this hacky class
 end
 
 #-------------------------
@@ -713,7 +714,7 @@ class FileAndLineToken < IgnoreToken
 end
 
 #-------------------------
-class OutlinedHereBodyToken < HereBodyToken
+class OutlinedHereBodyToken < HereBodyToken #appears to be unused
   def to_s
     assert HerePlaceholderToken===@headtok
     result=@headtok.string
