@@ -2202,7 +2202,7 @@ if true
       input_position_set newpos
 
       #line numbers would be wrong within the procrastinated section
-      @linenum-=1
+      @linenum=res.line #was: @linenum-=1
 
       #be nice to get the here body token at the right place in input, too...
       @pending_here_bodies<< body
