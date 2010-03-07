@@ -61,9 +61,6 @@ p %(1)
 
 
 
-=begin
-=end
-
 p <<p
 \
 p
