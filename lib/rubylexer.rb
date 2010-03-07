@@ -2291,7 +2291,7 @@ end
       @offset_adjust=@min_offset_adjust
       @moretokens.push( *optional_here_bodies )
       ln=@linenum
-      @moretokens.push lexerror(EscNlToken.new(result,input_position-result.size,@filename,ln-1), error),
+      @moretokens.push lexerror(EscNlToken.new(result,input_position-result.size,@filename,ln), error),
                        FileAndLineToken.new(@filename,ln,input_position)
 
       start_of_line_directives
