@@ -2838,13 +2838,12 @@ end
       else
         @moretokens << NoWsToken.new(input_position)
       end
-      ty= @rubyversion>=1.9 ? OperatorToken : KeywordToken
+      ty=OperatorToken
       result=ty.new(result, input_position-result.size)
       result.unary=!k #result should distinguish unary !
 
       return result
    end
-
 
    #-----------------------------------
    def dot(ch)
@@ -2853,7 +2852,7 @@ end
 
       #three lumps of sugar or two?
       eat_next_if(?.) and
-         return KeywordToken.new(eat_next_if(?.)? "..." : "..")
+         return OperatorToken.new(eat_next_if(?.)? "..." : "..")
 
       #else saw just single .
       #match a valid ruby id after the dot
