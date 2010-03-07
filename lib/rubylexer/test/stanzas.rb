@@ -725,14 +725,11 @@ x {
   p(p %(c))
 }
 
-=begin not supported yet
 p "#{<<kekerz}#{"foob"
 zimpler
 kekerz
 }"
-=end
 
-=begin not supported yet
 aaa=<<whatnot; p "#{'uh,yeah'
 gonna take it down, to the nitty-grit
 gonna tell you mother-fuckers why you ain't shit
@@ -741,7 +738,6 @@ you been pumpin' that bullshit all day long
 whatnot
 }"
 p aaa
-=end
 
 #test variable creation in string inclusion
 #currently broken because string inclusions
@@ -758,13 +754,11 @@ p %w[well, whaddaya know].map{|j| <<-END }
 }45634543
 END
 
-=begin not supported yet
 p "#{<<foobar3}"
 bim
 baz
 bof
 foobar3
-=end
 
 x do
   a,b,* = [1,2,3,4,5,6,7,8]
