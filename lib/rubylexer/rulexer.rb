@@ -135,7 +135,7 @@ private
 
    #-----------------------------------
    def regex(ch=nil)
-      result=RenderExactlyStringToken.new('/').append_token double_quote("/")
+      result= double_quote("/")
       if false and @rubyversion>=1.9
         named_brs=[]
         if result.elems.size==1 and String===result.elems.first
@@ -239,7 +239,6 @@ end
       case ch
       when /^[Wwr]$/
         str=result
-        result=RenderExactlyStringToken.new(type).append_token(result)
         result.open=str.open; result.close=str.close
         result.line=@linenum
       when 's'
