@@ -648,9 +648,10 @@ class EoiToken < Token
    attr :file
    alias :pos :offset
 
-   def initialize(cause,file, offset=nil)
+   def initialize(cause,file, offset=nil,line=nil)
       super(cause,offset)
       @file=file
+      @endline=line
    end
 end
 

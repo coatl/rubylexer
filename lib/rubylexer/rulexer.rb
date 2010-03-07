@@ -72,7 +72,7 @@ class RubyLexer
 
    #-----------------------------------
    def endoffile_detected s=''
-     EoiToken.new(s,@original_file, input_position-s.size)
+     EoiToken.new(s,@original_file, input_position-s.size,@linenum)
    end
    alias rulexer_endoffile_detected endoffile_detected
 
