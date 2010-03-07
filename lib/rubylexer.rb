@@ -2164,6 +2164,7 @@ end
       end
 
       res= HerePlaceholderToken.new( dash, quote, ender, quote_real )
+      res.line=linenum
 if true
       res.open=["<<",dash,quote,ender,quote].join
       procrastinated=til_charset(/[\n]/)#+readnl
