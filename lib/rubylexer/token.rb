@@ -1,4 +1,4 @@
-=begin legal crap
+=begin
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
@@ -29,6 +29,7 @@ class Token
    attr_accessor :offset #file offset of start of this token
    attr_accessor :as #if defined, a KeywordToken which this token stands in for.
    attr_accessor :allow_ooo_offset #hack
+   attr_accessor :endline
 
    def initialize(ident,offset=nil)
       @ident=ident
@@ -40,6 +41,14 @@ class Token
    def has_no_block?; false end
 
    attr_accessor :tag
+
+   attr_writer :startline
+   def startline
+     return @startline if defined? @startline
+     return endline
+   end
+
+   def linecount; 0 end
 end
 
 #-------------------------
@@ -218,11 +227,18 @@ end
 
 #-------------------------
 class NewlineToken < Token
-   def initialize(nlstr="\n",offset=nil)
-      super(nlstr,offset)
-      #@char=''
-   end
-   def as; ';' end
+  def initialize(nlstr="\n",offset=nil)
+    super(nlstr,offset)
+    #@char=''
+  end
+  def as; ';' end
+
+  def linecount; 1 end
+
+  def startline
+    @endline-1
+  end
+  def startline=bogus; end
 end
 
 #-------------------------
@@ -239,6 +255,8 @@ class StringToken < Token
    attr_accessor :close #exact seq of (1) char to stop the str
 
    attr_accessor :lvars #names used in named backrefs if this is a regex
+
+   def linecount; line-startline end
    
    def with_line(line)
      @line=line
@@ -482,9 +500,13 @@ class HerePlaceholderToken < WToken
    
    #def with_line(line) @string.line=line; self end
    
-   def line; @string.line end
-   def line=line; @string.line=line end
+   def line; @line || @string.line end
+   def line=line; @line=line end
 
+   def startline; @line end
+   alias endline startline
+   def startline=x; end
+   alias endline= startline=
 end
 
 #-------------------------
@@ -495,6 +517,13 @@ end
 #-------------------------
 class IgnoreToken < Token
   include StillIgnoreToken
+
+  def initialize(ident,*stuff)
+    @linecount=ident.count "\n"
+    super
+  end
+
+  attr :linecount
 end
 
 #-------------------------
@@ -599,6 +628,19 @@ class EscNlToken < IgnoreToken
       @filename=filename
       @linenum=linenum
    end
+
+   attr_accessor :filename,:linenum
+
+   def linecount; 1 end
+
+   def startline
+     @linenum-1
+   end
+   def endline
+     @linenum
+   end
+   def startline= bogus; end
+   alias endline= linenum=
 end
 
 #-------------------------
@@ -625,6 +667,14 @@ class HereBodyToken < IgnoreToken
 
   def line
     @ident.line
+  end
+  alias endline line
+  def endline= line
+    @ident.line= line
+  end
+
+  def startline
+    line-@linecount+1
   end
 
   def to_s
@@ -654,6 +704,11 @@ class FileAndLineToken < IgnoreToken
 
    def file()   @ident   end
    def subitem()   @line   end #needed?
+
+   def endline; @line end
+   def startline; @line end
+   alias endline= line=
+   def startline= bogus; end
 end
 
 #-------------------------
