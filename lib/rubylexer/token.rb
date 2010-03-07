@@ -258,6 +258,14 @@ class StringToken < Token
 
    def linecount; line-startline end
    
+   def utf8?
+     @utf8||=nil
+   end
+
+   def utf8!
+     @utf8=true
+   end 
+
    def with_line(line)
      @line=line
      self
