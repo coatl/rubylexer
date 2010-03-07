@@ -2811,7 +2811,7 @@ end
         last_context_not_implicit.lhs=false
         @last_operative_token=result
         @moretokens.push( *ignored_tokens(true).map{|x| 
-          NewlineToken===x ? EscNlToken.new(x.ident,x.offset,@filename,@linenum) : x 
+          NewlineToken===x ? EscNlToken.new(x.ident,x.offset,x.filename,x.linenum) : x 
         } )
         @parsestack.push AssignmentRhsContext.new(@linenum)
         @moretokens.push AssignmentRhsListStartToken.new( input_position)
