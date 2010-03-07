@@ -662,7 +662,7 @@ class HereBodyToken < IgnoreToken
   attr_accessor :open,:close
   def initialize(headtok,linecount)
     assert HerePlaceholderToken===headtok
-    super(headtok.string,headtok.string.offset)
+    @ident,@offset=headtok.string,headtok.string.offset
     @headtok=headtok
     @linecount=linecount
   end
