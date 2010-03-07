@@ -2304,17 +2304,20 @@ end
    def optional_here_bodies
      result=[]
 if true
-      #handle here bodies queued up by previous line
-      pos=input_position
-      while body=@pending_here_bodies.shift
+     #handle here bodies queued up by previous line
+     pos=input_position
+     while body=@pending_here_bodies.shift
         #body.offset=pos
-        result.push EscNlToken.new("\n",body.offset-1,@filename,nil)
-        result.push FileAndLineToken.new(@filename,body.ident.line,body.offset)
+        result.push EscNlToken.new("\n",body.offset-1,@filename,@linenum)
+        result.push FileAndLineToken.new(@filename,@linenum,body.offset)
         result.push body
         #result.push NoWsToken.new @pending_here_bodies.empty? ? input_position : @pending_here_bodies.first
         #result.push FileAndLineToken.new(@filename,@linenum,pos) #position and line num are off
-        body.headtok.line=@linenum-1
-      end
+        @linenum+=body.linecount
+        body.endline=@linenum-1
+   #     body.startline=@linenum-1-body.linecount
+     end
+     
 else
       #...(we should be more compatible with dos/mac style newlines...)
       while tofill=@incomplete_here_tokens.shift
