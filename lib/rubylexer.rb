@@ -3171,7 +3171,7 @@ end
   #-----------------------------------
   #tokenify_results_of  :identifier
   save_offsets_in(*CHARMAPPINGS.values.uniq-[
-    :symbol_or_op,:open_brace,:whitespace,:exclam,:backquote,:caret,:plusminus
+    :symbol_or_op,:open_brace,:whitespace,:exclam,:caret,:plusminus
   ])
   save_linenums_in :symbol_or_op,:open_brace,:whitespace,:exclam,:caret,:plusminus
   #save_offsets_in :symbol
