@@ -1064,15 +1064,30 @@ protected
   def input_position_set x; @file.pos=x end
 
   #-----------------------------------
+  def adjust_linenums_in_moretokens!(tok)
+    line=tok.endline
+    @moretokens.each{|tok|
+      if tok.linecount.zero?
+        tok.endline||=line
+      else
+        line+=tok.linecount
+      end
+    }
+  end
+
+  #-----------------------------------
   def self.save_offsets_in(*funcnames)
     eval funcnames.collect{|fn| <<-endeval }.join
       class ::#{self}
         alias #{fn}__no_offset #{fn}   #rename old ver of fn
         def #{fn}(*args)               #create new version
           pos= input_position
+          ln=@linenum
           result=#{fn}__no_offset(*args)
           assert Token===result
           result.offset||=pos
+          result.endline||=ln
+          adjust_linenums_in_moretokens!(result)
           return result
         end
       end
