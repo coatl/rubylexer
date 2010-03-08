@@ -1094,6 +1094,23 @@ protected
     endeval
   end
 
+  #-----------------------------------
+  def self.save_linenums_in(*funcnames)
+    eval funcnames.collect{|fn| <<-endeval }.join
+      class ::#{self}
+        alias #{fn}__no_linenum #{fn}   #rename old ver of fn
+        def #{fn}(*args)               #create new version
+          ln=@linenum
+          result=#{fn}__no_linenum(*args)
+          assert Token===result
+          result.endline||=ln
+          adjust_linenums_in_moretokens!(result)
+          return result
+         end
+      end
+    endeval
+  end
+
 
 end
 
