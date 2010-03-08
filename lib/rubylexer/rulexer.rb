@@ -78,14 +78,17 @@ class RubyLexer
 
    #-----------------------------------
    def get1token
-      @moretokens.empty? or return @moretokens.shift
+      @moretokens.empty? or return result=@moretokens.shift
 
       if eof?
          #@moretokens<<nil
-         return endoffile_detected()
+         return result=endoffile_detected()
       end
 
-      @toptable.go( nextchar )
+      return result=@toptable.go( nextchar )
+   ensure
+      #hacky: result.endline should already be set
+      result.endline||=@linenum if result
    end
    alias rulexer_get1token get1token
 
