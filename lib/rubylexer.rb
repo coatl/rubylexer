@@ -1079,6 +1079,8 @@ private
                #VarNameToken===@moretokens.last or 
                #KeywordToken===@moretokens.last && @moretokens.last.ident=="::"
            @file.scan(/\A(#@@WSTOKS)?(::)?(#@@WSTOKS)?(#@@UCLETTER#@@LETTER_DIGIT*)/o) or break
+           #should not allow newline around :: here
+
            md=@file.last_match
            all,ws1,dc,ws2,name=*md
            if ws1
