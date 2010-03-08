@@ -2440,6 +2440,8 @@ end
         tofill.close=close
         result.close=str.close=close[1..-1]
         result.offset=str.offset
+        result.endline=@linenum-1
+        result.startline=startline
         assert str.open
         assert str.close
         return result
