@@ -322,7 +322,7 @@ if FASTER_STRING_ESCAPES
         else raise "unknown quote type: #{type}"
       end
 
-      old_linenum=@linenum
+      str.startline=old_linenum=@linenum
       nestlevel=1
       loop{ 
          str.append(@file.scan( interior ))
