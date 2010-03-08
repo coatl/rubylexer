@@ -2014,7 +2014,7 @@ end
       lastchar=prevchar
       eat_next_if(ch[0]) or raise "needed: "+ch
 
-      if nextchar==?( and @enable_macro
+      if nextchar==?( and @enable_macro #factored
         result= OperatorToken.new(':', startpos)
         result.unary=true
         return result
@@ -2137,7 +2137,7 @@ end
            context=merge_assignment_op_in_setter_callsites? ? ?: : nc
            return [identifier_as_string(context), start]
          when ?(
-           return [nil,start] if @enable_macro or @rubyversion>=1.9
+           return [nil,start] if @enable_macro or @rubyversion>=1.9 #factored
      end
 
      set_last_token KeywordToken.new(';')
@@ -2713,7 +2713,7 @@ end
 
     #-----------------------------------
     def caret(ch) #match /^=?/ (^ or ^=) (maybe unary ^ too)
-      if @enable_macro and (@last_token_maybe_implicit and
+      if @enable_macro and (@last_token_maybe_implicit and #factored
          @last_token_maybe_implicit.ident=='(') || unary_op_expected?(ch)
            result=OperatorToken.new(read(1),input_position)
            result.unary=true
