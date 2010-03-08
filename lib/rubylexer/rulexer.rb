@@ -968,12 +968,12 @@ if (defined? DEBUGGER__ or defined? Debugger)
       #assert str == '#'
       Process.kill("INT",0) if readahead(11)==%/#breakpoint/ 
      
-      IgnoreToken.new(til_charset(/[\r\n]/))
+      IgnoreToken.new(til_charset(/\n/))
    end
 else
    #-----------------------------------
    def comment(str=nil)
-      IgnoreToken.new(til_charset(/[\r\n]/))
+      IgnoreToken.new(til_charset(/\n/))
    end
 end
   alias rulexer_comment comment
