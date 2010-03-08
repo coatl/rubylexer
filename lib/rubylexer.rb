@@ -1205,6 +1205,20 @@ private
               assert !in_lvar_define_state
      
               #maybe_local really means 'maybe local or constant'
+              %r{
+                 ((?!#@@LETTER_DIGIT).$) | ^[@$] | (#{VARLIKE_KEYWORDS} | #{FUNCLIKE_KEYWORDS}) |
+                 (^#@@LCLETTER) | (^#@@UCLETTER) 
+              }xo === name and
+                maybe_local=
+                  case
+                    when $1; maybe_local=false #operator or non-ident
+                    when $2; ty=KeywordToken   #keyword
+                    when $3; maybe_local=localvars===name #lvar or method
+                    when $4; is_const=true #constant
+                    else true
+                  end
+              maybe_local=ty=KeywordToken if "__ENCODING__"==name and @rubyversion>=1.9
+=begin was
               maybe_local=case name
                 when /(?!#@@LETTER_DIGIT).$/o; #do nothing
                 when /^[@$]/; true
@@ -1212,6 +1226,8 @@ private
                 when /^#@@LCLETTER/o;  localvars===name 
                 when /^#@@UCLETTER/o; is_const=true  #this is the right algorithm for constants... 
               end
+=end
+
               result.push(  *ignored_tokens(false,false)  )
               nc=nextchar
               if !ty and maybe_local
