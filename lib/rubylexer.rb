@@ -2338,6 +2338,7 @@ end
          tofill.string.offset= input_position
          linecount=1 #for terminator
          assert("\n"==prevchar)
+         startline=@linenum
          loop {
             assert("\n"==prevchar)
 
