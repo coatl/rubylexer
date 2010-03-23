@@ -1623,6 +1623,34 @@ private
      end
 
      #-----------------------------------
+     def assign_encoding! str
+       #search for nonascii bytes
+       #either directly or via hex (\xXX) or octal (\NNN) escapes
+       #and \u escapes also 
+       utf8=nonascii=false
+       str.elems.grep(String).each do|frag|
+         frag.scan /#{EVEN_BS_S}(?:\\u|\\2[0-7][0-7]|\\x[89a-fA-F][0-9a-fA-F])|[^\x00-\x7F]/o do |match|
+           if match[-1]==?u
+             utf8=true
+             break if nonascii
+           else
+             nonascii=true
+             break if utf8
+           end
+         end or break
+       end
+
+       lexerror(str,"utf8 and nonascii intermixed") if utf8 and nonascii and @encoding!=:utf8
+       
+       #encoding is source encoding unless \u escape is found 
+       str.utf8! if utf8
+
+       #maybe assign string fragments encodings if running under >=1.9?
+
+       return str
+     end
+
+     #-----------------------------------
      def regex(ch=nil)
       result=super
         named_brs=[]

@@ -272,6 +272,11 @@ end
    end
 
    #-----------------------------------
+   def assign_encoding! str
+     str
+   end
+
+   #-----------------------------------
    INTERIOR_REX_CACHE={}
    EVEN_BS_S=/
      (?:\G|
