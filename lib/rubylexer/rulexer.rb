@@ -512,15 +512,18 @@ end
 
    #-----------------------------------
    def dquote_handle(ch)
-     @rubyversion >= 1.9 ? dquote19_esc_seq(ch) : dquote_esc_seq(ch)
+     @rubyversion >= 1.9 ? dquote19_esc_seq(ch) : dquote_esc_seq(ch) 
+     #factored
    end
    #-----------------------------------
    def dquote_handler_name
      @rubyversion>=1.9 ? :dquote19_esc_seq : :dquote_esc_seq
+     #factored
    end
    #-----------------------------------
    def Wquote_handler_name
      @rubyversion>=1.9 ? :Wquote19_esc_seq : :Wquote_esc_seq
+     #factored
    end
 
    #-----------------------------------
