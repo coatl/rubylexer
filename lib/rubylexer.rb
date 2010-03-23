@@ -337,6 +337,11 @@ class RubyLexer
    end
 
    #-----------------------------------
+   def unshift(*tokens)
+     @moretokens.unshift(*tokens)
+   end
+
+   #-----------------------------------
    def eof?
      rulexer_eof? or EoiToken===@last_operative_token
    end
