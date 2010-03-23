@@ -585,7 +585,7 @@ end
       when 'u'
         case ch=getchar
         when /[a-f0-9]/i
-          u=read(4)
+          u=ch+read(3)
           raise "bad unicode escape" unless /[0-9a-f]{4}/i===u
           [u.hex].pack "U"
         when '{'
