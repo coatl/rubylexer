@@ -2606,11 +2606,13 @@ end
 
   #-----------------------------------
   #used to resolve the ambiguity of
-  # unary ops (+, -, *, &, ~ !) in ruby
+  # unary ops (+, -, *, &,  (and ^ if macros enabled) ) in ruby
   #returns whether current token is to be the start of a literal
   IDBEGINCHAR=/^(?:#@@LETTER|[$@])/o
   def unary_op_expected?(ch) #yukko hack
-    '*&='[readahead(2)[1..1]] and return false
+
+    #not unary if its anything followed by = or &/* followed by themselves
+    return false if /^(?:.=|([&*])\1)$/===readahead(2) 
 
     return true if KeywordToken===@last_operative_token and @last_operative_token==='for'
  
