@@ -1578,7 +1578,7 @@ private
      def char_literal_or_op(ch)
        if colon_quote_expected? ch
          getchar
-         StringToken.new "'", getchar_maybe_escape
+         assign_encoding!(StringToken.new('"', getchar_maybe_escape))
        else
          super
        end
@@ -1990,7 +1990,7 @@ end
       if colon_quote_expected? ch
          getchar
 #         if @rubyversion >= 1.9
-#           StringToken.new getchar_maybe_escape
+#           assign_encoding! StringToken.new getchar_maybe_escape
 #         else
            ch=getchar_maybe_escape[0]
            ch=ch.ord if ch.respond_to? :ord
@@ -2209,13 +2209,13 @@ end
       if quote
         ender=til_charset(/[#{quote}]/)
         (quote==getchar) or 
-          return lexerror(HerePlaceholderToken.new( dash, quote, ender ), "mismatched quotes in here doc")
+          return lexerror(res=HerePlaceholderToken.new( dash, quote, ender ), "mismatched quotes in here doc")
         quote_real=true
       else
         quote='"'
         ender=@file.scan(/#@@LETTER_DIGIT+/o)
         ender.length >= 1  or 
-          return lexerror(HerePlaceholderToken.new( dash, quote, ender, nil ), "invalid here header")
+          return lexerror(res=HerePlaceholderToken.new( dash, quote, ender, nil ), "invalid here header")
       end
 
       res= HerePlaceholderToken.new( dash, quote, ender, quote_real )
@@ -2306,6 +2306,8 @@ else
       #the rest of the here token is read after a
       #newline has been seen and res.affix is eventually called
 end
+   ensure
+     assign_encoding!(res.string) if res
    end
 
    #-----------------------------------

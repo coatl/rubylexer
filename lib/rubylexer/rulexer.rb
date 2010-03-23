@@ -222,7 +222,7 @@ private
          when /^#{LCLETTER().gsub('_','')}$/o
             error= "unrecognized %string type: "+ch; '"'
          when ''
-            result= lexerror( StringToken.new('', oldpos), "unexpected eof in %string")
+            result= lexerror( assign_encoding!(StringToken.new('', oldpos)), "unexpected eof in %string")
             result.line=@linenum
             return result
 
@@ -513,6 +513,8 @@ else
       str.line=@linenum
       str
 end
+   ensure
+     assign_encoding!(str) if str
    end
 
    #-----------------------------------
