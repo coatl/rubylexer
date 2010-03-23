@@ -1528,7 +1528,7 @@ private
    module RubyLexer1_9
      #-----------------------------------
      def dquote_handle(ch)
-       dquote19_esc_seq(ch)
+       dquote19_esc_seq(ch,'"','"')
      end
      #-----------------------------------
      def dquote_handler_name
