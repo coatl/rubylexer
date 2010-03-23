@@ -614,7 +614,7 @@ private
      was_in_lvar_define_state=in_lvar_define_state(lasttok)
      #maybe_local really means 'maybe local or constant'
      maybe_local=case name
-       when /(?!#@@LETTER_DIGIT).$/o #do nothing
+       when /[?!=]$/o #do nothing
        when /^#@@LCLETTER/o  
          (localvars===name or 
           #VARLIKE_KEYWORDS===name or 
