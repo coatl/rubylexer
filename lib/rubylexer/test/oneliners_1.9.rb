@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 module Ruby1_9OneLiners
   EXPECT_NO_METHODS=[ #no errors either
     '->a; h do 123 end',
@@ -52,6 +54,8 @@ module Ruby1_9OneLiners
     "/z\\(?#(?'foo'bar))/ =~ 'baz'; foo +1",
     '/z\\[(?<foo>bar)]/ =~ "baz"; foo +1',
     "/z\\[(?'foo'bar)]/ =~ 'baz'; foo +1",
+    "?\\uaeee",
+    "#encoding: utf-8\n ?♥", #utf8 heart char
   ]
 
   EXPECT_1_METHOD=[
