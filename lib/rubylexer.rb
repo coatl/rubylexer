@@ -1574,6 +1574,18 @@ private
      end
 
      #-----------------------------------
+     #RE_* shamelessly stolen from jcode.rb
+     RE_UTF8= /[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf][\x80-\xbf]/n
+     RE_EUC= /[\xa1-\xfe][\xa1-\xfe]/n
+     RE_SJIS= /[\x81-\x9f\xe0-\xef][\x40-\x7e\x80-\xfc]/n
+     ENCODING2EXTCHAR={
+       :utf8=>RE_UTF8,
+       :euc=>RE_EUC,
+       :sjis=>RE_SJIS,
+       :binary=>/[\x80-\xFF]/n,
+       :ascii=>nil
+     }
+
      #handle ? in ruby code. is it part of ?..: or a character literal?
      def char_literal_or_op(ch)
        if colon_quote_expected? ch
