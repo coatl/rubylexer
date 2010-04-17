@@ -2,22 +2,6 @@
 
 module Ruby1_9OneLiners
   EXPECT_NO_METHODS=[ #no errors either
-    '->a; h do 123 end',
-    '->{}',
-    '-> {}',
-    '->;{}',
-    '->(;){}',
-    '->a{}',
-    '->a {}',
-    '->a;{}',
-    '->(a;){}',
-    '->a,b{}',
-    '->a,b;{}',
-    '->a,b;c{}',
-    '->(a,b;){}',
-    '->(a,b;c){}',
-    '$f.($x,$y)',
-    '$f::($x,$y)',
     '__ENCODING__',
     '__ENCODING__ +"foo"',
     'module __ENCODING__::A; end',
@@ -56,6 +40,22 @@ module Ruby1_9OneLiners
     "/z\\[(?'foo'bar)]/ =~ 'baz'; foo +1",
     "?\\uaeee",
     "#encoding: utf-8\n ?♥", #utf8 heart char
+    '$f.($x,$y)',
+    '$f::($x,$y)',
+    '->a; h do 123 end',
+    '->{}',
+    '-> {}',
+    '->;{}',
+    '->(;){}',
+    '->a{}',
+    '->a {}',
+    '->a;{}',
+    '->(a;){}',
+    '->a,b{}',
+    '->a,b;{}',
+    '->a,b;c{}',
+    '->(a,b;){}',
+    '->(a,b;c){}',
   ]
 
   EXPECT_1_METHOD=[
