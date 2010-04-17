@@ -1593,9 +1593,15 @@ private
      #handle ? in ruby code. is it part of ?..: or a character literal?
      def char_literal_or_op(ch)
        if colon_quote_expected? ch
+         #char literal
          getchar
-         assign_encoding!(StringToken.new('"', getchar_maybe_escape))
-       else
+         extchar= ENCODING2EXTCHAR[@encoding]
+         if extchar and extchar=@file.scan( extchar )
+           assign_encoding!(StringToken.new('"', extchar))
+         else
+           assign_encoding!(StringToken.new('"', getchar_maybe_escape))
+         end
+       else #(ternary) operator
          super
        end
      end
