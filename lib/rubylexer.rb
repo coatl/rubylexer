@@ -661,7 +661,7 @@ private
        )/mox===readahead(3) &&
             case
             when $1; comma_in_lvalue_list?  #comma
-            when $2; @rubyversion>=1.9 && ParenedParamListLhsContext===@parsestack.last #semicolon in block param list
+            when $2; semicolon_in_block_param_list?
             when $3; last_context_not_implicit.lhs #right paren in lhs
             when $4; ForSMContext===last_context_not_implicit #in
             when $5; BlockParamListLhsContext===last_context_not_implicit #ending goalpost
@@ -1216,7 +1216,7 @@ private
                     when $4; is_const=true #constant
                     else true
                   end
-              maybe_local=ty=KeywordToken if "__ENCODING__"==name and @rubyversion>=1.9
+              maybe_local=ty=KeywordToken if is__ENCODING__keyword?(name) #"__ENCODING__"==name and @rubyversion>=1.9
 =begin was
               maybe_local=case name
                 when /(?!#@@LETTER_DIGIT).$/o; #do nothing
@@ -2159,27 +2159,8 @@ end
         @moretokens.push(*abort_noparens!(':')) #special treatment not needed in 1.9 mode?
         @moretokens.push tok=KeywordToken.new(':',startpos)
         
-        case @parsestack.last
-        when TernaryContext 
-          tok.ternary=true
-          @parsestack.pop #should be in the context's see handler
-        when ExpectDoOrNlContext #should be in the context's see handler
-          if @rubyversion<1.9
-            @parsestack.pop
-            assert @parsestack.last.starter[/^(while|until|for)$/]
-            tok.as=";"
-          end
-        when ExpectThenOrNlContext,WhenParamListContext
-          if @rubyversion<1.9
-            #should be in the context's see handler
-            @parsestack.pop
-            tok.as="then"
-          end
-        when RescueSMContext
-          tok.as=";"
-        end or
+        colon_operator(tok) or
           fail ": not expected in #{@parsestack.last.class}->#{@parsestack.last.starter}"
-
         
         #end ternary context, if any
         @parsestack.last.see self,:colon
@@ -3135,6 +3116,8 @@ end
         tokch.as="do"
 
         #if (perhaps deep) inside a stabby block param list context, end it
+        stabby_params_just_ended,tokch=maybe_end_stabby_block_param_list(tokch)
+=begin was
         if @rubyversion>=1.9     
           stabby_params_just_ended=false
           (@parsestack.size-1).downto(1){|i|
@@ -3154,6 +3137,7 @@ end
             end
           }
         end
+=end
 
         # 'need to find matching callsite context and end it if implicit'
         lasttok=last_operative_token
