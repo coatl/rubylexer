@@ -214,22 +214,25 @@ class RubyLexer
    end
 
 
-   ENCODING_ALIASES={
-    'utf-8'=>'utf8',
+   RAW_ENCODING_ALIASES={
+    #'utf-8'=>'utf8',
 
-    'ascii-8bit'=>'binary',
-    'ascii-7bit'=>'ascii',
+    'ascii-8-bit'=>'binary',
+    'ascii-7-bit'=>'ascii',
     'euc-jp'=>'euc',
 
-    'ascii8bit'=>'binary',
-    'ascii7bit'=>'ascii',
-    'eucjp'=>'euc',
+    'iso-8859-1'=>'binary',
+    'latin-1'=>'binary',
+    #'ascii8bit'=>'binary',
+    #'ascii7bit'=>'ascii',
+    #'eucjp'=>'euc',
 
     'us-ascii'=>'ascii',
     'shift-jis'=>'sjis',
 
     'autodetect'=>'detect',
    }
+   ENCODING_ALIASES=Hash[*RAW_ENCODING_ALIASES.map{|long,short| [long.tr_s('-_',''),short] }.flatten]
    ENCODINGS=%w[ascii binary utf8 euc sjis]
    def read_leading_encoding
      return unless @encoding==:detect
@@ -1544,6 +1547,7 @@ private
           )
          name=@file.last_match[1]
          name.downcase!
+         name.tr_s! '-_',''
          name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
          @encoding=name.to_sym if ENCODINGS.include? name
        end
