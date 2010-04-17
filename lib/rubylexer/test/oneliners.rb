@@ -576,3 +576,11 @@ def a.b; end rescue b0
 def maybe(chance = 0.5)end
 return rval / precision
 0e0
+
+while false do end
+while false do; end
+until false do; end
+for i in [] do; end
+while (((((((((((((((((((((((((((((((false))))))))))))))))))))))))))))))) do; end
+while ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((false)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) do; end
+
