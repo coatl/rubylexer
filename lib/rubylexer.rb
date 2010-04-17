@@ -179,11 +179,7 @@ class RubyLexer
       @progress_thread=nil
       @rubyversion=options[:rubyversion]||1.8
       @encoding=options[:encoding]||:detect
-      @method_operators=if @rubyversion>=1.9 
-                          /#{RUBYSYMOPERATORREX}|\A![=~@]?|\A`/o
-                        else
-                          /#{RUBYSYMOPERATORREX}|\A`/o
-                        end
+      @method_operators=build_method_operators
 
       @always_binary_chars=CharSet['}]);|>,.=^']
       @unary_or_binary_chars=CharSet['+-%/']
@@ -212,6 +208,10 @@ class RubyLexer
   
    alias :inspect :to_s
 
+
+   def build_method_operators
+     /#{RUBYSYMOPERATORREX}|\A`/o
+   end
 
 
    ENCODING_ALIASES={
@@ -1709,7 +1709,53 @@ private
         end
       return result
      end
+
+     def build_method_operators
+       /#{RUBYSYMOPERATORREX}|\A![=~@]?|\A`/o
+     end
+
+     include RubyLexer::NestedContexts
+
+     def semicolon_in_block_param_list?
+       ParenedParamListLhsContext===@parsestack.last 
+     end
+
+     def is__ENCODING__keyword?(name)
+       "__ENCODING__"==name
+     end
+
+     #-----------------------------------
+     def colon_operator
+        if TernaryContext===@parsestack.last
+          tok.ternary=true
+          @parsestack.pop #should be in the context's see handler
+        end 
+     end
+
+     def maybe_end_stabby_block_param_list(tokch)
+          stabby_params_just_ended=false
+          (@parsestack.size-1).downto(1){|i|
+            case @parsestack[i]
+            when ParamListContextNoParen,AssignmentRhsContext
+              #do nothing yet... see if inside a UnparenedParamListLhsContext
+            when UnparenedParamListLhsContext #stabby proc
+              @moretokens<<tokch
+              (@parsestack.size-1).downto(i){|j|
+                @moretokens.unshift @parsestack[j].endtoken(input_position-1)
+              }
+              @parsestack[i..-1]=[]
+              tokch=@moretokens.shift
+              stabby_params_just_ended=true
+              break
+            else break
+            end
+          }
+          return stabby_params_just_ended,tokch
+     end
    end
+
+   def semicolon_in_block_param_list?;   end
+   def is__ENCODING__keyword?(name); end
 
    def _keyword_funclike(str,offset,result)
          if @last_operative_token===/^(\.|::)$/
