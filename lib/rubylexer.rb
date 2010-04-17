@@ -2190,6 +2190,25 @@ end
    end
 
    #-----------------------------------
+   def colon_operator tok
+        case @parsestack.last
+        when TernaryContext
+          tok.ternary=true
+          @parsestack.pop #should be in the context's see handler
+        when ExpectDoOrNlContext #should be in the context's see handler
+          @parsestack.pop
+          assert @parsestack.last.starter[/^(while|until|for)$/]
+          tok.as=";"
+        when ExpectThenOrNlContext,WhenParamListContext
+          #should be in the context's see handler
+          @parsestack.pop
+          tok.as="then"
+        when RescueSMContext
+          tok.as=";"
+        end 
+   end
+
+   #-----------------------------------
    def symbol(notbare,couldbecallsite=!notbare)
      assert !couldbecallsite
      start= input_position
@@ -3153,6 +3172,11 @@ end
       end
       end
       return (tokch)
+   end
+
+   #-----------------------------------
+   def maybe_end_stabby_block_param_list(tokch)
+     return false,tokch
    end
 
    #-----------------------------------
