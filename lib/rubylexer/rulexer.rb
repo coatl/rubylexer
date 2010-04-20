@@ -17,10 +17,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 =end
 
-#warn "hacking $LOAD_PATH to find latest sequence"
-#$:<<"../sequence/lib"
-
-
 require "assert"
 #require "charhandler"
 #require "term"
@@ -32,10 +28,18 @@ rescue LoadError=>e
   raise unless /rubygems/===e.message
   #hope we don't need it
 end
-#require 'sequence'
-require 'sequence/indexed'
-require 'sequence/file'
-require 'sequence/list'
+begin
+  #require 'sequence'
+  require 'sequence/indexed'
+  require 'sequence/file'
+  require 'sequence/list'
+rescue LoadError
+  trydir=File.expand_path File.dirname(__FILE__)+"/../../../sequence/lib"
+  raise if $:.include? trydir
+  warn "hacking $LOAD_PATH to find latest sequence"
+  $:<<trydir
+  retry
+end
 #-----------------------------------
 assert !defined? ::RubyLexer
 class RubyLexer
