@@ -401,7 +401,7 @@ private
    #simpler transform, preserves original exactly
    def simple_transform(strfrag,starter,ender) #appears to be unused
       assert('[{/'[@char])
-      #strfrag.gsub!(/(\A|[^\\])(?:\\\\)*\#([{$@])/){$1+'\\#'+$2} unless @char=='['
+      #strfrag.gsub!(/(\A|[^\\])(?:\\\\)*\#([{$@])/){$1+'\\#'+$2} unless @char=='[' #esc #{
       delimchars=Regexp.quote starter+ender
       delimchars+=Regexp.quote("#") unless @char=='['  #escape beginning of string iterpolations
 
