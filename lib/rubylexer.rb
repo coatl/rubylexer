@@ -2225,6 +2225,7 @@ end
          when ?A..?Z then 
            result=identifier_as_string(?:)
            if @last_operative_token==='::' 
+             fail #i think this can't happen anymore now
              assert klass==MethNameToken
              /#@@LETTER_DIGIT$/o===result and klass=VarNameToken
            end
