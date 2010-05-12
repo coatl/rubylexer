@@ -69,22 +69,10 @@ end
       %[  
          define_method '#{name}' do 
            10_000.times do
-           difflines=[]
-           begin
-             res=RubyLexerVsRuby.rubylexervsruby('__#{name}','#{esctc}',difflines)
-             unless difflines.empty?
-               puts '#{esctc}'
-               puts difflines.join
-               raise DifferencesFromMRILex
+             lexer=RubyLexer.new('__#{name}','#{esctc}')
+             until RubyLexer::EoiToken===(token=lexer.get1token)
+               #...do stuff w/ token...
              end
-             res or raise LexerTestFailure, ''
-           rescue Interrupt; exit
-           rescue Exception=>e 
-             message=e.message.dup<<"\n"+'while lexing: #{esctc}'
-             e2=e.class.new(message)
-             e2.set_backtrace(e.backtrace)
-             raise e2
-           end
            end
          end  
       ]
