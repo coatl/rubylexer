@@ -587,8 +587,9 @@ private
    
    #-----------------------------------
    def in_lvar_define_state lasttok=@last_operative_token
-     #@defining_lvar is a hack
-     @defining_lvar or case ctx=@parsestack.last
+     return true if @defining_lvar #@defining_lvar is a hack
+     ctx=@parsestack.last
+     case ctx
        #when ForSMContext; ctx.state==:for
        when UnparenedParamListLhsContext;  /^(->|,|;)$/===lasttok.ident
        when RescueSMContext
