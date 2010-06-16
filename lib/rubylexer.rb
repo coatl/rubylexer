@@ -642,6 +642,8 @@ private
 
      oldpos= input_position
      oldline= linenum
+
+     #deal with ws following the ident
      sawnl=false
      result=ws_toks=ignored_tokens(true) {|nl| sawnl=true }
      if sawnl || eof? 
