@@ -591,7 +591,8 @@ private
      ctx=@parsestack.last
      case ctx
        #when ForSMContext; ctx.state==:for
-       when UnparenedParamListLhsContext;  /^(->|,|;)$/===lasttok.ident
+       when UnparenedParamListLhsContext
+         /^(->|,|;)$/===lasttok.ident or /^[*&]$/===lasttok.ident && lasttok.unary
        when RescueSMContext
          lasttok.ident=="=>" and @file.match?( /\A[\s\v]*([:;#\n]|then(?!#@@LETTER_DIGIT))/om )
        #when BlockParamListLhsContext; true
