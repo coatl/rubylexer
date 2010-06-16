@@ -27,11 +27,18 @@ require 'rubylexer/symboltable'
 require 'rubylexer/context'
 require 'rubylexer/tokenprinter'
 
-
 #-----------------------------------
 class RubyLexer
   include NestedContexts
-  
+
+  #here's a list of other constants that should already be defined at this point:
+  WHSP
+  VERSION
+  Token
+  CharSet
+  CharHandler
+  SymbolTable
+  SimpleTokenPrinter  
 
  
    RUBYSYMOPERATORREX=
@@ -3314,3 +3321,17 @@ end
 
 end
 
+  #defense against my class being redefined by a a certain other project,
+  #not named here.
+def RubyLexer.method_added sym
+  return unless sym==:initialize
+  load 'rubylexer/rulexer.rb' #must be 1st!!!
+  load 'rubylexer/version.rb'
+  load 'rubylexer/token.rb'
+  load 'rubylexer/charset.rb'
+  load 'rubylexer/charhandler.rb'
+  load 'rubylexer/symboltable.rb'
+  load 'rubylexer/context.rb'
+  load 'rubylexer/tokenprinter.rb'
+  load 'rubylexer.rb'
+end
