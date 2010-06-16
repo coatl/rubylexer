@@ -129,8 +129,10 @@ end
 
 #-------------------------
 class OperatorToken < WToken
-  attr_accessor :unary
   attr_writer :as
+
+  def unary= flag; @tag=:unary if flag end
+  def unary; @tag==:unary end
   alias prefix? unary
   def infix?; !prefix? end
 
