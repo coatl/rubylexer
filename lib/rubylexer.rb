@@ -3033,7 +3033,10 @@ end
          aa= ignored_tokens
          was=after_nonid_op?{true}
          tok,pos=callsite_symbol(prevtok)
-         tok and aa.push(*var_or_meth_name(tok,prevtok,pos,was)) 
+         if tok
+           toks=var_or_meth_name(tok,prevtok,pos,was)
+           aa.push(*toks) 
+         end
          a.unshift(*aa)
       }     
    end
