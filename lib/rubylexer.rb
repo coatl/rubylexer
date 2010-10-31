@@ -32,14 +32,7 @@ class RubyLexer
   include NestedContexts
 
   #here's a list of other constants that should already be defined at this point:
-  WHSP
-  VERSION
-  Token
-  CharSet
-  CharHandler
-  SymbolTable
-  SimpleTokenPrinter  
-
+  [WHSP, VERSION, Token, CharSet, CharHandler, SymbolTable, SimpleTokenPrinter].each{|k| fail if k.nil? }
  
   RUBYSYMOPERATORREX=
       %r{^([&|^/%]|=(==?)|=~|>[=>]?|<(<|=>?)?|[+~\-]@?|\*\*?|\[\]=?)}
