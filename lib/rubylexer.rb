@@ -840,6 +840,8 @@ private
      # 'need to pop noparen from parsestack on these tokens: (in operator context)'
      # 'not ok:'
      # 'not (but should it be?)'
+   ensure
+     result.first.endline||=oldline
    end
 
    #-----------------------------------
@@ -989,7 +991,7 @@ private
    @@WSTOK=/(?>
                (?>\r?)\n|
                (?>\r*)(?>#@@SPACES+)(?>(?:#@@SPACES|\r(?!\n))*)|
-               \#(?>[^\n]*)\n|
+               \#(?>[^\n]*)(?=\n)|
                \\(?>\r?)\n|
                ^=begin(?>(?>#@@SPACES.*)?)\n
                  (?>(?:(?!=end)(?>.*)\n))*
@@ -1000,13 +1002,22 @@ private
      result=[]
      ws0.scan(/\G#@@WSTOK/o){|ws|
        incr= $~.begin(0)
-       tok=case ws
-       when /\A[\#=]/; IgnoreToken.new(ws,offset+incr)
-       when /\n\Z/; EscNlToken.new(ws,offset+incr,@filename,@linenum)
-       else WsToken.new(ws,offset+incr)
+       lines=ws.count "\n"
+       case ws
+       when /\A\#/
+         result<< IgnoreToken.new(ws,offset+incr)
+       when /\A=/
+         tok=IgnoreToken.new(ws,offset+incr)
+         tok.startline=@linenum
+         tok.endline=@linenum+lines
+         result<<tok
+       when /\n\Z/
+         result<< EscNlToken.new(ws,offset+incr,@filename,@linenum+1)
+       else 
+         result<< WsToken.new(ws,offset+incr)
        end
-       result << tok
-       @linenum+=ws.count "\n"
+       result<< FileAndLineToken.new(@filename,@linenum+lines,offset+incr+ws.size) if lines>0
+       @linenum+=lines
      }
      result.each_with_index{|ws,i|
        if WsToken===ws
@@ -1213,6 +1224,7 @@ private
             else #no parentheses, all tail
               set_last_token KeywordToken.new(".") #hack hack
               tokindex=result.size
+              tokline=result.last.endline
               result << tok=symbol(false,false)
               name=tok.to_s
               assert !in_lvar_define_state
@@ -1262,6 +1274,7 @@ private
               if ty==KeywordToken and name[0,2]=="__"
                 send("keyword_#{name}",name,tok.offset,[var])
               end
+              var.endline=tokline
 
               var=assign_lvar_type! var
               @localvars_stack.push SymbolTable.new
@@ -2689,6 +2702,7 @@ end
    def start_of_line_directives
       #handle =begin...=end (at start of a line)
       while EQBEGIN===readahead(EQBEGINLENGTH)
+         startline=@linenum
          startpos= input_position
          more= read(EQBEGINLENGTH-1)   #get =begin
 
@@ -2709,8 +2723,10 @@ end
 #         @linenum+= newls.size
 
          #inject the fresh comment into future token results
-         @moretokens.push IgnoreToken.new(more,startpos),
-                          FileAndLineToken.new(@filename,@linenum,input_position)
+         comment=IgnoreToken.new(more,startpos)
+         comment.startline=startline
+         comment.endline=@linenum
+         @moretokens.push comment, FileAndLineToken.new(@filename,@linenum,input_position)
       end
 
       #handle __END__
