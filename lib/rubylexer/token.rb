@@ -250,7 +250,6 @@ class StringToken < Token
    attr_accessor :modifiers    #for regex only
    attr_accessor :elems
    attr_accessor :startline
-   attr_accessor :line  #line on which the string ENDS
    attr_accessor :bs_handler
 
    attr_accessor :open #exact sequence of chars used to start the str
@@ -269,9 +268,12 @@ class StringToken < Token
    end 
 
    def with_line(line)
-     @line=line
+     @endline=line
      self
    end
+
+   def line; @endline end
+   def line= l; @endline=l end
 
    def initialize(type='"',ident='')
       super(ident)
@@ -280,7 +282,7 @@ class StringToken < Token
       assert @char[/^[\[{"`\/]$/]  #"
       @elems=[ident.dup]     #why .dup?
       @modifiers=nil
-      @line=nil
+      @endline=nil
    end
 
    DQUOTE_ESCAPE_TABLE = [
