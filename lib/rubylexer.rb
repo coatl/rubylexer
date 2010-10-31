@@ -3334,17 +3334,77 @@ end
 
 end
 
-  #defense against my class being redefined by a a certain other project,
-  #not named here.
-def RubyLexer.method_added sym
-  return unless sym==:initialize
-  load 'rubylexer/rulexer.rb' #must be 1st!!!
-  load 'rubylexer/version.rb'
-  load 'rubylexer/token.rb'
-  load 'rubylexer/charset.rb'
-  load 'rubylexer/charhandler.rb'
-  load 'rubylexer/symboltable.rb'
-  load 'rubylexer/context.rb'
-  load 'rubylexer/tokenprinter.rb'
-  load 'rubylexer.rb'
+#defense against my class being redefined by a a certain other project,
+module Kernel
+  require__without_rubylexer_protection=instance_method :require
+  define_method(:require) do |file|
+    if /\Aruby_(lexer|parser)(\.rb)?\z/i===File.basename(file)
+      warn "Uh-oh, you're trying to use ruby_parser and rubylexer at the same time."
+      warn "ruby_parser causes a namespace conflict with rubylexer"
+      warn "because ruby_parser redefines the class RubyLexer"
+      warn "in a way which is incompatible with standard RubyLexer."
+      warn "The rubylexer gem owns the namespace ::RubyLexer,"
+      warn "and claimed it at least 2 years before ruby_parser existed."
+      warn "Attempt to redefine RubyLexer in an incompatible way disabled."
+    else
+      begin
+        require__without_rubylexer_protection.bind(self).call file
+      rescue Exception=>e
+        e.backtrace.delete_if{|x| /\A#{__FILE__}:#{__LINE__-2}:/o===x }
+        raise e
+      end
+    end
+  end
+
+  load__without_rubylexer_protection=instance_method :load
+  define_method(:load) do |file|
+    if /\Aruby_(lexer|parser)(\.rb)?\z/i===File.basename(file)
+      warn "Uh-oh, you're trying to use ruby_parser and rubylexer at the same time."
+      warn "ruby_parser causes a namespace conflict with rubylexer"
+      warn "because ruby_parser redefines the class RubyLexer"
+      warn "in a way which is incompatible with standard RubyLexer."
+      warn "The rubylexer gem owns the namespace ::RubyLexer,"
+      warn "and claimed it at least 2 years before ruby_parser existed."
+      warn "Attempt to redefine RubyLexer in an incompatible way disabled."
+    else
+      begin
+        load__without_rubylexer_protection.bind(self).call file
+      rescue Exception=>e
+        e.backtrace.delete_if{|x| /\A#{__FILE__}:#{__LINE__-2}:/o===x }
+        raise e
+      end
+    end
+  end
+
+  autoload__without_rubylexer_protection=instance_method :autoload
+  define_method(:autoload) do |mod,file|
+    if /\Aruby_(lexer|parser)(\.rb)?\z/i===File.basename(file)
+      warn "Uh-oh, you're trying to use ruby_parser and rubylexer at the same time."
+      warn "ruby_parser causes a namespace conflict with rubylexer"
+      warn "because ruby_parser redefines the class RubyLexer"
+      warn "in a way which is incompatible with standard RubyLexer."
+      warn "The rubylexer gem owns the namespace ::RubyLexer,"
+      warn "and claimed it at least 2 years before ruby_parser existed."
+      warn "Attempt to redefine RubyLexer in an incompatible way disabled."
+    else
+      autoload__without_rubylexer_protection.bind(self).call mod,file
+    end
+  end
+end
+
+class Module
+  autoload__without_rubylexer_protection=instance_method :autoload
+  define_method(:autoload) do |mod,file|
+    if /\Aruby_(lexer|parser)(\.rb)?\z/i===File.basename(file)
+      warn "Uh-oh, you're trying to use ruby_parser and rubylexer at the same time."
+      warn "ruby_parser causes a namespace conflict with rubylexer"
+      warn "because ruby_parser redefines the class RubyLexer"
+      warn "in a way which is incompatible with standard RubyLexer."
+      warn "The rubylexer gem owns the namespace ::RubyLexer,"
+      warn "and claimed it at least 2 years before ruby_parser existed."
+      warn "Attempt to redefine RubyLexer in an incompatible way disabled."
+    else
+      autoload__without_rubylexer_protection.bind(self).call mod,file
+    end
+  end
 end
