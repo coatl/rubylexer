@@ -41,7 +41,7 @@ class RubyLexer
   SimpleTokenPrinter  
 
  
-   RUBYSYMOPERATORREX=
+  RUBYSYMOPERATORREX=
       %r{^([&|^/%]|=(==?)|=~|>[=>]?|<(<|=>?)?|[+~\-]@?|\*\*?|\[\]=?)}
       # (nasty beastie, eh?)
       #these are the overridable operators
@@ -49,26 +49,26 @@ class RubyLexer
       #or op= ops like: += -= ||=
       #or .. ... ?:
       #for that use:
-   RUBYNONSYMOPERATORREX=
+  RUBYNONSYMOPERATORREX=
       %r{^([%^/\-+|&]=|(\|\||&&)=?|(<<|>>|\*\*?)=|\.{1,3}|[?:,;]|::|=>?|![=~]?)$}
-   RUBYOPERATORREX=/#{RUBYSYMOPERATORREX}|#{RUBYNONSYMOPERATORREX}/o
-   UNSYMOPS=/^[~!]$/ #always unary
-   UBSYMOPS=/^(?:[*&+-]|::)$/  #ops that could be unary or binary
-   WHSPCHARS=WHSPLF+"\\#"
-   OPORBEGINWORDLIST=%w(if unless while until)
-   BEGINWORDLIST=%w(def class module begin for case do)+OPORBEGINWORDLIST
-   OPORBEGINWORDS="(?:#{OPORBEGINWORDLIST.join '|'})"
-   BEGINWORDS=/^(?:#{BEGINWORDLIST.join '|'})$/o
-   FUNCLIKE_KEYWORDLIST=%w/break next redo return yield retry super BEGIN END/
-   FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
-   VARLIKE_KEYWORDLIST=%w/__FILE__ __LINE__ false nil self true/
-   VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
-   INNERBOUNDINGWORDLIST=%w"else elsif ensure in then rescue when"
-   INNERBOUNDINGWORDS="(?:#{INNERBOUNDINGWORDLIST.join '|'})"
-   BINOPWORDLIST=%w"and or"
-   BINOPWORDS="(?:#{BINOPWORDLIST.join '|'})"
+  RUBYOPERATORREX=/#{RUBYSYMOPERATORREX}|#{RUBYNONSYMOPERATORREX}/o
+  UNSYMOPS=/^[~!]$/ #always unary
+  UBSYMOPS=/^(?:[*&+-]|::)$/  #ops that could be unary or binary
+  WHSPCHARS=WHSPLF+"\\#"
+  OPORBEGINWORDLIST=%w(if unless while until)
+  BEGINWORDLIST=%w(def class module begin for case do)+OPORBEGINWORDLIST
+  OPORBEGINWORDS="(?:#{OPORBEGINWORDLIST.join '|'})"
+  BEGINWORDS=/^(?:#{BEGINWORDLIST.join '|'})$/o
+  FUNCLIKE_KEYWORDLIST=%w/break next redo return yield retry super BEGIN END/
+  FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
+  VARLIKE_KEYWORDLIST=%w/__FILE__ __LINE__ false nil self true/
+  VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
+  INNERBOUNDINGWORDLIST=%w"else elsif ensure in then rescue when"
+  INNERBOUNDINGWORDS="(?:#{INNERBOUNDINGWORDLIST.join '|'})"
+  BINOPWORDLIST=%w"and or"
+  BINOPWORDS="(?:#{BINOPWORDLIST.join '|'})"
    
-   RUBYKEYWORDS=%r{
+  RUBYKEYWORDS=%r{
      ^(?:alias|#{BINOPWORDS}|defined\?|not|undef|end|
        #{VARLIKE_KEYWORDS}|#{FUNCLIKE_KEYWORDS}|
        #{INNERBOUNDINGWORDS}|#{BEGINWORDS}
@@ -76,12 +76,12 @@ class RubyLexer
    }xo
       #__END__ should not be in this set... its handled in start_of_line_directives
 
-   HIGHASCII=?\x80..?\xFF
-   NONASCII=HIGHASCII
-   #NONASCII=?\x80..?xFFFFFFFF  #or is it 10FFFF, whatever the highest conceivable code point
+  HIGHASCII=?\x80..?\xFF
+  NONASCII=HIGHASCII
+  #NONASCII=?\x80..?xFFFFFFFF  #or is it 10FFFF, whatever the highest conceivable code point
 
 
-   CHARMAPPINGS = {
+  CHARMAPPINGS = {
          ?$ => :dollar_identifier,
          ?@ => :at_identifier,
          ?a..?z => :identifier,
@@ -132,33 +132,33 @@ class RubyLexer
          ?\x0E..?\x19 => :illegal_char,
          ?\x1b..?\x1F => :illegal_char,
          ?\x7F => :illegal_char,
-   }
+  }
 
-   attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
+  attr_reader :incomplete_here_tokens, :parsestack, :last_token_maybe_implicit
 
-   UCLETTER=@@UCLETTER="[A-Z]"
+  UCLETTER=@@UCLETTER="[A-Z]"
 
-   #cheaters way, treats utf chars as always 1 byte wide
-   #all high-bit chars are lowercase letters
-   #works, but strings compare with strict binary identity, not unicode collation
-   #works for euc too, I think
-   #(the ruby spec for utf8 support permits this interpretation)
-   LCLETTER=@@LCLETTER="[a-z_\x80-\xFF]"
-   LETTER=@@LETTER="[A-Za-z_\x80-\xFF]"
-   LETTER_DIGIT=@@LETTER_DIGIT="[A-Za-z_0-9\x80-\xFF]"
-   eval %w[UCLETTER LCLETTER LETTER LETTER_DIGIT].map{|n| "
+  #cheaters way, treats utf chars as always 1 byte wide
+  #all high-bit chars are lowercase letters
+  #works, but strings compare with strict binary identity, not unicode collation
+  #works for euc too, I think
+  #(the ruby spec for utf8 support permits this interpretation)
+  LCLETTER=@@LCLETTER="[a-z_\x80-\xFF]"
+  LETTER=@@LETTER="[A-Za-z_\x80-\xFF]"
+  LETTER_DIGIT=@@LETTER_DIGIT="[A-Za-z_0-9\x80-\xFF]"
+  eval %w[UCLETTER LCLETTER LETTER LETTER_DIGIT].map{|n| "
      def #{n}; #{n}; end
      def self.#{n}; @@#{n}; end
      " 
-   }.join
+  }.join
 
-   NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)((?:(?!#@@LETTER_DIGIT).)|\Z)/om
-   if ?A.is_a? String #ruby >= 1.9
-     NEVERSTARTPARAMLISTFIRST=/[aoeitrwu]/
-   else
-     NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
-   end
-   NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
+  NEVERSTARTPARAMLISTWORDS=/\A(#{OPORBEGINWORDS}|#{INNERBOUNDINGWORDS}|#{BINOPWORDS}|end)((?:(?!#@@LETTER_DIGIT).)|\Z)/om
+  if ?A.is_a? String #ruby >= 1.9
+    NEVERSTARTPARAMLISTFIRST=/[aoeitrwu]/
+  else
+    NEVERSTARTPARAMLISTFIRST=CharSet['aoeitrwu']  #chars that begin NEVERSTARTPARAMLIST
+  end
+  NEVERSTARTPARAMLISTMAXLEN=7     #max len of a NEVERSTARTPARAMLIST
 
 =begin
    require 'jcode'
