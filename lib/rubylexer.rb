@@ -1668,7 +1668,7 @@ private
        #and \u escapes also 
        utf8=nonascii=false
        str.elems.grep(String).each do|frag|
-         frag.scan /#{EVEN_BS_S}(?:\\u|\\2[0-7][0-7]|\\x[89a-fA-F][0-9a-fA-F])|[^\x00-\x7F]/o do |match|
+         frag.scan(/#{EVEN_BS_S}(?:\\u|\\2[0-7][0-7]|\\x[89a-fA-F][0-9a-fA-F])|[^\x00-\x7F]/o) do |match|
            if match[-1]==?u
              utf8=true
              break if nonascii
