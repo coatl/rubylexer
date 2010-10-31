@@ -1637,7 +1637,7 @@ private
        if unary_op_expected?(ch) or
          KeywordToken===@last_operative_token &&
          /^(return|break|next)$/===@last_operative_token.ident
-           if '->' == readahead(2) #stabby proc
+         if '->' == readahead(2) #stabby proc
              @file.pos+=2
              #push down block context
              localvars.start_block
@@ -1648,7 +1648,7 @@ private
              result=RubyLexer::KeywordToken.new('->',pos)
              result.offset=pos
              return result
-           end
+         end
        end
        super
      end
