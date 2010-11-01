@@ -2793,7 +2793,7 @@ end
             return yield
          when StringToken, SymbolToken, NumberToken, HerePlaceholderToken,
               %r{^(
-                end|self|true|false|nil|->|  
+                end|self|true|false|nil|  
                 __FILE__|__LINE__|__ENCODING__|[\})\]]
               )$}x.token_pat
             #dunno about def/undef
@@ -2807,7 +2807,7 @@ end
             return true if OperatorToken===@last_operative_token || KeywordToken===@last_operative_token
          when NewlineToken, nil,   #nil means we're still at beginning of file
               /^([({\[]|or|not|and|if|unless|then|elsif|else|class|module|def|
-                 while|until|begin|for|in|case|when|ensure|defined\?)$
+                 while|until|begin|for|in|case|when|ensure|defined\?|->)$
               /x.token_pat
             return true
          when KeywordToken
