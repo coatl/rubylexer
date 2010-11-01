@@ -1176,8 +1176,53 @@ sdsdfsdfs
 A
 
 
+module
+=begin
+=end
+A; end
+
+module
+=begin
+ foo
+=end
+A; end
+
+module
+=begin
+=end
+A::
+=begin
+=end
+B; end
+
+module
+#=begin
+#=end
+A::
+#=begin
+#=end
+B; end
 
 
+module
+=begin
+  foo
+=end
+A::
+=begin
+  bar
+=end
+B; end
+
+<<x.
+ 1111
+x
+delete()
+
+<<x::
+ 1111
+x
+delete()
 
 \
 __END__
