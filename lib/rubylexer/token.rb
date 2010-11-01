@@ -129,6 +129,11 @@ end
 
 #-------------------------
 class OperatorToken < WToken
+  def initialize(*args)
+    @tag=nil
+    super
+  end
+
   attr_writer :as
 
   def unary= flag; @tag=:unary if flag end
