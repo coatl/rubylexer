@@ -27,10 +27,36 @@ require 'getoptlong'
 #a Token#inspect that omits the object id
 class RubyLexer
 class Token
+  DONT_STRIFY=%w[@elems @string @headtok]
   def strify
-    [self.class.name[/[^:]+$/],": ",instance_variables.sort.collect{|v| 
-      [v,"=",instance_variable_get(v).inspect," "]
+    result=[self.class.name[/[^:]+$/],": ",instance_variables.sort.collect{|v| 
+      [v,"=",instance_variable_get(v).inspect," "] unless DONT_STRIFY.include? v.to_s or "@ident"==v.to_s && HereBodyToken===self
     }].join
+    if @elems
+      result=[result,*@elems.map{|x| 
+        case x
+        when String; "  "+x.inspect
+        else x.ident.map{|xx| xx.strify.gsub(/^/,"  ")} 
+        end
+      }].join("\n")
+    end
+    if @string
+      result=[result,*@string.elems.map{|x| 
+        case x
+        when String; "  "+x.inspect
+        else x.ident.map{|xx| xx.strify.gsub(/^/,"  ")} 
+        end
+      }].join("\n")
+    end
+    if @headtok
+      result=[result,*@headtok.string.elems.map{|x| 
+        case x
+        when String; "  "+x.inspect
+        else x.ident.map{|xx| xx.strify.gsub(/^/,"  ")} 
+        end
+      }].join("\n")
+    end
+    result
   end
 end
 end
@@ -76,6 +102,7 @@ if silent
 else
   until RubyLexer::EoiToken===(tok=lexer.get1token)
     puts tok.strify
+    #p [tok.startline, tok.endline]
   end
 end
 puts tok.strify #print eoi token

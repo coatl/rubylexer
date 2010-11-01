@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-=begin legal crap
+=begin legalia
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
