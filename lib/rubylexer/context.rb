@@ -120,7 +120,7 @@ module NestedContexts
     def starter; huh end  #" " ???
     def ender; huh end    #; or \n when from method def, { or do when from stabby block
     def endtoken offset
-      KwParamListEndToken.new offset
+      ImplicitParamListEndToken.new offset
     end
   end
 

@@ -17,7 +17,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 =end
 
-
 require 'rubylexer/rulexer' #must be 1st!!!
 require 'rubylexer/version'
 require 'rubylexer/token'
@@ -916,7 +915,7 @@ private
   CONTEXT2ENDTOK_FOR_DO={
     AssignmentRhsContext=>AssignmentRhsListEndToken, 
     ParamListContextNoParen=>ImplicitParamListEndToken,
-    UnparenedParamListLhsContext=>KwParamListEndToken,
+    UnparenedParamListLhsContext=>ImplicitParamListEndToken,
     ExpectDoOrNlContext=>1,
     #WhenParamListContext=>KwParamListEndToken,
     #RescueSMContext=>KwParamListEndToken
@@ -1890,7 +1889,7 @@ end
          elsif starter==?(
            ctx_type=UnparenedParamListLhsContext #hacky... should be a param?
            @parsestack.push ctx_type.new(@linenum)
-           a<<KwParamListStartToken.new( input_position )
+           a<<ImplicitParamListStartToken.new( input_position )
          end
 
          set_last_token KeywordToken.new( ';' )
