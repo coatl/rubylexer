@@ -1614,14 +1614,21 @@ private
      end
 
      #-----------------------------------
+     def encoding_name_normalize name
+         name=name.dup
+         name.downcase!
+         name.tr_s! '-_',''
+         name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
+         return name
+     end
+
+     #-----------------------------------
      def read_encoding_line
        if line=@file.scan(
             /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*$/i
           )
          name=@file.last_match[1]
-         name.downcase!
-         name.tr_s! '-_',''
-         name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
+         name=encoding_name_normalize name
          @encoding=name.to_sym if ENCODINGS.include? name
          return line
        end
