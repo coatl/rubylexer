@@ -133,7 +133,6 @@ class OperatorToken < WToken
     @tag=nil
     super
   end
-
   attr_writer :as
 
   def unary= flag; @tag=:unary if flag end
@@ -176,8 +175,15 @@ end
 
 #-------------------------
 class NumberToken < Token
-  def to_s; @ident.to_s end
-  def negative; /\A-/ === ident end
+  def to_s
+    if defined? @char_literal and @char_literal
+      '?'+@ident.chr
+    else
+      @ident.to_s 
+    end
+  end
+  def negative; /\A-/ === to_s end
+  attr_accessor :char_literal
 end
 
 #-------------------------
