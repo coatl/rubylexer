@@ -2097,7 +2097,9 @@ end
 #         else
            ch=getchar_maybe_escape[0]
            ch=ch.ord if ch.respond_to? :ord
-           NumberToken.new ch
+           result=NumberToken.new ch
+           result.char_literal=true
+           return result
 #         end
       else
          @parsestack.push TernaryContext.new(@linenum)
