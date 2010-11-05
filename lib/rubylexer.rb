@@ -998,6 +998,7 @@ private
                =end(?>(?>#@@SPACES.*)?)\n
             )/x
    @@WSTOKS=/(?!=begin)(?>#@@WSTOK+)/o
+   WSTOKS=@@WSTOKS
    def divide_ws(ws0,offset)
      result=[]
      ws0.scan(/\G#@@WSTOK/o){|ws|
@@ -1598,7 +1599,7 @@ private
 
      #-----------------------------------
      def want_hard_nl?
-       return false if @file.check( /\A\n(?:#@@WSTOKS)?[.:][^.:]/o )
+       return false if @file.check( /\A\n(?:#{WSTOKS})?[.:][^.:]/o )
        super
      end
 
