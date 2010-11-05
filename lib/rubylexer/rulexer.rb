@@ -609,7 +609,8 @@ end
         when '{'
           result=[]
           until eat_next_if '}'
-            u=@file.scan(/\A[0-9a-f]{1,6}[ \t]?/i,7)
+            u=@file.scan /\A[0-9a-f]{1,6}[ \t]?/i
+            raise "bad unicode escape" unless u
             result<<u.hex
           end
           result=result.pack "U*"
