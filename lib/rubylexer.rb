@@ -1241,10 +1241,11 @@ private
               assert !in_lvar_define_state
      
               #maybe_local really means 'maybe local or constant'
-              %r{
-                 ((?!#@@LETTER_DIGIT).$) | ^[@$] | (#{VARLIKE_KEYWORDS} | #{FUNCLIKE_KEYWORDS}) |
+              @maybe_local_pat||=%r{
+                 ((?!#@@LETTER_DIGIT).$) | ^[@$] | (#@VARLIKE_KEYWORDS | #@FUNCLIKE_KEYWORDS) |
                  (^#@@LCLETTER) | (^#@@UCLETTER) 
-              }xo === name and
+              }x 
+              @maybe_local_pat === name and
                 maybe_local=
                   case
                     when $1; maybe_local=false #operator or non-ident
@@ -1258,7 +1259,7 @@ private
               maybe_local=case name
                 when /(?!#@@LETTER_DIGIT).$/o; #do nothing
                 when /^[@$]/; true
-                when /#{VARLIKE_KEYWORDS}|#{FUNCLIKE_KEYWORDS}/o,("__ENCODING__" if @rubyversion>=1.9); ty=KeywordToken
+                when /#@VARLIKE_KEYWORDS|#@FUNCLIKE_KEYWORDS/,("__ENCODING__" if @rubyversion>=1.9); ty=KeywordToken
                 when /^#@@LCLETTER/o;  localvars===name 
                 when /^#@@UCLETTER/o; is_const=true  #this is the right algorithm for constants... 
               end
@@ -2161,7 +2162,7 @@ end
      when /^[@$]/; true
      when /^<</; HerePlaceholderToken===tok
      when /(?!#@@LETTER_DIGIT).$/o; false
-#     when /^#@@LCLETTER/o; localvars===s or VARLIKE_KEYWORDS===s
+#     when /^#@@LCLETTER/o; localvars===s or @VARLIKE_KEYWORDS===s
      when /^#@@LETTER/o; VarNameToken===tok
      else raise "not var or method name: #{s}"
      end   
@@ -2819,12 +2820,12 @@ end
    # <<, %, /, ?, :, and newline (among others) in ruby
    def after_nonid_op?
 
-    #this is how it should be, I think, and then no handlers for methnametoken and FUNCLIKE_KEYWORDS are needed
+    #this is how it should be, I think, and then no handlers for methnametoken and @FUNCLIKE_KEYWORDS are needed
 #      if ImplicitParamListStartToken===@last_token_including_implicit
 #        huh return true
 #      end
       case @last_operative_token
-         when VarNameToken , MethNameToken, FUNCLIKE_KEYWORDS.token_pat 
+         when VarNameToken , MethNameToken, @FUNCLIKE_KEYWORDS.token_pat 
          #VarNameToken should really be left out of this case... 
          #should be in next branch instread
          #callers all check for last token being not a variable if they pass anything
@@ -3122,7 +3123,7 @@ end
      lasttok=last_token_maybe_implicit #last_operative_token
      VarNameToken===lasttok or 
        MethNameToken===lasttok or
-       lasttok===FUNCLIKE_KEYWORDS or
+       lasttok===@FUNCLIKE_KEYWORDS or
        (@enable_macro and lasttok and lasttok.ident==')') #factored
    end
 
@@ -3149,7 +3150,7 @@ end
         lasttok=last_operative_token
         #could be: lasttok===/^#@@LETTER/o
         if (VarNameToken===lasttok or ImplicitParamListEndToken===lasttok or 
-            MethNameToken===lasttok or lasttok===FUNCLIKE_KEYWORDS) and !WHSPCHARS[lastchar]
+            MethNameToken===lasttok or lasttok===@FUNCLIKE_KEYWORDS) and !WHSPCHARS[lastchar]
                @moretokens << (tokch)
                tokch= NoWsToken.new(input_position-1)
         end
