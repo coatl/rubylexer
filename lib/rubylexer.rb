@@ -880,22 +880,28 @@ private
        return [result,pass]
    end
 
+
   #-----------------------------------
   CONTEXT2ENDTOK={
     AssignmentRhsContext=>AssignmentRhsListEndToken, 
     ParamListContextNoParen=>ImplicitParamListEndToken,
     KWParamListContextNoParen=>ImplicitParamListEndToken, #break,next,return
     WhenParamListContext=>KwParamListEndToken, 
-    RescueSMContext=>KwParamListEndToken
+    RescueSMContext=>KwParamListEndToken,
+    VContext=>0
   }
-  def abort_noparens!(str='')
+  def abort_noparens!(str='',adj=str.size)
     #assert @moretokens.empty?
     result=[]
-    while klass=CONTEXT2ENDTOK[@parsestack.last.class]
-      result << klass.new(input_position-str.length)
-      break if RescueSMContext===@parsestack.last #and str==':'
-      break if WhenParamListContext===@parsestack.last and str==':'
+    ctx=@parsestack.last
+    while klass=CONTEXT2ENDTOK[ctx.class]
+      break if VContext===ctx and /^(?:;|:|if|unless|while|until|rescue)$/===str
+      result << klass.new(input_position-adj) unless klass==0
+      break if RescueSMContext===ctx #and str==':'
+      break if WhenParamListContext===ctx and str==':'
       @parsestack.pop 
+      break if VContext===ctx
+      ctx=@parsestack.last
     end
     return result
   end
@@ -1254,7 +1260,7 @@ private
                     when $4; is_const=true #constant
                     else true
                   end
-              maybe_local=ty=KeywordToken if is__ENCODING__keyword?(name) #"__ENCODING__"==name and @rubyversion>=1.9
+              #maybe_local=ty=KeywordToken if is__ENCODING__keyword?(name) #"__ENCODING__"==name and @rubyversion>=1.9
 =begin was
               maybe_local=case name
                 when /(?!#@@LETTER_DIGIT).$/o; #do nothing
@@ -1518,12 +1524,21 @@ private
      return result
    end
  
-   module WithMacros     
+   module WithMacros
      #-----------------------------------
      def method_params
        lasttok=last_token_maybe_implicit #last_operative_token
+       if lasttok and ';'==lasttok.ident and VContext===@parsestack.last
+         @parsestack.pop
+         return true
+       end
+       if lasttok and ')'==lasttok.ident
+         @moretokens<<KeywordToken.new("<doubled-parens>")
+         @parsestack.pop if VContext===@parsestack.last
+         return true
+       end
        super or 
-         (lasttok and lasttok.ident==')')
+         (lasttok and '.'==lasttok.ident)
      end
 
      #-----------------------------------
@@ -1554,6 +1569,12 @@ private
        return if nextchar==?(
        super
      end
+
+     #-----------------------------------
+     def keyword_v(str,offset,result)
+       @parsestack<<VContext.new(*huh)
+       return result
+     end
    end
 
    module RubyLexer1_9
@@ -1577,6 +1598,13 @@ private
      #-----------------------------------
      def Wquote_handler_name
        :Wquote19_esc_seq
+     end
+
+     #-----------------------------------
+     def method_params  # .()
+       lasttok=last_token_maybe_implicit #last_operative_token
+       super or 
+         (lasttok and lasttok.ident=='.') 
      end
 
      #-----------------------------------
@@ -3342,7 +3370,7 @@ end
   #-----------------------------------
   def semicolon(ch)
     assert @moretokens.empty?
-    @moretokens.push(*abort_noparens!)
+    @moretokens.push(*abort_noparens!(';',0))
     @parsestack.last.see self,:semi
     case @parsestack.last #should be in context's see:semi handler
     when ExpectThenOrNlContext
