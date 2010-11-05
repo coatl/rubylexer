@@ -1761,7 +1761,7 @@ private
      end
 
      #-----------------------------------
-     def colon_operator
+     def colon_operator tok
         if TernaryContext===@parsestack.last
           tok.ternary=true
           @parsestack.pop #should be in the context's see handler
