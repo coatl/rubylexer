@@ -189,6 +189,7 @@ class RubyLexer
       extend RubyLexer1_9 if @rubyversion>=1.9
       if input_position.zero?
         read_leading_encoding
+        @encoding=:binary if @rubyversion<=1.8
         start_of_line_directives
       end
       progress_printer
