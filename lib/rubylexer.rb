@@ -244,6 +244,8 @@ class RubyLexer
    }
    ENCODING_ALIASES=Hash[*RAW_ENCODING_ALIASES.map{|long,short| [long.tr_s('-_',''),short] }.flatten]
    ENCODINGS=%w[ascii binary utf8 euc sjis]
+   NONWORKING_ENCODINGS=%w[sjis] 
+
    def read_leading_encoding
      @encoding=nil if @encoding==:detect
      if enc=@file.scan( "\xEF\xBB\xBF" )   #bom
