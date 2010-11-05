@@ -51,8 +51,10 @@ class RubyLexer
   BEGINWORDLIST=%w(def class module begin for case do)+OPORBEGINWORDLIST
   OPORBEGINWORDS="(?:#{OPORBEGINWORDLIST.join '|'})"
   BEGINWORDS=/^(?:#{BEGINWORDLIST.join '|'})$/o
+  FUNCLIKE_KEYWORDLIST_1_9=%w[not]
   FUNCLIKE_KEYWORDLIST=%w/break next redo return yield retry super BEGIN END/
   FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
+  VARLIKE_KEYWORDLIST_1_9=%w[__ENCODING__]
   VARLIKE_KEYWORDLIST=%w/__FILE__ __LINE__ false nil self true/
   VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
   attr_reader :FUNCLIKE_KEYWORDS, :VARLIKE_KEYWORDS
@@ -1551,6 +1553,15 @@ private
    end
 
    module RubyLexer1_9
+     FUNCLIKE_KEYWORDLIST=RubyLexer::FUNCLIKE_KEYWORDLIST+FUNCLIKE_KEYWORDLIST_1_9
+     VARLIKE_KEYWORDLIST=RubyLexer::VARLIKE_KEYWORDLIST+VARLIKE_KEYWORDLIST_1_9
+     FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
+     VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
+     def init1_9
+       @FUNCLIKE_KEYWORDS=FUNCLIKE_KEYWORDS
+       @VARLIKE_KEYWORDS=VARLIKE_KEYWORDS
+     end
+ 
      #-----------------------------------
      def dquote_handle(ch)
        dquote19_esc_seq(ch,'"','"')
