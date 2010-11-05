@@ -182,7 +182,6 @@ class RubyLexer
       @progress_thread=nil
       @rubyversion=options[:rubyversion]||1.8
       @encoding=options[:encoding]||:detect
-      @method_operators=build_method_operators
 
       @always_binary_chars=CharSet['}]);|>,.=^']
       @unary_or_binary_chars=CharSet['+-%/']
@@ -193,7 +192,11 @@ class RubyLexer
 
       @toptable=CharHandler.new(self, :identifier, CHARMAPPINGS)
 
-      extend RubyLexer1_9 if @rubyversion>=1.9
+      if @rubyversion>=1.9
+        extend RubyLexer1_9 
+        init1_9
+      end
+      @method_operators=build_method_operators
       if input_position.zero?
         read_leading_encoding
         @encoding=:binary if @rubyversion<=1.8
