@@ -55,6 +55,8 @@ class RubyLexer
   FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
   VARLIKE_KEYWORDLIST=%w/__FILE__ __LINE__ false nil self true/
   VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
+  attr_reader :FUNCLIKE_KEYWORDS, :VARLIKE_KEYWORDS
+  
   INNERBOUNDINGWORDLIST=%w"else elsif ensure in then rescue when"
   INNERBOUNDINGWORDS="(?:#{INNERBOUNDINGWORDLIST.join '|'})"
   BINOPWORDLIST=%w"and or"
@@ -183,6 +185,9 @@ class RubyLexer
       @always_binary_chars=CharSet['}]);|>,.=^']
       @unary_or_binary_chars=CharSet['+-%/']
 
+
+      @FUNCLIKE_KEYWORDS=FUNCLIKE_KEYWORDS
+      @VARLIKE_KEYWORDS=VARLIKE_KEYWORDS
 
       @toptable=CharHandler.new(self, :identifier, CHARMAPPINGS)
 
