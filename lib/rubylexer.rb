@@ -1620,13 +1620,21 @@ private
      def char_literal_or_op(ch) #unicode char literals, etc
        if colon_quote_expected? ch
          #char literal
+         pos=input_position
          getchar
          extchar= ENCODING2EXTCHAR[@encoding]
+         result=
          if extchar and extchar=@file.scan( extchar )
            assign_encoding!(StringToken.new('"', extchar))
          else
-           assign_encoding!(StringToken.new('"', getchar_maybe_escape))
+           getchar_maybe_escape
+           assign_encoding!(StringToken.new('"', @file[pos+1...input_position]))
          end
+         result.offset=pos
+         result.bs_handler=:dquote19_esc_seq
+         result.open='?'
+         result.close=''
+         return result
        else #(ternary) operator
          super
        end
