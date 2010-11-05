@@ -1615,7 +1615,7 @@ private
      }
 
      #handle ? in ruby code. is it part of ?..: or a character literal?
-     def char_literal_or_op(ch)
+     def char_literal_or_op(ch) #unicode char literals, etc
        if colon_quote_expected? ch
          #char literal
          getchar
@@ -1631,7 +1631,7 @@ private
      end
 
      #-----------------------------------
-     def plusminus(ch)
+     def plusminus(ch) #->
        pos=input_position
        assert(/^[+\-]$/===ch)
        if unary_op_expected?(ch) or
@@ -1654,7 +1654,8 @@ private
      end
 
      #-----------------------------------
-     def equals(ch) #match /=(>|~|==?)?/ (= or == or =~ or === or =>)
+     #match /=(>|~|==?)?/ (= or == or =~ or === or =>)
+     def equals(ch) # /(?<foo>bar)/=~'bar'; declares foo lvar
        if readahead(2)=='=~' # =~... after regex, maybe?
          last=last_operative_token
         
@@ -1786,7 +1787,7 @@ private
           }
           return stabby_params_just_ended,tokch
      end
-   end
+   end #module RubyLexer1_9
 
    def semicolon_in_block_param_list?;   end
    def is__ENCODING__keyword?(name); end
