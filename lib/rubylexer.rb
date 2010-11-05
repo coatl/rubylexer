@@ -1604,9 +1604,9 @@ private
 
      #-----------------------------------
      #RE_* shamelessly stolen from jcode.rb
-     RE_UTF8= /[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf][\x80-\xbf]/n
-     RE_EUC= /[\xa1-\xfe][\xa1-\xfe]/n
-     RE_SJIS= /[\x81-\x9f\xe0-\xef][\x40-\x7e\x80-\xfc]/n
+     RE_UTF8= /[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf][\x80-\xbf]|[\xf0-\xf7][\x80-\xbf]{3}/n #longer sequences are possible
+     RE_EUC= /[\xa1-\xfe][\xa1-\xfe]/n #is this complete?
+     RE_SJIS= /[\x81-\x9f\xe0-\xef][\x40-\x7e\x80-\xfc]/n #is this complete? windows31j?
      ENCODING2EXTCHAR={
        :utf8=>RE_UTF8,
        :euc=>RE_EUC,
