@@ -570,9 +570,17 @@ class NoWsToken < ZwToken
 end
 
 #-------------------------
-class EncodingDeclToken < IgnoreToken
-  def initialize(text,encoding)
+class ShebangToken < IgnoreToken
+  def initialize(text)
     super text,0
+  end
+end
+
+#-------------------------
+class EncodingDeclToken < IgnoreToken
+  def initialize(text,encoding,offset)
+    text||=''
+    super text,offset
     @encoding=encoding
   end
   attr :encoding

@@ -234,26 +234,33 @@ class RubyLexer
    ENCODING_ALIASES=Hash[*RAW_ENCODING_ALIASES.map{|long,short| [long.tr_s('-_',''),short] }.flatten]
    ENCODINGS=%w[ascii binary utf8 euc sjis]
    def read_leading_encoding
-     return unless @encoding==:detect
-     @encoding=:ascii
-     return @encoding=:utf8 if @file.skip( "\xEF\xBB\xBF" )   #bom
-     if text=@file.skip( /\A#!/ )
+     @encoding=nil if @encoding==:detect
+     if enc=@file.scan( "\xEF\xBB\xBF" )   #bom
+       encpos=0
+       @encoding||=:utf8
+     elsif @file.skip( /\A#!/ )
        loop do
          til_charset( /[\s\v]/ )
-         break if @file.match( /^\n|[\s\v]([^-\s\v]|--?[\s\v])/,4 )
-         if @file.skip( /.-K(.)/ )
-           case $1
-           when 'u'; @encoding=:utf8
-           when 'e'; @encoding=:euc
-           when 's'; @encoding=:sjis
+         break if @file.match( /^\n|[\s\v]([^-\s\v]|--?(?:[\s\v]|$))/,4 )
+         if @file.skip( /.-K[\s\v]*([a-zA-Z0-9])/ )
+           case @file.last_match[1]
+           when 'u'; @encoding||=:utf8
+           when 'e'; @encoding||=:euc
+           when 's'; @encoding||=:sjis
            end
          end
        end
        til_charset( /[\n]/ )
+       @moretokens<<ShebangToken.new(@file[0...@file.pos])
+       pos=input_position
+       @moretokens<<EscNlToken.new(readnl,pos,@filename,2)
+       @moretokens<<FileAndLineToken.new(@filename,2,input_position)
      end
-     read_encoding_line
+     encpos=input_position unless enc
+     enc||=read_encoding_line
    ensure
-     @moretokens<<EncodingDeclToken.new(@file[0...input_position],@encoding) if input_position!=0
+     @moretokens<<EncodingDeclToken.new(enc||'',@encoding,enc ? encpos : input_position) if @encoding
+     @encoding||=:ascii
    end
 
    def read_encoding_line
@@ -1558,14 +1565,15 @@ private
 
      #-----------------------------------
      def read_encoding_line
-       if @file.skip(
-            /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*\n/i
+       if line=@file.scan(
+            /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*$/i
           )
          name=@file.last_match[1]
          name.downcase!
          name.tr_s! '-_',''
          name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
          @encoding=name.to_sym if ENCODINGS.include? name
+         return line
        end
      end
 
