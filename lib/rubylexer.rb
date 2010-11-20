@@ -1579,6 +1579,15 @@ private
      end
    end
 
+   #-----------------------------------
+   def encoding_name_normalize name
+         name=name.dup
+         name.downcase!
+         name.tr_s! '-_',''
+         name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
+         return name
+   end
+
    module RubyLexer1_9
      FUNCLIKE_KEYWORDLIST=RubyLexer::FUNCLIKE_KEYWORDLIST+FUNCLIKE_KEYWORDLIST_1_9
      VARLIKE_KEYWORDLIST=RubyLexer::VARLIKE_KEYWORDLIST+VARLIKE_KEYWORDLIST_1_9
@@ -1613,15 +1622,6 @@ private
      def callsite_symbol(x)
        return if nextchar==?(
        super
-     end
-
-     #-----------------------------------
-     def encoding_name_normalize name
-         name=name.dup
-         name.downcase!
-         name.tr_s! '-_',''
-         name=ENCODING_ALIASES[name] if ENCODING_ALIASES[name]
-         return name
      end
 
      #-----------------------------------
