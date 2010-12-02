@@ -49,6 +49,21 @@ class Token
    end
 
    def linecount; 0 end
+
+   alias orig_inspect inspect
+   alias dump inspect
+
+   #this is merely the normal definition of inspect
+   #and is unneeded in ruby 1.8
+   #but in 1.9, defining to_s seemingly overrides the built-in Object#inspect
+   #and you can't get it back, no matter what.
+   #fucking 1.9
+   def inspect
+     ivars=instance_variables.map{|ivar| 
+       ivar.to_s+'='+instance_variable_get(ivar).inspect
+     }.join(' ')
+     %[#<#{self.class}: #{ivars}>]
+   end
 end
 
 #-------------------------
