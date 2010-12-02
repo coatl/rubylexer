@@ -1826,7 +1826,8 @@ private
      include RubyLexer::NestedContexts
 
      def semicolon_in_block_param_list?
-       ParenedParamListLhsContext===@parsestack.last 
+       ParenedParamListLhsContext===@parsestack.last || 
+         BlockParamListLhsContext===@parsestack.last
      end
 
      def is__ENCODING__keyword?(name)
@@ -3362,7 +3363,7 @@ end
          pop=
            case @parsestack[-2]
            when ParamListContext,ParamListContextNoParen,WhenParamListContext,
-                ListImmedContext,AssignmentRhsContext; true
+                ListImmedContext,AssignmentRhsContext,ParenedParamListLhsContext,UnparenedParamListLhsContext; true
            when RescueSMContext; @parsestack[-2].state==:rescue
            when DefContext; !@parsestack[-2].in_body and !@parsestack[-2].has_parens?
            else false
