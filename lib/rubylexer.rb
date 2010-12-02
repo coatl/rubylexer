@@ -166,6 +166,13 @@ class RubyLexer
 
    #-----------------------------------
    def initialize(filename,file,linenum=1,offset_adjust=0,options={})
+      if file.respond_to? :set_encoding
+        file.set_encoding 'binary'
+      elsif file.respond_to? :force_encoding
+        file=file.dup if file.frozen?
+        file.force_encoding 'binary'
+      end
+
       @offset_adjust=0 #set again in next line
       rulexer_initialize(filename,file, linenum,offset_adjust)
       @start_linenum=linenum
