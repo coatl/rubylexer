@@ -747,7 +747,7 @@ class FileAndLineToken < IgnoreToken
    #def char; '#' end
 
    def to_s()
-      ['#', @ident, ':', @line].to_s
+      %[##@ident:#@line]
    end
 
    def file()   @ident   end
