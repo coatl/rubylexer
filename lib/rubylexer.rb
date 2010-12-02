@@ -2055,7 +2055,7 @@ end
          set_last_token KeywordToken.new( ',' )#hack
          nextvar=nil
          loop do
-            expect_name=(@last_operative_token===',' and
+            expect_name=(/^[,;]$/===@last_operative_token.ident and
                          normal_comma_level==@parsestack.size)
             expect_name and @defining_lvar||=true
             result << tok=get1token
