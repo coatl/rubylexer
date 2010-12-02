@@ -3362,8 +3362,11 @@ end
        while AssignmentRhsContext===@parsestack[-1]
          pop=
            case @parsestack[-2]
-           when ParamListContext,ParamListContextNoParen,WhenParamListContext,
-                ListImmedContext,AssignmentRhsContext,ParenedParamListLhsContext,UnparenedParamListLhsContext; true
+           when ParamListContext,ParamListContextNoParen,
+                WhenParamListContext,ListImmedContext,AssignmentRhsContext,
+                ParenedParamListLhsContext,UnparenedParamListLhsContext,
+                BlockParamListLhsContext
+                 true
            when RescueSMContext; @parsestack[-2].state==:rescue
            when DefContext; !@parsestack[-2].in_body and !@parsestack[-2].has_parens?
            else false
