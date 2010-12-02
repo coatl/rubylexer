@@ -213,7 +213,7 @@ class RubyLexer
    end
 
 
-   alias :dump :inspect # preserve old inspect functionality
+   alias dump inspect # preserve old inspect functionality
   
    # irb friendly #inspect/#to_s
    def to_s
@@ -223,7 +223,7 @@ class RubyLexer
      "#<#{self.class.name}#{mods}: [#{@file.inspect}]>"
    end
   
-   alias :inspect :to_s
+   alias inspect to_s
 
 
    def build_method_operators
