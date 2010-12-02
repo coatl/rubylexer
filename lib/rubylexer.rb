@@ -1924,7 +1924,7 @@ private
    #-----------------------------------
    def block_param_list_lookahead starter=?|, ctx_type=BlockParamListLhsContext
       safe_recurse{ |la|
-         set_last_token KeywordToken.new(  ';' )
+         set_last_token KeywordToken.new( ';' )
          a=ignored_tokens
 
          if eat_next_if(starter)
