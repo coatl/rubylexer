@@ -3365,7 +3365,7 @@ end
            when ParamListContext,ParamListContextNoParen,
                 WhenParamListContext,ListImmedContext,AssignmentRhsContext,
                 ParenedParamListLhsContext,UnparenedParamListLhsContext,
-                BlockParamListLhsContext
+                BlockParamListLhsContext,KnownNestedLhsParenContext
                  true
            when RescueSMContext; @parsestack[-2].state==:rescue
            when DefContext; !@parsestack[-2].in_body and !@parsestack[-2].has_parens?
