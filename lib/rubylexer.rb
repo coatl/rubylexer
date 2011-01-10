@@ -251,7 +251,10 @@ class RubyLexer
    }
    ENCODING_ALIASES=Hash[*RAW_ENCODING_ALIASES.map{|long,short| [long.tr_s('-_',''),short] }.flatten]
    ENCODINGS=%w[ascii binary utf8 euc sjis]
-   NONWORKING_ENCODINGS=%w[sjis] 
+   NONWORKING_ENCODINGS=%w[sjis]
+   WSCHARS=@@WSCHARS= /[\s]/==="\v" ? '\s' :'\s\v'  #same as WHSP
+   WSNONLCHARS=@@WSNONLCHARS=/(?!\n)[#@@WSCHARS]/o                #same as WHSPLF
+
 
    def read_leading_encoding
      @encoding=nil if @encoding==:detect
