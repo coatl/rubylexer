@@ -60,17 +60,21 @@ end
   class LexerTests<Test::Unit::TestCase
     class LexerTestFailure<RuntimeError; end
     class DifferencesFromMRILex<LexerTestFailure; end
-    
-    i=-1
+
+    i=0
+     
     test_code= TestCases::TESTCASES.map{|tc|
       i+=1
-      name="testcase_#{i}__"
       esctc=tc.gsub(/['\\]/){"\\"+$&}
+      shorttc=esctc[0..200]
+      shorttc.chop! while shorttc[-1]==?\\
+      shorttc.gsub!("\0",'\\\\0') 
+      name="test_lexing_of_#{shorttc}"
       %[  
          define_method '#{name}' do 
            difflines=[]
            begin
-             res=RubyLexerVsRuby.rubylexervsruby('__#{name}','#{esctc}',difflines)
+             res=RubyLexerVsRuby.rubylexervsruby('__testcase_#{i}','#{esctc}',difflines)
              unless difflines.empty?
                puts '#{esctc}'
                puts difflines.join
