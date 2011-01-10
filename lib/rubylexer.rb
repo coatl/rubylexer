@@ -255,6 +255,35 @@ class RubyLexer
    WSCHARS=@@WSCHARS= /[\s]/==="\v" ? '\s' :'\s\v'  #same as WHSP
    WSNONLCHARS=@@WSNONLCHARS=/(?!\n)[#@@WSCHARS]/o                #same as WHSPLF
 
+   NOPARAMLONGOPTIONS=%w[copyright version verbose debug yydebug help]
+   PARAMLONGOPTIONS=%w[encoding dump]
+   DASHPARAMLONGOPTIONS=%w[enable disable]
+   NOPARAMOPTIONS="SacdhlnpsvwyU"
+   OCTALPARAMOPTIONS="0"
+   CHARPARAMOPTIONS="KTW"
+   PARAMSHORTOPTIONS="CXFIEeir"
+   MAYBEPARAMSHORTOPTIONS="x"
+   NEWIN1_9OPTIONS=%w[encoding dump enable disable X U W E]
+   LONGOPTIONS=/
+             --(#{NOPARAMLONGOPTIONS.join'|'})|
+             --(#{PARAMLONGOPTIONS.join'|'})(=|#@@WSNONLCHARS+)[^#@@WSCHARS]+|
+             --(#{DASHPARAMLONGOPTIONS.join'|'})-[^#@@WSCHARS]+
+   /ox
+   CHAINOPTIONS=/
+             [#{NOPARAMOPTIONS}]+|
+             [#{OCTALPARAMOPTIONS}][0-7]{1,3}|
+             [#{CHARPARAMOPTIONS}].
+   /ox
+   PARAMOPTIONS=/
+             [#{PARAMSHORTOPTIONS}]#@@WSNONLCHARS*[^#@@WSCHARS]+|
+             [#{MAYBEPARAMSHORTOPTIONS}]#@@WSNONLCHARS*[^#@@WSCHARS]*
+   /ox
+   OPTIONS=/
+     (#@@WSNONLCHARS*(
+             #{LONGOPTIONS} | --? |
+             -#{CHAINOPTIONS}*( #{PARAMOPTIONS} | #{CHAINOPTIONS} ) 
+     ))*
+   /ox
 
    def read_leading_encoding
      @encoding=nil if @encoding==:detect
@@ -262,16 +291,21 @@ class RubyLexer
        encpos=0
        @encoding||=:utf8
      elsif @file.skip( /\A#!/ )
+       lastpos=@file.pos
        loop do
-         til_charset( /[\s\v]/ )
-         break if @file.match( /^\n|[\s\v]([^-\s\v]|--?(?:[\s\v]|$))/,4 )
-         if @file.skip( /.-K[\s\v]*([a-zA-Z0-9])/ )
+         til_charset( /[#@@WSCHARS]/o )
+         assert @file.pos > lastpos
+         break if @file.match( /^\n|#@@WSNONLCHARS([^-#@@WSCHARS])/o,4 )
+         if @file.skip( /.-#{CHAINOPTIONS}*K#@@WSNONLCHARS*([a-zA-Z0-9])/o )
            case @file.last_match[1]
-           when 'u'; @encoding||=:utf8
-           when 'e'; @encoding||=:euc
-           when 's'; @encoding||=:sjis
+           when 'u','U'; @encoding||=:utf8
+           when 'e','E'; @encoding||=:euc
+           when 's','S'; @encoding||=:sjis
            end
+         elsif @file.skip( /.#{LONGOPTIONS}/o )
          end
+         getchar
+         lastpos=@file.pos
        end
        til_charset( /[\n]/ )
        @moretokens<<ShebangToken.new(@file[0...@file.pos])
