@@ -124,7 +124,8 @@ expected_failures=Dir.getwd+"/test/code/"+File.basename(input)+".expected_failur
 nop_ruby "#{input[/\.gz$/]&&'z'}cat", input, nopfile, stringdata
 
 
-legal=ruby_parsedump nopfile, origfile, ruby
+ruby_parsedump nopfile, origfile, ruby
+`#{ruby} -c #{nopfile} >/dev/null 2>/dev/null`; legal=$?.to_i
 if legal.nonzero?
   puts "skipping #{input}; not legal"
   return true
@@ -157,6 +158,7 @@ elsif ru_oops
   warn "syntax error expected, was not seen in #{input}"
   return true
 end
+
 
 if File.exists?(p_ttfile)
   IO.popen("diff --unified=1 -b #{origfile} #{p_ttfile}"){ |pipe|
