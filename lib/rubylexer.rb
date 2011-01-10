@@ -1574,17 +1574,22 @@ private
      #-----------------------------------
      def method_params
        lasttok=last_token_maybe_implicit #last_operative_token
-       if lasttok and ';'==lasttok.ident and VContext===@parsestack.last
-         @parsestack.pop
-         return true
-       end
-       if lasttok and ')'==lasttok.ident
+       return super unless lasttok
+       case lasttok.ident
+       when ';' 
+         if VContext===@parsestack.last
+           @parsestack.pop
+           true
+         #else super  #need this here...? I think not ....
+         end
+       when ')'
          @moretokens<<KeywordToken.new("<doubled-parens>")
          @parsestack.pop if VContext===@parsestack.last
-         return true
+         true
+       when '.'
+         true
+       else super
        end
-       super or 
-         (lasttok and '.'==lasttok.ident)
      end
 
      #-----------------------------------
