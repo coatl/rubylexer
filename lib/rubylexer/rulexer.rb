@@ -1060,8 +1060,8 @@ protected
   def input_position_set x; @file.pos=x end
 
   #-----------------------------------
-  def adjust_linenums_in_moretokens!(tok)
-    line=tok.endline
+  def adjust_linenums_in_moretokens!(tok2)
+    line=tok2.endline
     @moretokens.each{|tok|
       if tok.linecount.zero?
         tok.endline||=line
