@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-=begin legal crap
+=begin legal
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008  Caleb Clausen
 
@@ -29,12 +29,43 @@ class<<RubyLexerVsRuby
 ENABLEMD5=false
 def nop_ruby(cmd,input,output,stringdata)
 #   system %[echo "BEGIN{exit};">#{output}]
-   File.open(output,'w'){|f| f.write "BEGIN{exit};\n" }
-   if stringdata 
-     File.open(output,'a'){|f| f.write stringdata }     
-   else
-     system [cmd,'"'+input+'"','>>',output].join(' ')
-   end
+   File.open(output,'w'){|f|
+     if stringdata 
+       stringdata=stringdata.dup
+       first=stringdata.slice! /\A.*\n?/
+       second=stringdata.slice! /\A.*\n?/
+     else
+       input=IO.popen %{#{cmd} "#{input}"}
+       first=input.readline
+       second=input.readline
+       stringdata=input.read
+     end
+     if first[0,2]=="#!"
+       if /\A\s*#.*coding/o===second
+         f.write first
+         f.write second
+         f.write "BEGIN{exit};\n"
+         f.write stringdata
+       else
+         f.write first
+         f.write "BEGIN{exit};\n"
+         f.write second
+         f.write stringdata
+       end
+     else
+       if /\A\s*#.*coding/o===first
+         f.write first
+         f.write "BEGIN{exit};\n"
+         f.write second
+         f.write stringdata
+       else
+         f.write "BEGIN{exit};\n"
+         f.write first
+         f.write second
+         f.write stringdata
+       end
+     end
+   }
 end
 
 def ruby_parsedump(input,output,ruby)
