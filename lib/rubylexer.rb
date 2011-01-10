@@ -717,7 +717,7 @@ private
              ImplicitParamListStartToken.new( oldpos),
              ImplicitParamListEndToken.new( oldpos) 
            ]
-           toks.each{|tok| tok.endline=oldline}
+           toks.each{|t| t.endline=oldline}
            return result.unshift(*toks)
          end
      end
