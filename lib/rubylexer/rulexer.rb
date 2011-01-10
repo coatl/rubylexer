@@ -419,7 +419,7 @@ if FASTER_STRING_ESCAPES
            /ox #and this?
 
            #shouldn't tolerate ILLEGAL_ESCAPED in str (unless single quotish)....
-           lexerror str, "illegal escape sequence" if /#{@@ILLEGAL_CRUNCH}|#{ILLEGAL_ESCAPED}/===b 
+           lexerror str, "illegal escape sequence" if /#{@@ILLEGAL_CRUNCH}|#{ILLEGAL_ESCAPED}/o===b 
          end
 
          str.append b
