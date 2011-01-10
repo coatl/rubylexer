@@ -602,9 +602,9 @@ private
         case context
          when ?@,?$ then ""
 #         when ?:    then "!(?![=])|\\?|=(?![=~>])"
-         else            "!(?![=])|\\?"
+         else            "!(?=\\z|[^=]|=[=~>])|\\?"
         end      
-      @in_def_name||context==?: and trailers<<"|=(?![=~>])"
+      @in_def_name||context==?: and trailers<<"|=(?![~>]|=[^~=>])"
 
       @file.scan(IDENTREX[trailers]||=/^(?>#@@LETTER#@@LETTER_DIGIT*(?:#{trailers})?)/)
    end
