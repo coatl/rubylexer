@@ -138,10 +138,13 @@ rescue Exception=>rl_oops
 end
 
 begin
-  raise unless 0==ruby_parsedump( _ttfile, p_ttfile, ruby )
-  raise unless 0==ruby_parsedump( mttfile, pmttfile, ruby )
+  p_tt_fail=true unless 0==ruby_parsedump( _ttfile, p_ttfile, ruby )
+  pmtt_fail=true unless 0==ruby_parsedump( mttfile, pmttfile, ruby )
 rescue Exception=>ru_oops
 end
+
+warn "syntax error parsing #{pmttfile}" if pmtt_fail
+warn "syntax error parsing #{p_ttfile}" if p_tt_fail
 
 if rl_oops
   if ru_oops
