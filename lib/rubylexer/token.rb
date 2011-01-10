@@ -192,7 +192,12 @@ end
 class NumberToken < Token
   def to_s
     if defined? @char_literal and @char_literal
-      '?'+@ident.chr
+      chr=@ident.chr
+      '?'+case chr
+          when " "; '\s'
+          when /[!-~]/; chr 
+          else chr.inspect[1...-1]
+          end
     else
       @ident.to_s 
     end
