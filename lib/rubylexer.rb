@@ -1572,7 +1572,7 @@ private
  
    module WithMacros
      #-----------------------------------
-     def method_params
+     def method_params?
        lasttok=last_token_maybe_implicit #last_operative_token
        return super unless lasttok
        case lasttok.ident
@@ -1661,7 +1661,7 @@ private
      end
 
      #-----------------------------------
-     def method_params  # .()
+     def method_params?  # .()
        lasttok=last_token_maybe_implicit #last_operative_token
        super or 
          (lasttok and lasttok.ident=='.') 
@@ -3206,7 +3206,7 @@ if false
 end
 
    #-----------------------------------
-   def method_params
+   def method_params?
      lasttok=last_token_maybe_implicit #last_operative_token
      VarNameToken===lasttok or 
        MethNameToken===lasttok or
@@ -3243,7 +3243,7 @@ end
         end
       when '('
         #could be: lasttok===/^#@@LETTER/o
-        if method_params
+        if method_params?
           unless WHSPCHARS[lastchar]
                @moretokens << tokch
                tokch= NoWsToken.new(input_position-1)
