@@ -482,7 +482,7 @@ private
   end
 
   #-----------------------------------
-  WSCHARSET=/[#\\\n\s\t\v\r\f\x00\x04\x1a]/
+  WSCHARSET=/[#\\\n#@@WSCHARS\x00\x04\x1a]/o
   def ignored_tokens(allow_eof=false,allow_eol=true)
     result=[]
     result << @moretokens.shift while StillIgnoreToken===@moretokens.first
@@ -518,7 +518,7 @@ private
          "#" => :comment,
          "\n" => :newline,
          "\\" => :escnewline,
-         "\s\t\v\r\f" => :whitespace
+         "#@@WSCHARS\t\r\f" => :whitespace
       )
       #tok=nil
       while tok=@whsphandler.go((nextchar or return result))
@@ -650,7 +650,7 @@ private
        when UnparenedParamListLhsContext
          /^(->|,|;)$/===lasttok.ident or /^[*&]$/===lasttok.ident && lasttok.unary
        when RescueSMContext
-         lasttok.ident=="=>" and @file.match?( /\A[\s\v]*([:;#\n]|then(?!#@@LETTER_DIGIT))/om )
+         lasttok.ident=="=>" and @file.match?( /\A[#@@WSCHARS]*([:;#\n]|then(?!#@@LETTER_DIGIT))/om )
        #when BlockParamListLhsContext; true
      end 
    end
@@ -1676,7 +1676,7 @@ private
      #-----------------------------------
      def read_encoding_line
        if line=@file.scan(
-            /\A#[\x00-\x7F]*?(?:en)?coding[\s\v]*[:=][\s\v]*([a-z0-9_-]+)[\x00-\x7F]*$/i
+            /\A#{WSNONLCHARS}*#[\x00-\x7F]*?(?:en)?coding#{WSNONLCHARS}*[:=]#{WSNONLCHARS}*([a-z0-9_-]+)[\x00-\x7F]*$/io
           )
          name=@file.last_match[1]
          name=encoding_name_normalize name
@@ -2172,7 +2172,7 @@ end
        (@last_operative_token===/^(return|next|break)$/ and KeywordToken===@last_operative_token)
      result=quadriop(ch)
      if want_unary
-       #readahead(2)[1..1][/[\s\v#\\]/] or #not needed?
+       #readahead(2)[1..1][/[#@@WSCHARS#\\]/o] or #not needed?
        assert OperatorToken===result
        result.tag=:unary         #result should distinguish unary+binary *&
        WHSPLF[nextchar.chr] or
@@ -2224,7 +2224,7 @@ end
      end
 
      if !op and after_nonid_op?{ 
-          !is_var_name? and WHSPLF[prevchar] and !readahead(2)[%r{^/[\s\v=]}] 
+          !is_var_name? and WHSPLF[prevchar] and !readahead(2)[%r{^/[#@@WSCHARS=]}o] 
         } || (KeywordToken===@last_token_maybe_implicit and @last_token_maybe_implicit.ident=="(")
        return regex(ch)
      else #/ is operator
@@ -2258,7 +2258,7 @@ end
    #-----------------------------------
    def colon_quote_expected?(ch) #yukko hack
      assert ':?'[ch]
-     readahead(2)[/^(\?[^#{WHSPLF}]|:[^\s\r\n\t\f\v :])$/o]   or return false
+     readahead(2)[/^(\?[^#{WHSPLF}]|:[^#@@WSCHARS :])$/o]   or return false
 
      after_nonid_op? {
        #possible func-call as operator

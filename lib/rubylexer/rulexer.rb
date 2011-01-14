@@ -641,7 +641,7 @@ end
       case ch=getchar
       when "\n"; @linenum+=1; ch
       when nester,delimiter; ch
-      when /[\s\v\\]/; ch
+      when /[#@@WSCHARS\\]/o; ch
       else 
         back1char
         result=dquote_esc_seq('\\',nester,delimiter)
@@ -656,7 +656,7 @@ end
       case ch=getchar
       when "\n"; @linenum+=1; ch
       when nester,delimiter; ch
-      when /[\s\v\\]/; ch
+      when /[#@@WSCHARS\\]/o; ch
       else 
         back1char
         result=dquote19_esc_seq('\\',nester,delimiter)
@@ -678,7 +678,7 @@ end
          when delimiter,nester,'\\'; escchar
 #         when delimiter,nester; escchar
          when "\n"; @linenum+=1; escchar
-         when /[\s\v]/; escchar
+         when /[#@@WSCHARS]/o; escchar
          else       "\\"+escchar
       end
    end
