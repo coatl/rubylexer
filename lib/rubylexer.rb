@@ -930,6 +930,7 @@ private
            break true 
          elsif EoiToken===tok
            lexerror tok, "unexpected eof in parameter list"
+           break
          end
        }
        result.concat @moretokens
@@ -1288,10 +1289,12 @@ private
               begin
                 tok=get1token
                 case tok
-                when/^\($/.token_pat then parencount+=1
-                when/^\)$/.token_pat then parencount-=1
+                when /^\($/.token_pat ; parencount+=1
+                when /^\)$/.token_pat ; parencount-=1
+                when EoiToken
+                  @moretokens= old_moretokens.concat @moretokens
+                  return result<<lexerror( tok, "eof in def header" )
                 end
-                EoiToken===tok and lexerror tok, "eof in def header"
                 result << tok
               end until  parencount==0 #@parsestack.size==old_size
               @localvars_stack.push SymbolTable.new
@@ -1395,6 +1398,9 @@ private
                case tok
                when EoiToken
                   lexerror tok,'unexpected eof in def header'
+                  @moretokens= old_moretokens.concat @moretokens
+                  return result
+
                when StillIgnoreToken
                when MethNameToken ,VarNameToken # /^#@@LETTER/o.token_pat
                   lexerror tok,'expected . or ::' unless state==:expect_name
