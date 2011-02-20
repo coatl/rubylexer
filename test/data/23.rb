@@ -14,7 +14,6 @@ r[0]^=r[1]
 $=||=0;$_||=0_0
 i,v=['o',*local_variables].flatten.grep(/\A.\Z/).sort_by{|x|x[0].-(?j).abs.-@}.reverse,false
 y=methods.grep(U).sort_by{|x|x[0].-(?e).abs.-@}
-#breakpoint
 i=[i,y].join(I=Love(%q=(2.**(5).chr)=)).gsub(' '){w=$=^=1;$x[w.inspect[1][0]*F-1,1]}.gsub(/[eyd]/){(?e.+?y.-($&[0])).chr }.delete('z')
 i=i.scan(%r:#{I}|.*?(?=#{I})|.*:).inject([]){|r,p|unless(v=!v if(v=!v)...(v))..(v=!v):r<<[]end;r.last<<p;r};v^=!v
 i,@v,@u=i.reject{true if (v=!v)..v}.join.capitalize,local_variables.inject(?X){|p,v|p^v[0]}.chr,O.constants.grep(U).pop

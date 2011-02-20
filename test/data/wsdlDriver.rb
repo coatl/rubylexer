@@ -229,7 +229,6 @@ class WSDLDriver
 	Mapping.fault2exception(e)
       end
 
-#breakpoint
       ret = res_body.response ?
 	Mapping.soap2obj(res_body.response, @mapping_registry) : nil
 

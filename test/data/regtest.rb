@@ -382,7 +382,6 @@ if ($Slow||=nil)
 end
 
      assert_eee Reg[lhqqbe+0], [ :begin, :"\\", :rand, :end ]
- #breakpoint
      assert_eee +[be], [:begin, :"\\", :"\\", :end]
      assert_eee +[be], [:begin, :"\\", :begin, :end]
      assert_eee +[be], [:begin, :"\\", :end, :end]

@@ -16,7 +16,6 @@ delete( %%% <<'>>
 ):'
 ) ) : ( (
 [ [ # ] ]
-  #breakpoint
   sub( %r
 ^ #{   %q
 (
