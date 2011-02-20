@@ -33,6 +33,12 @@ class RubyLexer
   #here's a list of other constants that should already be defined at this point:
   [WHSP, VERSION, Token, CharSet, CharHandler, SymbolTable, SimpleTokenPrinter].each{|k| fail if k.nil? }
  
+  RUBYUNOPERATORS=%w{ +@ ~ ~@ -@ ! !@ }
+  RUBYBINOPERATORS=%w{ & | ^ / % == === =~ > >= >> < <= << <=> + - * ** }
+  RUBYCOMPOPERATORS=%w{== === =~ > >= < <= <=>}
+  RUBYSYMOPERATORS=RUBYUNOPERATORS+RUBYBINOPERATORS+%w{ [] []= }
+  RUBYNONSYMOPERATORS=%w{!= !~ = => :: ? : , ; . .. ... || && ||= &&=}+
+        (RUBYBINOPERATORS-RUBYCOMPOPERATORS).map{|op| op+'='}
   RUBYSYMOPERATORREX=
       %r{^([&|^/%]|=(==?)|=~|>[=>]?|<(<|=>?)?|[+~\-]@?|\*\*?|\[\]=?)}
       # (nasty beastie, eh?)
@@ -70,6 +76,11 @@ class RubyLexer
        #{INNERBOUNDINGWORDS}|#{BEGINWORDS}
      )$
    }xo
+  RUBYKEYWORDLIST=%w{alias defined? not undef end}+
+       BINOPWORDLIST+
+       VARLIKE_KEYWORDLIST+FUNCLIKE_KEYWORDLIST+
+       INNERBOUNDINGWORDLIST+BEGINWORDLIST+
+       VARLIKE_KEYWORDLIST_1_9
       #__END__ should not be in this set... its handled in start_of_line_directives
 
   HIGHASCII=?\x80..?\xFF
