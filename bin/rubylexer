@@ -95,7 +95,12 @@ file||=if name=ARGV.first
 args=name, file
 args.push 1,0,options unless options.empty?
 lexer=RubyLexer.new(*args) 
-lexer.enable_macros! if macros
+if macros
+  require 'macro'
+  lexer.enable_macros!
+  lexer.extend ::RubyLexer::MacroMixin
+  lexer.rubylexer_modules_init
+end
 if silent
   until RubyLexer::EoiToken===(tok=lexer.get1token)
   end
