@@ -212,8 +212,8 @@ class RubyLexer
 
       if @rubyversion>=1.9
         extend RubyLexer1_9 
-        init1_9
       end
+      rubylexer_modules_init
       @method_operators=build_method_operators
       if input_position.zero?
         read_leading_encoding
@@ -223,6 +223,9 @@ class RubyLexer
       progress_printer
    end
 
+   def rubylexer_modules_init
+
+   end
 
    alias dump inspect # preserve old inspect functionality
   
@@ -1659,9 +1662,18 @@ private
      VARLIKE_KEYWORDLIST=RubyLexer::VARLIKE_KEYWORDLIST+VARLIKE_KEYWORDLIST_1_9
      FUNCLIKE_KEYWORDS=/^(?:#{FUNCLIKE_KEYWORDLIST.join '|'})$/
      VARLIKE_KEYWORDS=/^(?:#{VARLIKE_KEYWORDLIST.join '|'})$/
-     def init1_9
-       @FUNCLIKE_KEYWORDS=FUNCLIKE_KEYWORDS
-       @VARLIKE_KEYWORDS=VARLIKE_KEYWORDS
+     def FUNCLIKE_KEYWORDS orig=nil
+       /(?:#{orig||super()}|^(?:#{FUNCLIKE_KEYWORDLIST_1_9.join '|'})$)/
+     end
+
+     def VARLIKE_KEYWORDS orig=nil
+       /(?:#{orig||super()}|^(?:#{VARLIKE_KEYWORDLIST_1_9.join '|'})$)/
+     end
+
+     def rubylexer_modules_init
+       super
+       @FUNCLIKE_KEYWORDS=FUNCLIKE_KEYWORDS @FUNCLIKE_KEYWORDS unless @FUNCLIKE_KEYWORDS==="->"
+       @VARLIKE_KEYWORDS=VARLIKE_KEYWORDS @VARLIKE_KEYWORDS unless @VARLIKE_KEYWORDS==="__ENCODING__"
      end
  
      #-----------------------------------
