@@ -54,7 +54,7 @@ class RubyLexer
    WHSPLF=WHSP+"\n"
    #maybe \r should be in WHSPLF instead
 
-   LEGALCHARS=/[ -~#{WHSPLF}\x80-\xFF]/
+   LEGALCHARS=/[!-~#{WHSPLF}\x80-\xFF]/
 
    PAIRS={ '{'=>'}', '['=>']', '('=>')', '<'=>'>'}
 
