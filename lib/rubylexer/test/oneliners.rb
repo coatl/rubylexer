@@ -590,3 +590,4 @@ tuf while buf=sread 4096
 {:n!=>1}
 {:n==>1}
 {:n=>1}
+case;when I; JIS;else case; when sjis__length; EJP ;else 55; end;end
