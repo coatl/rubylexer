@@ -1,3 +1,4 @@
+$:<<File.expand_path(File.dirname(File.dirname(__FILE__)))
 require 'test/code/regression'
 require 'test/code/test_1.9'
 
