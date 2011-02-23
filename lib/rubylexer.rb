@@ -2492,9 +2492,9 @@ if true
       #in order to keep offsets correct in the long term
       #(at present, offsets and line numbers between 
       #here header and its body will be wrong. but they should re-sync thereafter.)
-      newpos=input_position_raw-nl.size
+      newpos=input_position_raw
       #unless procrastinated.empty?
-        @file.modify(newpos,nl.size,procrastinated+nl) #vomit procrastinated text back onto input
+        @file.modify(newpos,0,procrastinated) #vomit procrastinated text back onto input
       #end
       input_position_set newpos
 
@@ -2655,6 +2655,9 @@ end
               crs=til_charset(/[^\r]/)||''
               if nl=readnl
                 close+=tofill.ender+crs+nl
+                back1char unless nl.empty?
+                #need to tweak @offset_adjust here too when back1char called...
+                #maybe should fiddle with line numbers too?
                 break
               end
             end
