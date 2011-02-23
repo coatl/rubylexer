@@ -2585,7 +2585,7 @@ end
         @base_file.pos=@file.pos
         @file=@base_file
         @base_file=nil
-        result="\n"
+#        result="\n"
       end
       
       @offset_adjust=@min_offset_adjust
