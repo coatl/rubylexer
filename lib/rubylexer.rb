@@ -3403,12 +3403,15 @@ end
 
    #-----------------------------------
    def endoffile_detected(s='')
-     @moretokens.push( *(abort_noparens!.push rulexer_endoffile_detected(s)))
+     @moretokens.concat optional_here_bodies
+     @moretokens.concat abort_noparens!
+     @moretokens.push rulexer_endoffile_detected(s)
      if @progress_thread
        @progress_thread.kill
        @progress_thread=nil
      end
      result= @moretokens.shift
+     assert @pending_here_bodies.empty?
      balanced_braces? or (lexerror result,"unbalanced braces at eof. parsestack=#{@parsestack.inspect}")
      result
    end
