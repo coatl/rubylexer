@@ -363,6 +363,8 @@ class StringToken < Token
         result="%r"+result if RubyLexer::WHSPLF[result[1,1]]
       end
 
+      result<<"\n" if open.empty? and result[-1] != ?\n
+
       return result
    end
 
