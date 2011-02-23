@@ -76,20 +76,18 @@ end
            begin
              res=RubyLexerVsRuby.rubylexervsruby('__testcase_#{i}','#{esctc}',difflines)
              unless difflines.empty?
-               puts '#{esctc}'
-               puts difflines.join
-               raise DifferencesFromMRILex
+               raise DifferencesFromMRILex, difflines.join
              end
              res or raise LexerTestFailure, ''
-           rescue Interrupt; exit
-           rescue Exception=>e 
-             message=e.message.dup<<"\n"+'while lexing: #{esctc}'
-             e2=e.class.new(message)
-             e2.set_backtrace(e.backtrace)
-             raise e2
            end
          end  
       ]
+           #rescue Interrupt; exit
+           #rescue Exception=>e 
+           #  message=e.message.dup<<"\n"+'while lexing: \#{esctc}'
+           #  e2=e.class.new(message)
+           #  e2.set_backtrace(e.backtrace)
+           #  raise e2
     }
     
     illegal_test_code= TestCases::ILLEGAL_TESTCASES.map{|tc|
@@ -102,25 +100,23 @@ end
            begin
              res=RubyLexerVsRuby.rubylexervsruby('__#{name}','#{esctc}',difflines) 
              unless difflines.empty?
-               puts '#{esctc}'
-               puts difflines.join
-               raise DifferencesFromMRILex
+               raise DifferencesFromMRILex, difflines.join
              end
              res or raise LexerTestFailure, ''
            rescue LexerTestFailure
              puts 'warning: test failure lexing "#{esctc}"' 
-           rescue Interrupt; exit
-           rescue Exception=>e;
-             message=e.message.dup<<"\n"+'while lexing: #{esctc}'
-             e2=e.class.new(message)
-             e2.set_backtrace(e.backtrace)
-             raise e2
            end
          end  
       ]
+           #rescue Interrupt; exit
+           #rescue Exception=>e;
+           #  message=e.message.dup<<"\n"+'while lexing: \#{esctc}'
+           #  e2=e.class.new(message)
+           #  e2.set_backtrace(e.backtrace)
+           #  raise e2
     }
 
     src=(test_code+illegal_test_code).join
-#   puts src
+    #puts src
     eval src
   end
