@@ -1080,7 +1080,7 @@ protected
           pos= input_position
           ln=@linenum
           result=#{fn}__no_offset(*args)
-          assert Token===result
+          assert Token===result, "lexer output was not a Token"
           result.offset||=pos
           result.endline||=ln
           adjust_linenums_in_moretokens!(result)
