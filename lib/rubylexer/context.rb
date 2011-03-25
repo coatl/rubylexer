@@ -52,6 +52,12 @@ module NestedContexts
     end
     def wantarrow; true end
   end
+  
+  class StringInclusionContext < NestedContext
+    def initialize(linenum)
+      super("{","}" ,linenum)
+    end
+  end
 
   class ParenContext < NestedContext
     def initialize(linenum)
