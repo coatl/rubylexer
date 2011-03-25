@@ -36,6 +36,7 @@ module NestedContexts
     
     def see lxr,msg; end
     def lhs=*x; end #do nothing
+    def lhs; false end
     def wantarrow; false end
   end
 
