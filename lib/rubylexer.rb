@@ -839,7 +839,7 @@ private
             )
            1 
          else
-           (ws_toks.empty? || readahead(2)[/^.[#{WHSPLF}*&]/o]) ? 2 : 3
+           (ws_toks.empty? || readahead(2)[/^.[#{WHSPLF}*&]/o] and !@in_def_name) ? 2 : 3
          end
        when ?:
          next2=readahead(2)
