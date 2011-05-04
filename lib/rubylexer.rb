@@ -1008,6 +1008,10 @@ private
   def abort_noparens_for_do!(str='')
     #assert @moretokens.empty?
     result=[]
+    return result if @parsestack[-1].class==AssignmentRhsContext and
+                     @parsestack[-2].class==ParamListContextNoParen and
+                     @parsestack[-3].class==DefContext and
+                     !@parsestack[-3].in_body
     while klass=CONTEXT2ENDTOK_FOR_DO[@parsestack.last.class]
       if klass==AssignmentRhsListEndToken
         i=@parsestack.size
