@@ -2657,11 +2657,10 @@ end
             end
             if read(tofill.ender.size)==tofill.ender
               crs=til_charset(/[^\r]/)||''
-              if nl=readnl
-                close+=tofill.ender+crs+nl
-                back1char unless nl.empty?
-                #need to tweak @offset_adjust here too when back1char called...
-                #maybe should fiddle with line numbers too?
+              nl=nextchar
+              if !nl or nl==?\n
+                close+=tofill.ender+crs
+                close+="\n" if nl
                 break
               end
             end
