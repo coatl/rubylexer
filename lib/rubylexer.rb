@@ -911,7 +911,7 @@ private
      # 'not ok:'
      # 'not (but should it be?)'
    ensure
-     result.first.endline||=oldline
+     result.first.endline||=oldline unless result.empty?
    end
 
    #-----------------------------------
