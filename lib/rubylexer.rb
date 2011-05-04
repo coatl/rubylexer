@@ -1396,7 +1396,9 @@ private
                   else 
                     ofs+=listend.to_s.size
                   end
-                  result.insert end_index+1,EndHeaderToken.new(ofs)
+                  tok=EndHeaderToken.new(ofs)
+                  tok.endline= result[end_index-1].endline  #@linenum
+                  result.insert end_index+1,tok
                   break
                end
 
@@ -1425,7 +1427,10 @@ private
                   if endofs
                     result.insert( -2,ImplicitParamListEndToken.new(tok.offset) )
                   end
-                  result.insert( -2, EndHeaderToken.new(tok.offset) )
+                  ehtok= EndHeaderToken.new(tok.offset)
+                  #ehtok.endline=tok.endline
+                  #ehtok.endline-=1 if NewlineToken===tok
+                  result.insert( -2, ehtok )
                   break
                else
                   lexerror(tok, "bizarre token in def name: " +
