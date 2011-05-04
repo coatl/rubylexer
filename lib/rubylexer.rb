@@ -1133,10 +1133,10 @@ private
    def special_identifier?(str,offset,&block)
       assert @moretokens.empty?
       assert !(KeywordToken===@last_operative_token and /A(\.|::|def)\Z/===@last_operative_token.ident)
-      result=[KeywordToken.new(str,offset)]
 
-      m=:"keyword_#{str}"
-      respond_to?(m) ? (send m,str,offset,result,&block) : block[MethNameToken.new(str)]
+      m="keyword_#{str}"
+      return yield( MethNameToken.new(str) )unless respond_to?(m)
+      send m,str,offset,[KeywordToken.new(str,offset)],&block
    end
    public #these have to be public so respond_to? can see them (sigh)
    def keyword_end(str,offset,result)
