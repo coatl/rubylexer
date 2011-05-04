@@ -3407,7 +3407,12 @@ end
 
    #-----------------------------------
    def endoffile_detected(s='')
+     @linenum+=1 #optional_here_bodies expects to be called after a newline was seen and @linenum bumped
+     #in this case, there is no newline, but we need to pretend there is. otherwise optional_here_bodies
+     #makes tokens with wrong line numbers
+
      @moretokens.concat optional_here_bodies
+     @linenum-=1 #now put it back
      @moretokens.concat abort_noparens!
      @moretokens.push rulexer_endoffile_detected(s)
      if @progress_thread
