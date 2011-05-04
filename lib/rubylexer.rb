@@ -2775,9 +2775,6 @@ end
                    assert !@parsestack.empty?
       assert @moretokens.empty?
 
-      pre=FileAndLineToken.new(@filename,@linenum+1,input_position)
-      pre.allow_ooo_offset=true
-
       hard=want_hard_nl?
 
 #      hard=false if @rubyversion>=1.9 and @file.check( /\A\n(?:#@@WSTOKS)?[.:][^.:]/o )
@@ -2827,25 +2824,6 @@ end
         l-=1 if EscNlToken===implicit or NewlineToken===implicit
       }
 
-=begin
-      #adjust line count in fal to account for newlines in here bodys
-      i=@moretokens.size-1
-      while(i>=0)
-        #assert FileAndLineToken===@moretokens[i]
-        i-=1 if FileAndLineToken===@moretokens[i]
-        break unless HereBodyToken===@moretokens[i]
-        pre_fal=true
-        fal.line-=@moretokens[i].linecount
-
-        i-=1
-      end
-
-      if pre_fal
-        result=@moretokens.first
-        pre.offset=result.offset
-        @moretokens.unshift pre
-      end
-=end
       start_of_line_directives
 
       result=@moretokens.shift
