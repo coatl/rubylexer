@@ -3306,7 +3306,11 @@ end
       #in which case below would be bad.
       if  !(UnparenedParamListLhsContext===@parsestack.last) and 
           after_nonid_op?{false} || @last_operative_token.has_no_block?
-        @parsestack.push ListImmedContext.new(ch,@linenum) #that is, a hash
+        if @file.readbehind(2)=='#{'
+          @parsestack.push StringInclusionContext.new(@linenum)
+        else
+          @parsestack.push ListImmedContext.new(ch,@linenum) #that is, a hash
+        end
       else
         #abort_noparens!
         tokch.set_infix!
