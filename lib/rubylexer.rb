@@ -1061,8 +1061,8 @@ private
    end
 
    #-----------------------------------
-   def enable_macros!
-     @enable_macro="macro"
+   def enable_macros! #this wholemethod should be unnecessary now
+     @enable_macro="macro" #shouldn't be needed anymore... should be safe to remove 
      class <<self
        alias keyword_macro keyword_def
      end
