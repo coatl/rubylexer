@@ -943,6 +943,11 @@ private
 
 
   #-----------------------------------
+  module NestedContexts
+    class VContext<NestedContext
+    end
+  end
+  VContext=NestedContexts::VContext
   CONTEXT2ENDTOK={
     AssignmentRhsContext=>AssignmentRhsListEndToken, 
     ParamListContextNoParen=>ImplicitParamListEndToken,
