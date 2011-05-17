@@ -961,12 +961,10 @@ private
     result=[]
     ctx=@parsestack.last
     while klass=CONTEXT2ENDTOK[ctx.class]
-      break if VContext===ctx and /^(?:;|:|if|unless|while|until|rescue)$/===str
-      result << klass.new(input_position-adj) unless klass==0
+      result << klass.new(input_position-adj) if Class===klass
       break if RescueSMContext===ctx #and str==':'
       break if WhenParamListContext===ctx and str==':'
       @parsestack.pop 
-      break if VContext===ctx
       ctx=@parsestack.last
     end
     return result
