@@ -1604,63 +1604,6 @@ private
      return result
    end
  
-   module WithMacros
-     #-----------------------------------
-     def method_params?
-       lasttok=last_token_maybe_implicit #last_operative_token
-       return super unless lasttok
-       case lasttok.ident
-       when ';' 
-         if VContext===@parsestack.last
-           @parsestack.pop
-           true
-         #else super  #need this here...? I think not ....
-         end
-       when ')'
-         @moretokens<<KeywordToken.new("<doubled-parens>")
-         @parsestack.pop if VContext===@parsestack.last
-         true
-       when '.'
-         true
-       else super
-       end
-     end
-
-     #-----------------------------------
-     def symbol_or_op(ch)
-       startpos= input_position
-       if readahead(2)==":("
-         result= OperatorToken.new(read(1), startpos)
-         result.unary=true
-         return result
-       end
-       super
-     end
-
-     #-----------------------------------
-     def caret(ch) #match /^=?/ (^ or ^=) (maybe unary ^ too)
-       if @last_token_maybe_implicit&&@last_token_maybe_implicit.ident=='(' or 
-          unary_op_expected?(ch)
-           result=OperatorToken.new(read(1),input_position)
-           result.unary=true
-           result
-       else
-           super
-       end
-     end
-
-     #-----------------------------------
-     def callsite_symbol(x)
-       return if nextchar==?(
-       super
-     end
-
-     #-----------------------------------
-     def keyword_v(str,offset,result)
-       @parsestack<<VContext.new(*huh)
-       return result
-     end
-   end
 
    #-----------------------------------
    def encoding_name_normalize name
