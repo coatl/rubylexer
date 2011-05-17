@@ -332,17 +332,5 @@ module NestedContexts
     end
   end
 
-  class VContext<NestedContext
-    def see evt,lexer
-         if evt==:semi
-           if lexer.readahead(1)=='('
-
-           else
-             lexer.parsestack.pop
-           end
-         end
-    end
-  end
-
 end
 end
