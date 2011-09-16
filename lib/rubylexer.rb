@@ -184,7 +184,7 @@ class RubyLexer
         file.force_encoding 'binary'
       end
 
-      @offset_adjust=0 #set again in next line
+      @offset_adjust=@offset_adjust2=0 #set again in next line
       rulexer_initialize(filename,file, linenum,offset_adjust)
       @start_linenum=linenum
       @parsestack=[TopLevelContext.new]
@@ -420,7 +420,7 @@ class RubyLexer
 
    #-----------------------------------
    def input_position
-     rulexer_input_position+@offset_adjust
+     rulexer_input_position+@offset_adjust+@offset_adjust2
    end
 
    #-----------------------------------
@@ -2451,6 +2451,7 @@ if true
       #unless procrastinated.empty?
         @file.modify(newpos,0,procrastinated) #vomit procrastinated text back onto input
       #end
+      #@offset_adjust2=-1  #nice idea, but crashes 1.9.2 and causes more warnings than it fixes... :(
       input_position_set newpos
 
       #line numbers would be wrong within the procrastinated section

@@ -996,6 +996,7 @@ end
       nl or return nil
       assert((1..2)===nl.length)
       @linenum+=1
+      @offset_adjust2=0
       read nl.length
    end
 
