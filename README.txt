@@ -30,11 +30,9 @@ If you have any questions, comments, problems, new feature requests, or just
 want to figure out how to make it work for what you need to do, contact me: 
        rubylexer _at_ inforadical _dot_ net
 
-RubyLexer is a RubyForge project. RubyForge is another good place to send your
-bug reports or whatever:  http://rubyforge.org/projects/rubylexer/
+Bugs or problems with rubylexer should be submitted to the bug stream for 
+rubylexer's github project: http://github.com/coatl/rubylexer/bugs
 
-(There aren't any bug filed against RubyLexer there yet, but don't be afraid 
-that your report will get lonely.)
 
 ==SYNOPSIS:
 require "rubylexer.rb"
@@ -45,8 +43,10 @@ until EoiToken===(token=lexer.get1token)
 end
 
 == Status
-RubyLexer can correctly lex all legal Ruby 1.8 code that I've been able to 
-find on my Debian system. It can also handle (most of) my catalog of nasty 
+RubyLexer can correctly lex all legal Ruby 1.8 and 1.9 code that I've been able to 
+find. (And I've found quite a bit.)
+
+It can also handle (most of) my catalog of nasty 
 test cases (see below for known problems). Modulo some very obscure bugs,
 RubyLexer can correctly distinguish these ambiguous uses of the following 
 operators, depending on context:
@@ -82,12 +82,15 @@ context not really preserved when entering or leaving string inclusions. this ca
 -a number or problems, which had to be hacked around. it would be better to avoid
 -tokens within tokens. (0.8)
 string contents might not be correctly translated in a few cases (0.8?)
-symbols which contain string interpolations are flattened into one token. eg :"foo#{bar}" (0.8)
 '\r' whitespace sometimes seen in dos-formatted output.. shouldn't be (eg pre.rb) (0.7)
 windows newline in source is likely to cause problems in obscure cases (need test case)
-ruby 1.9 incompletely supported (0.9)
 current character set is always forced to ascii-8bit. however, this mode should be
 -compatible with texts written in regular ascii, utf-8, and euc. (among others?) (1.0)
 regression test currently shows a few errors with differences in exact token ordering
 -around string inclusions. these errors are much less serious than they seem.
 offset of AssignmentRhsListEndToken appears to be off by 1
+offset of Here document bodies appear to be off by 1 sometimes
+newline inserted at eof in texts which end with heredoc but no nl
+token offsets after here documents are now off
+unlexing of here document body in the middle of an otherwise unsuspecting
+-string lexes wrong. (still parses ok, tho, even so.)
