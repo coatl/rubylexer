@@ -76,17 +76,27 @@ def ruby_parsedump(input,output,ruby)
   ENABLEMD5 and system "md5sum -c #{input}.md5 2>/dev/null" and return
 
   status=0
+#lexing_of_class.String
+  if RUBY_VERSION>"1.8" #workaround for 1.9 crash ???!!!
+    warn "warning: dodging segfault in mri 1.9 by pushing work off to egrep(?!)" unless defined? $parsedump_19_crash_warned
+    $parsedump_19_crash_warned=true
+    system "#{ruby} -w -y < #{input} 2>&1 | egrep '^Shifting|^((Reading a token: )?-:([0-9]+): (warning|(syntax )?error)(: (.+))?)' > #{output}"
+  else
+
   IO.popen("#{ruby} -w -y < #{input} 2>&1"){ |pipe| 
     File.open(output,"w") { |outfd|
       pipe.each{ |line|
         outfd.print(line) \
           if /^Shifting|^#{DeleteWarns::WARNERRREX}/o===line
+        #WARNERRREX='(?:Reading a token: )?-:(\d+): (warning|(?:syntax )?error)(?:: ([^\n]+))?'
         #elsif /(warning|error)/i===line
         #  raise("a warning or error, appearently, not caught by rex above: "+line)
       }
       #pid,status=Process.waitpid2 pipe.pid #get err status of subprocess
     } 
   }
+  end
+
   status=$?
   ENABLEMD5 and status==0 and system "md5sum #{input} > #{input}.md5" #compute sum only if no errors
   return status>>8
