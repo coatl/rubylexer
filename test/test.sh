@@ -1,6 +1,6 @@
 #!/bin/sh
 #    rubylexer - a ruby lexer written in ruby
-#    Copyright (C) 2004,2005  Caleb Clausen
+#    Copyright (C) 2004,2005, 2011  Caleb Clausen
 #
 #    This library is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU Lesser General Public

@@ -1,3 +1,4 @@
+#Copyright (c) 2011 Caleb Clausen
 class RubyLexer
   class Rule
     def initialize(lead,matcher,*actions)
