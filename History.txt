@@ -1,3 +1,67 @@
+=== 0.8.0/16sep2011
+* 3 major enhancements:
+  * new framework for extending the lexer using modules:
+    * moved ruby 1.9 lexing logic into a separate module
+    * moved most macro-specific lexing logic to a separate module in rubymacros
+  * support for non-ascii encoding:
+    * support ascii, binary, utf-8, and euc-* encodings in 1.9 mode
+    * 1.8 mode allows binary encoding only
+    * \uXXXX character escapes in 1.9 mode strings (and char lits)
+    * which can turn a string into utf-8 even in non-utf-8 sources
+  * support for the encoding line:
+    * encoding line comes out as a separate token
+    * Theres now a ShebangToken as well as the EncodingDeclToken
+    * reading of encoding in -K option in shebang line improved
+    * utf8 bom overrides all later encoding decls
+
+* 8 minor improvements:
+  * in gemspec, find files relative to __FILE__ instead of pwd
+  * there's now a rubylexer binary; works like the old dumptokens.rb
+  * improved test coverage generally
+  * defend RubyLexer against being defined by anyone else (_ahem_)
+  * friendlier inspect
+  * using my own definition of whitespace instead of \s
+  * api changes to help redparse out:
+    * __ keywords get assigned a value
+    * added RubyLexer#unshift: to force tokens back on lexer input
+
+* 33 minor bugfixes:
+  * fixed position attributes of tokens in some cases
+  * use more noncapturing groups to avoid backref strangeness later
+  * leave trailing nl (if any) at end of heredoc on input
+  * emit saved-up here bodies before eof
+  * emit right num of parens after unary * & after def and before param list
+  * escaped newline token shouldnt have nl unless one was seen in input
+  * fixed multi-assigns in string inclusions
+  * premature eof in obscure places caused inf loop
+  * corrected handling for do inside of assignment inside method param list
+  * whitespace should never include trailing newline
+  * better detection of ! and = at end of identifiers
+  * disallow allow newline around :: in module header
+  * cr no longer ends comments
+  * !, !=, !~ should always be operator tokens, even in 1.8 mode
+  * .. and ... should be operator tokens
+  * fixes to unlexer:
+    * append newline when unlexing here doc, but only if it had none already
+    * improve formatting of dumptokens output when str inclusions are present
+    * fixed unlexing of char constants when char is space or non-glyph
+  * bugfixes in 1.9-mode lexing:
+    * don't make multiassign in block params (directly or nested)
+    * recognize lvars after ; in method and block param lists
+    * recognize lvars in block param list better
+    * 1.9 keywords correctly recognized and procesed
+    * char literals in 1.9 mode are more like strings than numbers now
+    * -> is considered an operator rather than value kw now
+    * use ImplicitParamListStart/EndToken instead of KwParamListStart/EndToken for ->'s param list
+    * the only chars at end which force an ident to be a method are now ?!=
+    * recognize lvar after & or * in stabby block param list
+  * changes for 1.9 compatibility:
+    * eliminating 1.9 warnings generally
+    * avoiding Array#to_s in 1.9 (sigh)
+    * keep Token#inspect working in 1.9
+    * fix CharSet#=== for 1.9 (again?)
+    * grope thru ruby -y output using grep instead of ruby to avoid 1.9 strangeness
+
 === 0.7.7/21dec2009
 * 5 Major Enhancements:
   * Got rid of the hacky RuLexer ancestor class. woo-hoo!
