@@ -1,3 +1,4 @@
+#encoding: binary
 =begin
     rubylexer - a ruby lexer written in ruby
     Copyright (C) 2004,2005,2008, 2011  Caleb Clausen
