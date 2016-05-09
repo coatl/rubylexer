@@ -730,15 +730,6 @@ zimpler
 kekerz
 }"
 
-aaa=<<whatnot; p "#{'uh,yeah'
-gonna take it down, to the nitty-grit
-gonna tell you mother-fuckers why you ain't shit
-cause suckers like you just make me strong
-you been pumpin' that bullshit all day long
-whatnot
-}"
-p aaa
-
 #test variable creation in string inclusion
 #currently broken because string inclusions
 #are lexed by a separate lexer!
@@ -938,25 +929,25 @@ p(/
 p <<stuff+'foobar'.tr('j-l','d-f')
 "more stuff"
 12345678
-the quick brown fox jumped over the lazy dog
+the quick brown fox jumped over the lazy dog0
 stuff
 
 p <<stuff+'foobar'.tr('j-l','d-f')
 "more stuff"
 12345678
-the quick brown fox jumped over the lazy dog
+the quick brown fox jumped over the lazy dog1
 stuff
 
 p <<stuff+'foobar'.tr('j-l','d-f')\
 +"more stuff"
 12345678
-the quick brown fox jumped over the lazy dog
+the quick brown fox jumped over the lazy dog2
 stuff
 
 p <<stuff+'foobar'\
 +"more stuff"
 12345678
-the quick brown fox jumped over the lazy dog
+the quick brown fox jumped over the lazy dog3
 stuff
 
 
@@ -1089,11 +1080,6 @@ for i in (c;
 x{
 for i in (begin
 [44,55,66,77,88] end) do p i**Math.sqrt(i) end
-}
-
-x{
-for i in if false then foob12345; else
-[44,55,66,77,88] end do p i**Math.sqrt(i) end
 }
 
 x{

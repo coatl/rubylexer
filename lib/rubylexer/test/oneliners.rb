@@ -66,9 +66,7 @@ x{a.b,c.d=1,2}
 x{proc{|a.b,c.d|}}
 
 p % foo
-p % foo
 
-p(% foo )
 p(% foo )
 
 p eval "%\sfoo\s"
@@ -249,8 +247,6 @@ p 0x123456789abcdefABCDEF01
 
 p "Hi, my name is #{"Slim #{(4)>2?"Whitman":"Shady"} "}."
 p "Hi, my name is #{"Slim #{(4)<2?"Whitman":"Shady"} "}."
-
-p(String *Class)
 
 def String.*(right) [self,right] end
 def String.<<(right) [self,:<<,right] end
@@ -463,7 +459,6 @@ p 0x80
 p ?p
 p 0.1
 p 0.8
-p 0.9
 p(-1)
 p %/p/
 p %Q[<LI>]
