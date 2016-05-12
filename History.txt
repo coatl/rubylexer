@@ -1,4 +1,4 @@
-=== 0.8.0/16sep2011
+=== 0.8.0/11may2016
 * 3 major enhancements:
   * new framework for extending the lexer using modules:
     * moved ruby 1.9 lexing logic into a separate module
