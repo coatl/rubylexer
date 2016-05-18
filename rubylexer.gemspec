@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.homepage = %{http://github.com/coatl/rubylexer}
   s.rubyforge_project = %q{rubylexer}
 
-  s.files = `git ls-files`.split
+  s.files = `git ls-files`.split - ['.gitignore']
   s.test_files = %w[test/test_all.rb]
   s.require_paths = ["lib"]
   s.bindir = "bin"
