@@ -11,7 +11,7 @@ filelist=$(shell git ls-files)
 all: test
 
 test:
-	ruby -Ilib test/test_all.rb
+	RUBYLIB=lib ruby test/test_all.rb
 
 docs:
 	rdoc lib/*
