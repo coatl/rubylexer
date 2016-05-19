@@ -4,6 +4,7 @@ require "#{dir}/lib/rubylexer/version"
 RubyLexer::Description=open("#{dir}/README.txt"){|f| f.read[/^==+ ?description[^\n]*?\n *\n?(.*?\n *\n.*?)\n *\n/im,1] }
 RubyLexer::Latest_changes="###"+open("#{dir}/History.txt"){|f| f.read[/\A===(.*?)(?====)/m,1] }
 
+@@the_gem=
 Gem::Specification.new do |s|
   s.name = "rubylexer"
   s.version = RubyLexer::VERSION

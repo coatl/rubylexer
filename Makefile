@@ -30,7 +30,7 @@ email: README.txt History.txt
 	ruby -e ' \
   require "rubygems"; \
   load "./$(lname).gemspec"; \
-  spec= Gem::Specification.list.find{|x| x.name=="$(gemname)"}; \
+  spec= @@the_gem; \
   puts "\
 Subject: [ANN] $(name) #{spec.version} Released \
 \n\n$(name) version #{spec.version} has been released! \n\n\
