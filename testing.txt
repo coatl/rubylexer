@@ -1,21 +1,22 @@
 Running the tests:
-The simplest thing to do is run "ruby -Ilib test/code/regression.rb". This 
-tests against a list of known ruby expressions. It will take several minutes 
-to run. Currently, there are 4 (minor) failures.
+
+The simplest thing to do is run "make test". This tests the lexer with a 
+list of known ruby interesting expressions. It will take several minutes 
+to run. Currently, there are 8-11 (minor) failures, depending or ruby 
+version. The fact that there are a few failures is more a testament to the 
+thoroughness of the test suite than an indictment of the lexer. Both lexer 
+and test suite are very thorough, but a few more (obscure and unlikely) 
+expressions are supported by the latter than the former.
+
+Most of the tests in the suite use rubylexervsruby, described below.
 
 If you're ambitious, try this command: "ruby -Ilib test/code/locatetest.rb". 
 This will use locate to find as much ruby code on your system and test 
 each specimen to see if it can be tokenized correctly (by feeding it to 
-testcode/rubylexervsruby.rb, the operation of which is outlined below 
+test/code/rubylexervsruby.rb, the operation of which is outlined below 
 under 'testing strategy').
 
-Interpreting the output of rubylexervsruby.rb (and locatetest):
-In rubylexervsruby, I've tried to follow the philosophy that the test program
-doesn't print anything unless there's an error. Perhaps I haven't followed
-this far enough; every run of rubylexervsruby produces a little output, and 
-sometimes a run will produce output that doesn't actually indicate a problem, 
-or only a low-priority problem. (Since locatetest runs rubylexervsruby over 
-and over, it produces lots of (mostly harmless) output. Sorry.)
+Interpreting output of rubylexervsruby (and locatetest and 'make test'): 
 
 The following types of output should be ignored:
 
@@ -31,17 +32,21 @@ indicate that a warning was added or deleted. Ultimately, these should
 go away, but right now it's a low-priority issue.
 
 If you ever see ruby stack dump in rubylexervsruby output, that's certainly
-an error. 
+a test failure. 
 
 Something that looks like a unidiff chunk body (not header) may indicate 
-an error as well. To understand more about how the unidiff output is 
+an text failure as well. To understand more about how the unidiff output is 
 created, see the section on testing strategy below.
+
+locatetest produces lots of (mostly harmless) output. Sorry.
 
 htree/template.rb should be ok now.
 
-currently, lots of warnings are printed about token offsets being off by 1,
-particularly the AssignmentRhsListToken. This is a problem, but for now I'm
-ignoring it. 
+currently, lots of warnings are printed about token offsets being off. 
+(like: "failed to check offset in N cases...") This is a problem, but for 
+now I'm ignoring it. (Most lexer applications don't need token offsets to
+be correct, and it's only a minority of cases, near here documents, where
+this problem occurs.)
 
 Diff chunks like this indicate a minor problem with the placement of (empty)
 string fragments. Ignore it for now:
@@ -58,10 +63,26 @@ string fragments. Ignore it for now:
  Shifting token tSTRING_DBEG ()
 
 
+Diff chunks like this indicate a minor problem with the placement of newlines. 
+Ignore it for now:
+  @@ -8,3 +8,2 @@
+   Shifting token tSTRING_END ()
+  -Shifting token '\n' ()
+   Shifting token "end-of-input" ()
+  @@ -8,3 +8,2 @@
+   Shifting token tSTRING_END ()
+  -Shifting token '\n' ()
+   Shifting token "end-of-input" ()
+
+
+There are a few other problems in the test suite as well. Current test status
+is less clean than I'd like, tho the conformance level of rubylexer is still
+very high.
 
 if you find any output that doesn't look like one of the above exceptions, 
-and the input file was valid ruby, please send it to me so that i can add it
-to my arsenal of tests.
+(for cases that aren't in the existing snippet set) and the input file was 
+valid ruby, please send it to me so that i can add it to my arsenal of 
+tests.
 
 there are a number of 'ruby' files that i know of out there that actually 
 contain syntax errors:
@@ -117,5 +138,4 @@ it is possible, however, that rubylexer is emitting as a single token things tha
 thinks should be 2 tokens. and in fact, this is the case with strings: ruby divides a
 string into string open, string body, and string close tokens with option interpolations,
 whereas rubylexer has just a single string token (with subtokens, if interpolations are
-present.) this difference in handling accounts in part for rubylexer's inability
-to correctly lex certain very complicated strings.
+present.)

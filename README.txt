@@ -12,7 +12,8 @@ capability is included to give RubyLexer enough context to tokenize correctly
 in all cases. (This turned out to be more parsing than I had thought or 
 wanted to take on at first.) RubyLexer handles the hard things like 
 complicated strings, the ambiguous nature of some punctuation characters and 
-keywords in ruby, and distinguishing methods and local variables.
+keywords in ruby, and distinguishing methods and local variables. It should
+be able to correctly lex 99.9+% of legal ruby code.
 
 RubyLexer is not particularly clean code. As I progressed in writing this, 
 I've learned a little about how these things are supposed to be done; the 
